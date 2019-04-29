@@ -4,18 +4,18 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/szdx4/attsys-server/config"
 	"github.com/szdx4/attsys-server/routers"
-	"github.com/szdx4/attsys-server/utils/setting"
 )
 
 func main() {
 	router := routers.Router()
 
 	server := &http.Server{
-		Addr:           fmt.Sprintf(":%d", setting.HTTPPort),
+		Addr:           fmt.Sprintf(":%d", config.Server.HTTPPort),
 		Handler:        router,
-		ReadTimeout:    setting.ReadTimeout,
-		WriteTimeout:   setting.WriteTimeout,
+		ReadTimeout:    config.Server.ReadTimeout,
+		WriteTimeout:   config.Server.WriteTimeout,
 		MaxHeaderBytes: 1 << 20,
 	}
 

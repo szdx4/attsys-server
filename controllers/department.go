@@ -11,8 +11,7 @@ import (
 // DepartmentCreate 创建部门
 func DepartmentCreate(c *gin.Context) {
 	var req requests.CreateDepartmentRequest
-	err := c.BindJSON(&req)
-	if err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil {
 		response.BadRequest(c, "Bad Request")
 		return
 	}

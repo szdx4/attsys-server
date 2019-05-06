@@ -6,9 +6,15 @@ import (
 
 	"github.com/szdx4/attsys-server/config"
 	"github.com/szdx4/attsys-server/routers"
+	"github.com/szdx4/attsys-server/utils/database"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
+	database.Connect()
+	database.Migrate()
+
 	router := routers.Router()
 
 	server := &http.Server{

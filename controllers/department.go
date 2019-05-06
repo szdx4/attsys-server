@@ -1,12 +1,11 @@
 package controllers
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/szdx4/attsys-server/models"
 	"github.com/szdx4/attsys-server/requests"
 	"github.com/szdx4/attsys-server/utils/database"
+	"github.com/szdx4/attsys-server/utils/response"
 )
 
 // DepartmentCreate 创建部门
@@ -14,10 +13,7 @@ func DepartmentCreate(c *gin.Context) {
 	var req requests.CreateDepartmentRequest
 	err := c.BindJSON(&req)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  http.StatusBadRequest,
-			"message": "error",
-		})
+		response.BadRequest(c, "Bad Request")
 		return
 	}
 
@@ -26,8 +22,5 @@ func DepartmentCreate(c *gin.Context) {
 	}
 	database.Connector.Create(&department)
 
-	c.JSON(http.StatusCreated, gin.H{
-		"status":     http.StatusCreated,
-		"resourseId": department.ID,
-	})
+	response.Created(c, department.ID)
 }

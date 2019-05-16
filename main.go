@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/szdx4/attsys-server/config"
@@ -25,5 +26,6 @@ func main() {
 		MaxHeaderBytes: 1 << 20,
 	}
 
+	log.Printf("Server listening at port: %d", config.Server.HTTPPort)
 	server.ListenAndServe()
 }

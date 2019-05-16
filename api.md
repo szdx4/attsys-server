@@ -564,7 +564,7 @@ GET `/overtime`
         ]
     }
 
-### 获取指定用户请假
+### 获取指定用户加班
 
 GET `/user/{user_id}/overtime`
 
@@ -594,7 +594,7 @@ GET `/user/{user_id}/overtime`
         ]
     }
 
-### 申请请假
+### 申请加班
 
 POST `/user/{user_id}/overtime`
 
@@ -615,7 +615,7 @@ POST `/user/{user_id}/overtime`
         "overtime_id": 2
     }
 
-### 审批请假
+### 审批加班
 
 PUT `/overtime/{overtime_id}`
 

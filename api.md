@@ -272,7 +272,7 @@ POST `/user/{user_id}/face`
         "face_id": 2
     }
 
-### 编辑人脸信息
+### 审批人脸信息
 
 PUT `/face/{face_id}`
 

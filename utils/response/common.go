@@ -30,3 +30,19 @@ func BadRequest(c *gin.Context, msg string) {
 		"message": msg,
 	})
 }
+
+// Unauthorized 返回 HTTP 401 状态
+func Unauthorized(c *gin.Context, msg string) {
+	c.JSON(http.StatusUnauthorized, gin.H{
+		"status":  http.StatusUnauthorized,
+		"message": msg,
+	})
+}
+
+// InternalServerError 返回 HTTP 500 状态
+func InternalServerError(c *gin.Context, msg string) {
+	c.JSON(http.StatusInternalServerError, gin.H{
+		"status":  http.StatusInternalServerError,
+		"message": msg,
+	})
+}

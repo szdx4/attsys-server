@@ -7,6 +7,7 @@ import (
 // Department 部门模型
 type Department struct {
 	gorm.Model
-	Name  string
-	Users []User `gorm:"foreignkey:Department"`
+	Name      string
+	Users     []User `gorm:"foreignkey:DepartmentID"`
+	ManagerID uint
 }

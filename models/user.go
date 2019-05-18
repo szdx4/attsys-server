@@ -7,9 +7,10 @@ import (
 // User 用户模型
 type User struct {
 	gorm.Model
-	Name       string
-	Password   string
-	Role       string
-	Department uint
-	Hours      uint
+	Name         string
+	Password     string
+	Role         string
+	DepartmentID uint
+	Department   Department
+	Hours        uint
 }

@@ -2,6 +2,7 @@ package routers
 
 import (
 	"github.com/szdx4/attsys-server/controllers"
+	"github.com/szdx4/attsys-server/middleware"
 
 	"github.com/gin-gonic/gin"
 	"github.com/szdx4/attsys-server/config"
@@ -15,7 +16,8 @@ func Router() *gin.Engine {
 	gin.SetMode(config.App.RunMode)
 
 	r.GET("/", controllers.Home)
-	r.POST("/department", controllers.DepartmentCreate)
+	r.POST("/user/auth", controllers.UserAuth)
+	r.GET("/user/:id", middleware.Token, controllers.UserShow)
 
 	return r
 }

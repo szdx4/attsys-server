@@ -29,3 +29,11 @@ func UserShow(c *gin.Context, user models.User) {
 		},
 	})
 }
+
+// UserCreate 创建用户响应
+func UserCreate(c *gin.Context, userID uint) {
+	c.JSON(http.StatusCreated, gin.H{
+		"status":  http.StatusCreated,
+		"user_id": userID,
+	})
+}

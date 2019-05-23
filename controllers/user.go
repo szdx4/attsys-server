@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"time"
 
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/szdx4/attsys-server/utils/database"
 
 	"github.com/dgrijalva/jwt-go"
@@ -64,4 +66,43 @@ func UserShow(c *gin.Context) {
 	}
 
 	response.UserShow(c, user)
+}
+
+// UserCreate 新建用户
+func UserCreate(c *gin.Context) {
+	var req requests.UserCreateRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.BadRequest(c, "Params not valid")
+		c.Abort()
+		return
+	}
+
+	if err := req.Validate(); err != nil {
+		response.BadRequest(c, err.Error())
+		c.Abort()
+		return
+	}
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), 10)
+	if err != nil {
+		response.InternalServerError(c, "Internal Server Error")
+		c.Abort()
+		return
+	}
+
+	user := models.User{
+		Name:         req.Name,
+		Password:     string(hash),
+		DepartmentID: uint(req.Department),
+		Role:         "user",
+	}
+	database.Connector.Create(&user)
+
+	if user.ID < 1 {
+		response.InternalServerError(c, "Internal Server Error")
+		c.Abort()
+		return
+	}
+
+	response.UserCreate(c, user.ID)
 }

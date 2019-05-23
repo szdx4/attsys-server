@@ -9,8 +9,9 @@ import (
 
 // AppConfig 存储应用配置
 type AppConfig struct {
-	RunMode    string
-	EncryptKey string
+	RunMode      string
+	EncryptKey   string
+	MinPwdLength int
 }
 
 // ServerConfig 存储 HTTP 服务器配置
@@ -58,6 +59,7 @@ func init() {
 func loadApp() {
 	App.RunMode = cfg.MustValue("APP", "RUN_MODE", "release")
 	App.EncryptKey = cfg.MustValue("APP", "ENCRYPT_KEY", "attsys-server")
+	App.MinPwdLength = cfg.MustInt("APP", "MIN_PWD_LENGTH", 7)
 }
 
 func loadServer() {

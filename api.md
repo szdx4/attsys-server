@@ -15,7 +15,7 @@ POST `/user/auth`
 
 #### JSON 参数
 
- - username: 用户姓名
+ - name: 用户姓名
  - password: 用户密码
 
 #### 响应

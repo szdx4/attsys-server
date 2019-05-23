@@ -18,6 +18,7 @@ func Router() *gin.Engine {
 	r.GET("/", controllers.Home)
 	r.POST("/user/auth", controllers.UserAuth)
 	r.GET("/user/:id", middleware.Token, controllers.UserShow)
+	r.POST("/user", controllers.UserCreate)
 
 	return r
 }

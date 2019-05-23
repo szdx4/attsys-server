@@ -37,12 +37,16 @@ func UserAuth(c *gin.Context) {
 		return
 	}
 
-	response.UserAuth(c, tokenString)
+	response.UserAuth(c, user.ID, tokenString)
 }
 
 // UserShow 获取单个用户信息
 func UserShow(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	userRole, _ := c.Get("user_role")
 	c.JSON(http.StatusOK, gin.H{
-		"data": "test",
+		"data":      "test",
+		"user_id":   userID,
+		"user_role": userRole,
 	})
 }

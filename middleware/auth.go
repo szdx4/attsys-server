@@ -46,7 +46,7 @@ func Token(c *gin.Context) {
 			return
 		}
 
-		c.Set("user_id", claims["id"].(string))
+		c.Set("user_id", int(claims["id"].(float64)))
 		c.Set("user_role", claims["role"].(string))
 		c.Next()
 	} else {

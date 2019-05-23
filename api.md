@@ -41,7 +41,9 @@ GET `/user`
 
     {
         "status": 200,
-        "page": 1,
+        "total": 100,
+        "current_page": 1,
+        "per_page": 20,
         "data": [
             {
                 "id": 1,
@@ -146,7 +148,9 @@ GET `/department`
 
     {
         "status": 200,
-        "page": 1,
+        "total": 100,
+        "current_page": 1,
+        "per_page": 20,
         "data": [
             {
                 "id": 1,
@@ -311,7 +315,9 @@ GET `/hours`
 
     {
         "status": 200,
-        "page": 1,
+        "total": 100,
+        "current_page": 1,
+        "per_page": 20,
         "data": [
             {
                 "id": 1,
@@ -343,7 +349,9 @@ GET `/shift`
 
     {
         "status": 200,
-        "page": 1,
+        "total": 100,
+        "current_page": 1,
+        "per_page": 20,
         "data": [
             {
                 "id": 1,
@@ -449,7 +457,9 @@ GET `/leave`
 
     {
         "status": 200,
-        "page": 1,
+        "total": 100,
+        "current_page": 1,
+        "per_page": 20,
         "data": [
             {
                 "id": 1,
@@ -550,7 +560,9 @@ GET `/overtime`
 
     {
         "status": 200,
-        "page": 1,
+        "total": 100,
+        "current_page": 1,
+        "per_page": 20,
         "data": [
             {
                 "id": 1,
@@ -580,7 +592,9 @@ GET `/user/{user_id}/overtime`
 
     {
         "status": 200,
-        "page": 1,
+        "total": 100,
+        "current_page": 1,
+        "per_page": 20,
         "data": [
             {
                 "id": 1,

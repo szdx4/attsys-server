@@ -39,6 +39,14 @@ func Unauthorized(c *gin.Context, msg string) {
 	})
 }
 
+// NotFound 返回 HTTP 404 状态
+func NotFound(c *gin.Context, msg string) {
+	c.JSON(http.StatusNotFound, gin.H{
+		"status":  http.StatusNotFound,
+		"message": msg,
+	})
+}
+
 // InternalServerError 返回 HTTP 500 状态
 func InternalServerError(c *gin.Context, msg string) {
 	c.JSON(http.StatusInternalServerError, gin.H{

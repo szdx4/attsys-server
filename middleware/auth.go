@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -12,12 +13,27 @@ import (
 
 // Token 验证 Token 中间件
 func Token(c *gin.Context) {
-	tokenString := c.GetHeader("Authorization")
-	if tokenString == "" {
+	authHeader := c.GetHeader("Authorization")
+	if authHeader == "" {
 		response.Unauthorized(c, "This action need authorized")
 		c.Abort()
 		return
 	}
+
+	auth := strings.Fields(authHeader)
+	if len(auth) < 2 {
+		response.Unauthorized(c, "This action need authorized")
+		c.Abort()
+		return
+	}
+
+	if auth[0] != "Bearer" {
+		response.BadRequest(c, "Token type unsupported")
+		c.Abort()
+		return
+	}
+
+	tokenString := auth[1]
 
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {

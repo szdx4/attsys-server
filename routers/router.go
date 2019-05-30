@@ -25,8 +25,9 @@ func Router() *gin.Engine {
 	r.DELETE("/user/:id", middleware.Token, middleware.Manager, controllers.UserDelete)
 
 	// Department
-	r.POST("department", middleware.Token, middleware.Master, controllers.DepartmentCreate)
+	r.POST("/department", middleware.Token, middleware.Master, controllers.DepartmentCreate)
 	r.GET("/department", middleware.Token, controllers.DepartmentList)
+	r.PUT("/department/:id", middleware.Token, controllers.DepartmentShow)
 
 	// Face
 

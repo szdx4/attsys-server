@@ -18,18 +18,25 @@ func DepartmentCreate(c *gin.Context) {
 		c.Abort()
 		return
 	}
-
+	//检验
 	if err := req.Validate(); err != nil {
 		response.BadRequest(c, err.Error())
 		c.Abort()
 		return
 	}
-
+	//新建
 	department := models.Department{
-		Name: req.Name,
+		Name:      req.Name,
+		ManagerID: req.ManagerId,
 	}
 	database.Connector.Create(&department)
 
+	if department.ID < 1 {
+		response.InternalServerError(c, "Internal Server Error")
+		c.Abort()
+		return
+	}
+	//响应
 	response.Created(c, department.ID)
 }
 
@@ -53,6 +60,5 @@ func DepartmentList(c *gin.Context) {
 		c.Abort()
 		return
 	}
-
 	response.DepartmentList(c, total, page, departments)
 }

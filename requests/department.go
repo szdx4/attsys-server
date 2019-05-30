@@ -8,39 +8,27 @@ import (
 
 // CreateDepartmentRequest 新增部门请求
 type DepartmentCreateRequest struct {
-	Name    string `binding:"required"`
-	Manager uint   `binding:"required"`
+	Name      string `binding:"required"`
+	ManagerId uint   `binding:"required"`
 }
 
 // Validate 验证 CreateDepartment 请求有效性
 func (r *DepartmentCreateRequest) Validate() error {
 	department := models.Department{}
+	//名字冲突检测
 	database.Connector.Where("name = ?", r.Name).First(&department)
 	if department.ID > 0 {
 		return errors.New("Department name exists")
 	}
-
-	if len(r.)
+	//名字长度检测
+	if len(r.Name) < 2 {
+		return errors.New("Department name not valid")
+	}
+	//部门主管ID存在性检测
+	manager := models.User{}
+	database.Connector.Where("id = ?", r.ManagerId).First(&manager)
+	if manager.Role != "manager" {
+		return errors.New("Manager not exist")
+	}
 	return nil
 }
-
-// Validate 验证创建用户请求的合法性
-//func (r *UserCreateRequest) Validate() error {
-//	user := models.User{}
-//	database.Connector.Where("name = ?", r.Name).First(&user)
-//	if user.ID > 0 {
-//		return errors.New("User name exists")
-//	}
-//
-//	if len(r.Password) < config.App.MinPwdLength {
-//		return errors.New("Password not valid")
-//	}
-//
-//	department := models.Department{}
-//	database.Connector.First(&department, r.Department)
-//	if department.ID < 1 {
-//		return errors.New("Department not found")
-//	}
-//
-//	return nil
-//}

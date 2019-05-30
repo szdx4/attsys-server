@@ -23,6 +23,11 @@ func Created(c *gin.Context, id uint) {
 	})
 }
 
+// NoContent 返回 HTTP 204 状态
+func NoContent(c *gin.Context) {
+	c.Status(http.StatusNoContent)
+}
+
 // BadRequest 返回 HTTP 400 状态
 func BadRequest(c *gin.Context, msg string) {
 	c.JSON(http.StatusBadRequest, gin.H{

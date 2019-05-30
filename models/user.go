@@ -1,16 +1,12 @@
 package models
 
-import (
-	"github.com/jinzhu/gorm"
-)
-
 // User 用户模型
 type User struct {
-	gorm.Model
-	Name         string
-	Password     string
-	Role         string
-	DepartmentID uint
-	Department   Department
-	Hours        uint
+	CommonFields
+	Name         string     `json:"name"`
+	Password     string     `json:"-"`
+	Role         string     `json:"role"`
+	DepartmentID uint       `json:"department"`
+	Department   Department `json:"-"`
+	Hours        uint       `json:"hours"`
 }

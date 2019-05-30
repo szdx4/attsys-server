@@ -106,3 +106,28 @@ func UserCreate(c *gin.Context) {
 
 	response.UserCreate(c, user.ID)
 }
+
+// UserList 获取用户列表
+func UserList(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	if err != nil {
+		page = 1
+	}
+	if page < 1 {
+		page = 1
+	}
+	perPage := config.App.ItemsPerPage
+
+	users := []models.User{}
+	total := 0
+	database.Connector.Limit(perPage).Offset((page - 1) * perPage).Find(&users)
+	database.Connector.Model(&models.User{}).Count(&total)
+
+	if (page-1)*perPage >= total {
+		response.NoContent(c)
+		c.Abort()
+		return
+	}
+
+	response.UserList(c, total, page, users)
+}

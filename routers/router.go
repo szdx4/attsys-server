@@ -16,9 +16,11 @@ func Router() *gin.Engine {
 	gin.SetMode(config.App.RunMode)
 
 	r.GET("/", controllers.Home)
+
 	r.POST("/user/auth", controllers.UserAuth)
 	r.GET("/user/:id", middleware.Token, controllers.UserShow)
 	r.POST("/user", controllers.UserCreate)
+	r.GET("/user", middleware.Token, middleware.Manager, controllers.UserList)
 
 	return r
 }

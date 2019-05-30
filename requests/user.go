@@ -56,11 +56,5 @@ func (r *UserCreateRequest) Validate() error {
 		return errors.New("Password not valid")
 	}
 
-	department := models.Department{}
-	database.Connector.First(&department, r.Department)
-	if department.ID < 1 {
-		return errors.New("Department not found")
-	}
-
 	return nil
 }

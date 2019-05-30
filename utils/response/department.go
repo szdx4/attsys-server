@@ -17,3 +17,11 @@ func DepartmentList(c *gin.Context, total, page int, departments []models.Depart
 		"data":         departments,
 	})
 }
+
+// DepartmentShow 部门资料响应
+func DepartmentShow(c *gin.Context, department models.Department) {
+	c.JSON(http.StatusOK, gin.H{
+		"status": http.StatusOK,
+		"data":   department,
+	})
+}

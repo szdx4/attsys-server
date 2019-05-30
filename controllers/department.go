@@ -62,3 +62,23 @@ func DepartmentList(c *gin.Context) {
 	}
 	response.DepartmentList(c, total, page, departments)
 }
+
+// DepartmentShow 获取指定部门信息
+func DepartmentShow(c *gin.Context) {
+	departmentID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.BadRequest(c, "User ID invalid")
+		c.Abort()
+		return
+	}
+
+	department := models.Department{}
+	database.Connector.First(&department, departmentID)
+	if department.ID < 1 {
+		response.NotFound(c, "User not found")
+		c.Abort()
+		return
+	}
+
+	response.DepartmentShow(c, department)
+}

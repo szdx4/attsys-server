@@ -43,3 +43,11 @@ func UserList(c *gin.Context, total, page int, users []models.User) {
 		"data":         users,
 	})
 }
+
+// UserDelete 删除用户响应
+func UserDelete(c *gin.Context, userID int) {
+	c.JSON(http.StatusOK, gin.H{
+		"status":  http.StatusOK,
+		"user_id": userID,
+	})
+}

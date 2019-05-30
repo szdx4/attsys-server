@@ -42,6 +42,10 @@ type UserCreateRequest struct {
 
 // Validate 验证创建用户请求的合法性
 func (r *UserCreateRequest) Validate() error {
+	if len(r.Name) < 2 {
+		return errors.New("User name not valid")
+	}
+
 	user := models.User{}
 	database.Connector.Where("name = ?", r.Name).First(&user)
 	if user.ID > 0 {

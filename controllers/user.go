@@ -131,3 +131,26 @@ func UserList(c *gin.Context) {
 
 	response.UserList(c, total, page, users)
 }
+
+// UserDelete 删除用户
+func UserDelete(c *gin.Context) {
+	userID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.BadRequest(c, "User ID invalid")
+		c.Abort()
+		return
+	}
+
+	user := models.User{}
+	database.Connector.Where("id = ?", userID).First(&user)
+
+	if user.ID == 0 {
+		response.NotFound(c, "User not found")
+		c.Abort()
+		return
+	}
+
+	database.Connector.Delete(&user)
+
+	response.UserDelete(c, userID)
+}

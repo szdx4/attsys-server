@@ -17,10 +17,13 @@ func Router() *gin.Engine {
 
 	r.GET("/", controllers.Home)
 
+	// User
 	r.POST("/user/auth", controllers.UserAuth)
 	r.GET("/user/:id", middleware.Token, controllers.UserShow)
 	r.POST("/user", controllers.UserCreate)
 	r.GET("/user", middleware.Token, middleware.Manager, controllers.UserList)
+
+	// Department
 
 	return r
 }

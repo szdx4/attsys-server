@@ -24,6 +24,8 @@ func Router() *gin.Engine {
 	r.GET("/user", middleware.Token, middleware.Manager, controllers.UserList)
 
 	// Department
+	r.POST("department", controllers.DepartmentCreate)
+	r.GET("/department", middleware.Token, controllers.DepartmentList)
 
 	return r
 }

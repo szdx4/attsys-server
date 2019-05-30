@@ -72,7 +72,7 @@ func UserShow(c *gin.Context) {
 func UserCreate(c *gin.Context) {
 	var req requests.UserCreateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.BadRequest(c, "Params not valid")
+		response.BadRequest(c, err.Error())
 		c.Abort()
 		return
 	}

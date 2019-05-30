@@ -26,5 +26,17 @@ func Router() *gin.Engine {
 
 	// Department
 
+	// Face
+
+	// Hours
+
+	// Shift
+
+	// Leave
+
+	// Overtime
+
+	// Sign
+
 	return r
 }

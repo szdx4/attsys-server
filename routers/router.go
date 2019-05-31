@@ -46,8 +46,12 @@ func Router() *gin.Engine {
 	// Face
 
 	// Hours
+	// 获取工时记录
+	r.GET("/hours", middleware.Token, controllers.HoursShow)
 
 	// Shift
+	// 添加排班
+	r.POST("/user/:id/shift", middleware.Token, controllers.ShiftCreate)
 
 	// Leave
 

@@ -3,7 +3,7 @@ package models
 // Department 部门模型
 type Department struct {
 	CommonFields
-	Name      string
+	Name      string `json:"name"`
 	Users     []User `gorm:"foreignkey:DepartmentID"`
-	ManagerID uint
+	ManagerID uint   `json:"manager"`
 }

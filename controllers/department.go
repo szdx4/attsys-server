@@ -27,7 +27,7 @@ func DepartmentCreate(c *gin.Context) {
 	//新建
 	department := models.Department{
 		Name:      req.Name,
-		ManagerID: req.ManagerId,
+		ManagerID: req.Manager,
 	}
 	database.Connector.Create(&department)
 

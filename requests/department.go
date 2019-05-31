@@ -8,8 +8,8 @@ import (
 
 // CreateDepartmentRequest 新增部门请求
 type DepartmentCreateRequest struct {
-	Name      string `binding:"required"`
-	ManagerId uint   `binding:"required"`
+	Name    string `binding:"required"`
+	Manager uint   `binding:"required"`
 }
 
 // Validate 验证 CreateDepartment 请求有效性
@@ -26,8 +26,8 @@ func (r *DepartmentCreateRequest) Validate() error {
 	}
 	//部门主管ID存在性检测
 	manager := models.User{}
-	database.Connector.Where("id = ?", r.ManagerId).First(&manager)
-	if manager.Role != "manager" {
+	database.Connector.Where("id = ?", r.Manager).First(&manager)
+	if !(manager.Role == "manager" || manager.Role == "master") {
 		return errors.New("Manager not exist")
 	}
 	return nil

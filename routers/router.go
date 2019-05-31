@@ -38,6 +38,8 @@ func Router() *gin.Engine {
 	r.GET("/department/:id", middleware.Token, controllers.DepartmentShow)
 	// 获取部门列表
 	r.GET("/department", middleware.Token, controllers.DepartmentList)
+	// 编辑部门
+	r.PUT("department/:id", middleware.Token, middleware.Master, controllers.DepartmentUpdate)
 
 	// Face
 

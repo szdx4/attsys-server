@@ -77,7 +77,7 @@ func (r *UserUpdateRequest) Validate() error {
 	// 验证department的存在与否
 	department := models.Department{}
 	database.Connector.Where("id = ?", r.Department).First(&department)
-	if department.ID <= 0 {
+	if department.ID == 0 {
 		return errors.New("User not exists")
 	}
 	// 验证role的有效性

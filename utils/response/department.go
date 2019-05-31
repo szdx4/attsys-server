@@ -25,3 +25,10 @@ func DepartmentShow(c *gin.Context, department models.Department) {
 		"data":   department,
 	})
 }
+
+// DepartmentUpdate 部门编辑响应
+func DepartmentUpdate(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"status": http.StatusOK,
+	})
+}

@@ -82,3 +82,39 @@ func DepartmentShow(c *gin.Context) {
 
 	response.DepartmentShow(c, department)
 }
+
+// DepartmentUpdate 编辑部门
+func DepartmentUpdate(c *gin.Context) {
+	var req requests.DepartmentUpdateRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.BadRequest(c, err.Error())
+		c.Abort()
+		return
+	}
+	if err := req.Validate(); err != nil {
+		response.BadRequest(c, err.Error())
+		c.Abort()
+		return
+	}
+	userID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.BadRequest(c, "Department ID invalid")
+		c.Abort()
+		return
+	}
+
+	department := models.Department{}
+	database.Connector.Where("id = ?", userID).First(&department)
+	if department.ID == 0 {
+		response.NotFound(c, "Department not found")
+		c.Abort()
+		return
+	}
+
+	//编辑部门的相应信息
+	department.Name = req.Name
+	department.ManagerID = uint(req.Manager)
+	database.Connector.Save(&department)
+
+	response.DepartmentUpdate(c)
+}

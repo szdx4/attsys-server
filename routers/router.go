@@ -18,16 +18,26 @@ func Router() *gin.Engine {
 	r.GET("/", controllers.Home)
 
 	// User
+	// 用户认证
 	r.POST("/user/auth", controllers.UserAuth)
+	// 获取指定用户信息
 	r.GET("/user/:id", middleware.Token, controllers.UserShow)
-	r.POST("/user", controllers.UserCreate)
+	// 添加用户
+	r.POST("/user", middleware.Token, middleware.Master, controllers.UserCreate)
+	// 获取用户列表
 	r.GET("/user", middleware.Token, middleware.Manager, controllers.UserList)
+	// 删除用户
 	r.DELETE("/user/:id", middleware.Token, middleware.Manager, controllers.UserDelete)
+	// 修改用户
+	r.PUT("/user/:id", middleware.Token, middleware.Master, controllers.UserUpdate)
 
 	// Department
+	// 添加部门
 	r.POST("/department", middleware.Token, middleware.Master, controllers.DepartmentCreate)
+	// 获取指定部门信息
+	r.GET("/department/:id", middleware.Token, controllers.DepartmentShow)
+	// 获取部门列表
 	r.GET("/department", middleware.Token, controllers.DepartmentList)
-	r.PUT("/department/:id", middleware.Token, controllers.DepartmentShow)
 
 	// Face
 

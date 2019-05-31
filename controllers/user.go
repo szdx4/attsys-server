@@ -154,3 +154,42 @@ func UserDelete(c *gin.Context) {
 
 	response.UserDelete(c, userID)
 }
+
+// UserUpdate 修改用户
+func UserUpdate(c *gin.Context) {
+	var req requests.UserUpdateRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.BadRequest(c, err.Error())
+		c.Abort()
+		return
+	}
+
+	if err := req.Validate(); err != nil {
+		response.BadRequest(c, err.Error())
+		c.Abort()
+		return
+	}
+
+	userID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.BadRequest(c, "User ID invalid")
+		c.Abort()
+		return
+	}
+
+	user := models.User{}
+	database.Connector.Where("id = ?", userID).First(&user)
+	if user.ID == 0 {
+		response.NotFound(c, "User not found")
+		c.Abort()
+		return
+	}
+	// 修改用户的相应信息
+	user.Name = req.Name
+	user.DepartmentID = uint(req.Department)
+	user.Role = req.Role
+	user.Hours = uint(req.Hours)
+	database.Connector.Save(&user)
+
+	response.UserUpdate(c)
+}

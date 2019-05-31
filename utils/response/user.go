@@ -51,3 +51,10 @@ func UserDelete(c *gin.Context, userID int) {
 		"user_id": userID,
 	})
 }
+
+// UserUpdate 修改用户响应
+func UserUpdate(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"status": http.StatusOK,
+	})
+}

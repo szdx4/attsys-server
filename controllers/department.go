@@ -118,3 +118,25 @@ func DepartmentUpdate(c *gin.Context) {
 
 	response.DepartmentUpdate(c)
 }
+
+// DepartmentDelete 删除部门
+func DepartmentDelete(c *gin.Context) {
+	DepartmentID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.BadRequest(c, "Department ID invalid")
+		c.Abort()
+		return
+	}
+
+	department := models.Department{}
+	database.Connector.Where("id = ?", DepartmentID).First(&department)
+
+	if department.ID == 0 {
+		response.NotFound(c, "Department not found")
+		c.Abort()
+		return
+	}
+	database.Connector.Delete(&department)
+
+	response.DepartmentDelete(c)
+}

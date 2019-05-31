@@ -32,3 +32,10 @@ func DepartmentUpdate(c *gin.Context) {
 		"status": http.StatusOK,
 	})
 }
+
+// DepartmentDelete 删除部门响应
+func DepartmentDelete(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"status": http.StatusOK,
+	})
+}

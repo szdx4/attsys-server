@@ -40,6 +40,8 @@ func Router() *gin.Engine {
 	r.GET("/department", middleware.Token, controllers.DepartmentList)
 	// 编辑部门
 	r.PUT("department/:id", middleware.Token, middleware.Master, controllers.DepartmentUpdate)
+	// 删除部门
+	r.DELETE("/department/:id", middleware.Token, middleware.Master, controllers.DepartmentDelete)
 
 	// Face
 

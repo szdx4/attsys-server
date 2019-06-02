@@ -6,4 +6,5 @@ import "github.com/szdx4/attsys-server/models"
 func Migrate() {
 	Connector.AutoMigrate(&models.Department{})
 	Connector.AutoMigrate(&models.User{})
+	Connector.AutoMigrate(&models.Face{})
 }

@@ -74,17 +74,17 @@ func (r *UserUpdateRequest) Validate() error {
 	if len(r.Name) < 2 {
 		return errors.New("User name not valid")
 	}
-	// 验证department的存在与否
+	// 验证 department 的存在与否
 	department := models.Department{}
 	database.Connector.Where("id = ?", r.Department).First(&department)
 	if department.ID == 0 {
 		return errors.New("User not exists")
 	}
-	// 验证role的有效性
+	// 验证 role 的有效性
 	if r.Role != "user" && r.Role != "manager" && r.Role != "master" {
 		return errors.New("User role not valid")
 	}
-	// 验证Hours的有效性
+	// 验证 Hours 的有效性
 	if r.Hours <= 0 {
 		return errors.New("User hours wrong")
 	}

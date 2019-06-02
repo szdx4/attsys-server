@@ -4,9 +4,9 @@ import "errors"
 
 // ShiftCreateRequest 添加排班
 type ShiftCreateRequest struct {
-	StartAt string
-	EndAt   string
-	Type    string
+	StartAt string `binding:"required"`
+	EndAt   string `binding:"required"`
+	Type    string `binding:"required"`
 }
 
 // Validate 验证 ShiftCreateRequest 请求中的有效性

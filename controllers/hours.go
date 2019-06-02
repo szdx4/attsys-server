@@ -15,20 +15,20 @@ func HoursShow(c *gin.Context) {
 	hours := []models.Hours{}
 	total := 0
 	db := database.Connector
-	// 检测user_id
+	// 检测 user_id
 	if userID, isExist := c.GetQuery("user_id"); isExist == true {
 		userID, _ := strconv.Atoi(userID)
 		db = db.Where("user = ?", userID)
 	}
-	// 检测start_at
+	// 检测 start_at
 	if startAt, isExist := c.GetQuery("start_at"); isExist == true {
 		db = db.Where("date >= ?", startAt)
 	}
-	// 检测end_at
+	// 检测 end_at
 	if endAt, isExist := c.GetQuery("end_at"); isExist == true {
 		db = db.Where("date <= ?", endAt)
 	}
-	// 检测page
+	// 检测 page
 	page, err := strconv.Atoi(c.Query("page"))
 	if err != nil {
 		page = 1

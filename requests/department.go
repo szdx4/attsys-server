@@ -24,7 +24,7 @@ func (r *DepartmentCreateRequest) Validate() error {
 	if len(r.Name) < 2 {
 		return errors.New("Department name not valid")
 	}
-	//部门主管ID存在性检测
+	//部门主管 ID 存在性检测
 	manager := models.User{}
 	database.Connector.Where("id = ?", r.Manager).First(&manager)
 	if manager.ID == 0 {
@@ -49,7 +49,7 @@ func (r *DepartmentUpdateRequest) Validate() error {
 	if len(r.Name) < 2 {
 		return errors.New("Department name not valid")
 	}
-	//部门主管ID存在性检测
+	//部门主管 ID 存在性检测
 	manager := models.User{}
 	database.Connector.Where("id = ?", r.Manager).First(&manager)
 	if manager.ID == 0 {

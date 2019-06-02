@@ -1,12 +1,13 @@
 package controllers
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/szdx4/attsys-server/config"
 	"github.com/szdx4/attsys-server/models"
 	"github.com/szdx4/attsys-server/utils/database"
 	"github.com/szdx4/attsys-server/utils/response"
-	"strconv"
 )
 
 // HoursShow 获取工时记录
@@ -15,9 +16,9 @@ func HoursShow(c *gin.Context) {
 	total := 0
 	db := database.Connector
 	// 检测user_id
-	if userId, isExist := c.GetQuery("user_id"); isExist == true {
-		userId, _ := strconv.Atoi(userId)
-		db = db.Where("user = ?", userId)
+	if userID, isExist := c.GetQuery("user_id"); isExist == true {
+		userID, _ := strconv.Atoi(userID)
+		db = db.Where("user = ?", userID)
 	}
 	// 检测start_at
 	if startAt, isExist := c.GetQuery("start_at"); isExist == true {

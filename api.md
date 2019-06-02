@@ -236,7 +236,7 @@ DELETE `/department/{department_id}`
 
 ### 获取指定用户可用的人脸信息
 
-GET `/user/{user_id}/face`
+GET `/face/user/{user_id}`
 
 #### Header
 
@@ -259,7 +259,7 @@ GET `/user/{user_id}/face`
 
 ### 更新指定用户人脸信息
 
-POST `/user/{user_id}/face`
+POST `/face/user/{user_id}`
 
 #### Header
 
@@ -388,7 +388,7 @@ POST `/shift/user/{user_id}`
 
 ### 部门排班
 
-POST `/department/{department_id}/shift`
+POST `/shift/department/{department_id}`
 
 #### Header
 
@@ -475,7 +475,7 @@ GET `/leave`
 
 ### 获取指定用户请假
 
-GET `/user/{user_id}/leave`
+GET `/leave/user/{user_id}`
 
 #### Header
 
@@ -505,7 +505,7 @@ GET `/user/{user_id}/leave`
 
 ### 申请请假
 
-POST `/user/{user_id}/leave`
+POST `/leave/user/{user_id}`
 
 #### Header
 
@@ -578,7 +578,7 @@ GET `/overtime`
 
 ### 获取指定用户加班
 
-GET `/user/{user_id}/overtime`
+GET `/overtime/user/{user_id}`
 
 #### Header
 
@@ -610,7 +610,7 @@ GET `/user/{user_id}/overtime`
 
 ### 申请加班
 
-POST `/user/{user_id}/overtime`
+POST `/overtime/user/{user_id}`
 
 #### Header
 
@@ -651,7 +651,7 @@ PUT `/overtime/{overtime_id}`
 
 ### 获取用户当前签到状态
 
-GET `/user/{user_id}/sign`
+GET `/sign/user/{user_id}`
 
 #### Header
 
@@ -694,7 +694,7 @@ GET `/sign/qrcode`
 
 ### 二维码签到
 
-POST `/user/{user_id}/sign/qrcode`
+POST `/sign/qrcode/user/{user_id}`
 
 #### Header
 
@@ -713,7 +713,7 @@ POST `/user/{user_id}/sign/qrcode`
 
 ### 人脸签到
 
-POST `/user/{user_id}/sign/face`
+POST `/sign/face/user/{user_id}`
 
 #### Header
 
@@ -732,7 +732,7 @@ POST `/user/{user_id}/sign/face`
 
 ### 签退
 
-POST `/sign/{sign_id}/off`
+POST `/off/sign/{sign_id}`
 
 #### Header
 

@@ -7,4 +7,5 @@ func Migrate() {
 	Connector.AutoMigrate(&models.Department{})
 	Connector.AutoMigrate(&models.User{})
 	Connector.AutoMigrate(&models.Face{})
+	Connector.AutoMigrate(&models.Shift{})
 }

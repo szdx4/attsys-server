@@ -367,7 +367,7 @@ GET `/shift`
 
 ### 添加排班
 
-POST `/user/{user_id}/shift`
+POST `/shift/user/{user_id}`
 
 #### Header
 

@@ -39,7 +39,7 @@ func Router() *gin.Engine {
 	// 获取部门列表
 	r.GET("/department", middleware.Token, controllers.DepartmentList)
 	// 编辑部门
-	r.PUT("department/:id", middleware.Token, middleware.Master, controllers.DepartmentUpdate)
+	r.PUT("/department/:id", middleware.Token, middleware.Master, controllers.DepartmentUpdate)
 	// 删除部门
 	r.DELETE("/department/:id", middleware.Token, middleware.Master, controllers.DepartmentDelete)
 
@@ -51,7 +51,7 @@ func Router() *gin.Engine {
 
 	// Shift
 	// 添加排班
-	r.POST("/user/:id/shift", middleware.Token, controllers.ShiftCreate)
+	r.POST("/shift/user/:id", middleware.Token, controllers.ShiftCreate)
 
 	// Leave
 

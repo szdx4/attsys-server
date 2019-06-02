@@ -4,6 +4,6 @@ package models
 type Department struct {
 	CommonFields
 	Name      string `json:"name"`
-	Users     []User `gorm:"foreignkey:DepartmentID"`
+	Users     []User `json:"-" gorm:"foreignkey:DepartmentID"`
 	ManagerID uint   `json:"manager"`
 }

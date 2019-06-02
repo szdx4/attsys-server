@@ -1,11 +1,13 @@
 package models
 
+import "time"
+
 // shift 排班模型
 type Shift struct {
 	CommonFields
-	UserID  uint   `json:"user_id"`
-	StartAt string `json:"start_at"`
-	EndAt   string `json:"end_at"`
-	Type    string `json:"type"`
-	Status  string `json:"status"`
+	UserID  uint      `json:"user_id"`
+	StartAt time.Time `json:"start_at"`
+	EndAt   time.Time `json:"end_at"`
+	Type    string    `json:"type" gorm:"type:enum('nomal','overtime','allovertime')"`
+	Status  string    `json:"status" gorm:"type:enum('no','no', 'off','leave')"`
 }

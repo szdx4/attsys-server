@@ -37,23 +37,3 @@ func ShiftCreate(c *gin.Context) {
 
 	response.ShiftCreate(c, shift.ID)
 }
-
-// UserCreate 新建用户
-//func UserCreate(c *gin.Context) {
-//
-//	user := models.User{
-//		Name:         req.Name,
-//		Password:     string(hash),
-//		DepartmentID: uint(req.Department),
-//		Role:         "user",
-//	}
-//	database.Connector.Create(&user)
-//
-//	if user.ID < 1 {
-//		response.InternalServerError(c, "Internal Server Error")
-//		c.Abort()
-//		return
-//	}
-//
-//	response.UserCreate(c, user.ID)
-//}

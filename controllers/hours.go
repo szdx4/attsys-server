@@ -25,7 +25,7 @@ func HoursShow(c *gin.Context) {
 	}
 	// 检测end_at
 	if endAt, isExist := c.GetQuery("end_at"); isExist == true {
-		db = db.Where("data <= ?", endAt)
+		db = db.Where("date <= ?", endAt)
 	}
 	// 检测page
 	page, err := strconv.Atoi(c.Query("page"))

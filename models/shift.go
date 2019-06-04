@@ -9,5 +9,5 @@ type Shift struct {
 	StartAt time.Time `json:"start_at"`
 	EndAt   time.Time `json:"end_at"`
 	Type    string    `json:"type" gorm:"type:enum('nomal','overtime','allovertime')"`
-	Status  string    `json:"status" gorm:"type:enum('no','no', 'off','leave')"`
+	Status  string    `json:"status" gorm:"type:enum('no','on', 'off','leave')"`
 }

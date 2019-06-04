@@ -13,21 +13,23 @@ import (
 // HoursShow 获取工时记录
 func HoursShow(c *gin.Context) {
 	hours := []models.Hours{}
-	total := 0
 	db := database.Connector
 	// 检测 user_id
 	if userID, isExist := c.GetQuery("user_id"); isExist == true {
 		userID, _ := strconv.Atoi(userID)
-		db = db.Where("user = ?", userID)
+		db = db.Where("user_id = ?", userID)
 	}
+
 	// 检测 start_at
 	if startAt, isExist := c.GetQuery("start_at"); isExist == true {
 		db = db.Where("date >= ?", startAt)
 	}
+
 	// 检测 end_at
 	if endAt, isExist := c.GetQuery("end_at"); isExist == true {
 		db = db.Where("date <= ?", endAt)
 	}
+
 	// 检测 page
 	page, err := strconv.Atoi(c.Query("page"))
 	if err != nil {
@@ -37,15 +39,11 @@ func HoursShow(c *gin.Context) {
 		page = 1
 	}
 	perPage := config.App.ItemsPerPage
+
+	total := 0
+	db.Limit(perPage).Offset((page - 1) * perPage).Find(&hours)
+	db.Model(&models.Hours{}).Count(&total)
 	if (page-1)*perPage >= total {
-		response.NoContent(c)
-		c.Abort()
-		return
-	}
-
-	db = db.Limit(perPage).Offset((page - 1) * perPage)
-
-	if err := db.Find(&hours).Error; err != nil {
 		response.NoContent(c)
 		c.Abort()
 		return

@@ -18,13 +18,13 @@ func DepartmentCreate(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	//检验
+	// 检验
 	if err := req.Validate(); err != nil {
 		response.BadRequest(c, err.Error())
 		c.Abort()
 		return
 	}
-	//新建
+	// 新建
 	department := models.Department{
 		Name:      req.Name,
 		ManagerID: req.Manager,
@@ -36,7 +36,7 @@ func DepartmentCreate(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	//响应
+	// 响应
 	response.Created(c, department.ID)
 }
 
@@ -85,17 +85,19 @@ func DepartmentShow(c *gin.Context) {
 
 // DepartmentUpdate 编辑部门
 func DepartmentUpdate(c *gin.Context) {
+	// 合法性检验
 	var req requests.DepartmentUpdateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.BadRequest(c, err.Error())
 		c.Abort()
 		return
 	}
-	if err := req.Validate(); err != nil {
+	if err := req.Validate(c); err != nil {
 		response.BadRequest(c, err.Error())
 		c.Abort()
 		return
 	}
+
 	userID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		response.BadRequest(c, "Department ID invalid")
@@ -103,6 +105,7 @@ func DepartmentUpdate(c *gin.Context) {
 		return
 	}
 
+	// 从数据库中查找
 	department := models.Department{}
 	database.Connector.Where("id = ?", userID).First(&department)
 	if department.ID == 0 {
@@ -111,7 +114,7 @@ func DepartmentUpdate(c *gin.Context) {
 		return
 	}
 
-	//编辑部门的相应信息
+	// 编辑部门的相应信息
 	department.Name = req.Name
 	department.ManagerID = uint(req.Manager)
 	database.Connector.Save(&department)

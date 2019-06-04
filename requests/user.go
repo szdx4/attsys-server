@@ -2,6 +2,9 @@ package requests
 
 import (
 	"errors"
+	"github.com/gin-gonic/gin"
+	"strconv"
+
 	//"math/bits"
 
 	"github.com/szdx4/attsys-server/config"
@@ -69,21 +72,35 @@ type UserUpdateRequest struct {
 }
 
 // Validate 验证 UserUpdateRequest 请求中信息的有效性
-func (r *UserUpdateRequest) Validate() error {
+func (r *UserUpdateRequest) Validate(c *gin.Context) error {
 	// 验证名字的有效性
 	if len(r.Name) < 2 {
 		return errors.New("User name not valid")
 	}
+
+	// 验证名字的冲突性
+	userID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return errors.New("User ID invalid")
+	}
+	user := models.User{}
+	database.Connector.Where("name = ?", r.Name).First(&user)
+	if user.ID > 0 && user.ID != uint(userID) {
+		return errors.New("User name exists")
+	}
+
 	// 验证 department 的存在与否
 	department := models.Department{}
 	database.Connector.Where("id = ?", r.Department).First(&department)
 	if department.ID == 0 {
-		return errors.New("User not exists")
+		return errors.New("department not exists")
 	}
+
 	// 验证 role 的有效性
 	if r.Role != "user" && r.Role != "manager" && r.Role != "master" {
 		return errors.New("User role not valid")
 	}
+
 	// 验证 Hours 的有效性
 	if r.Hours <= 0 {
 		return errors.New("User hours wrong")

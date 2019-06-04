@@ -157,6 +157,7 @@ func UserDelete(c *gin.Context) {
 
 // UserUpdate 修改用户
 func UserUpdate(c *gin.Context) {
+	// 请求合法性检验
 	var req requests.UserUpdateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.BadRequest(c, err.Error())
@@ -164,7 +165,7 @@ func UserUpdate(c *gin.Context) {
 		return
 	}
 
-	if err := req.Validate(); err != nil {
+	if err := req.Validate(c); err != nil {
 		response.BadRequest(c, err.Error())
 		c.Abort()
 		return

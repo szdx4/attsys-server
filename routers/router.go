@@ -24,6 +24,7 @@ func Router() *gin.Engine {
 	r.GET("/user/:id", middleware.Token, controllers.UserShow)
 	// 添加用户
 	r.POST("/user", middleware.Token, middleware.Master, controllers.UserCreate)
+	//r.POST("/user", controllers.UserCreate) //测试用
 	// 获取用户列表
 	r.GET("/user", middleware.Token, middleware.Manager, controllers.UserList)
 	// 删除用户

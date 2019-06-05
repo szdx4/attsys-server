@@ -59,8 +59,9 @@ type ShiftDepartmentRequest struct {
 	Type    string `binding:"required"`
 }
 
-func (r *ShiftDepartmentRequest) Validate(c *gin.Context) error {
-	//将接收的 string 格式转换成 Time
+// Validate 验证 ShiftDepartmentRequest 请求中的有效性
+func (r *ShiftDepartmentRequest) Validate() error {
+	// 将接收的 string 格式转换成 Time
 	startAt, err := config.StrToTime(r.StartAt)
 	if err != nil {
 		return errors.New("start_at not valid")
@@ -78,6 +79,20 @@ func (r *ShiftDepartmentRequest) Validate(c *gin.Context) error {
 	// 验证类型的有效性
 	if r.Type != "normal" && r.Type != "overtime" && r.Type != "allovertime" {
 		return errors.New("Type not valid")
+	}
+	return nil
+}
+
+// ShiftUpdateRequest 更新排班状态
+type ShiftUpdateRequest struct {
+	Status string `binding:"required"`
+}
+
+// Validate 验证 ShiftUpdateRequest 请求中的有效性
+func (r *ShiftUpdateRequest) Validate() error {
+	// 验证状态的有效性
+	if r.Status != "no" && r.Status != "on" && r.Status != "off" && r.Status != "leave" {
+		return errors.New("Status not valid")
 	}
 	return nil
 }

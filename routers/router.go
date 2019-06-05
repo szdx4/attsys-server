@@ -57,6 +57,10 @@ func Router() *gin.Engine {
 	r.GET("/shift", middleware.Token, controllers.ShiftList)
 	// 部门排班
 	r.POST("/shift/department/:department_id", middleware.Token, middleware.Manager, controllers.ShiftDepartment)
+	// 更新排班状态
+	r.PUT("/shift/:shift_id", middleware.Token, middleware.Manager, controllers.ShiftUpdate)
+	// 删除排班
+	r.DELETE("/shift/:id", middleware.Token, middleware.Manager, controllers.ShiftDelete)
 
 	// Leave
 

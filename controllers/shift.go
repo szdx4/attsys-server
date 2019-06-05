@@ -122,7 +122,7 @@ func ShiftDepartment(c *gin.Context) {
 		return
 	}
 
-	if err := req.Validate(c); err != nil {
+	if err := req.Validate(); err != nil {
 		response.BadRequest(c, err.Error())
 		c.Abort()
 		return
@@ -167,4 +167,55 @@ func ShiftDepartment(c *gin.Context) {
 	}
 
 	response.ShiftDepartment(c, shiftIds)
+}
+
+// ShiftUpdate 更新排班状态
+func ShiftUpdate(c *gin.Context) {
+	var req requests.ShiftUpdateRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.BadRequest(c, err.Error())
+		c.Abort()
+		return
+	}
+
+	if err := req.Validate(); err != nil {
+		response.BadRequest(c, err.Error())
+		c.Abort()
+		return
+	}
+	shiftID, _ := strconv.Atoi(c.Param("shift_id"))
+	shift := models.Shift{}
+	database.Connector.Where("id = ?", shiftID).First(&shift)
+	if shiftID == 0 {
+		response.NotFound(c, "shift not found")
+		c.Abort()
+		return
+	}
+	// 修改shift的相应信息
+	shift.Status = req.Status
+	database.Connector.Save(&shift)
+
+	response.ShiftUpdate(c)
+}
+
+// ShiftDelete 删除排班
+func ShiftDelete(c *gin.Context) {
+	shiftID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.BadRequest(c, "Shift ID invalid")
+		c.Abort()
+		return
+	}
+	shift := models.Shift{}
+	database.Connector.Where("id = ?", shiftID).First(&shift)
+
+	if shift.ID == 0 {
+		response.NotFound(c, "Shift not found")
+		c.Abort()
+		return
+	}
+
+	database.Connector.Delete(&shift)
+
+	response.ShiftDelete(c)
 }

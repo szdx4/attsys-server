@@ -3,6 +3,7 @@ package controllers
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/szdx4/attsys-server/config"
 	"github.com/szdx4/attsys-server/models"
 	"github.com/szdx4/attsys-server/requests"
 	"github.com/szdx4/attsys-server/utils/database"
@@ -58,4 +59,58 @@ func ShiftCreate(c *gin.Context) {
 	}
 
 	response.ShiftCreate(c, shift.ID)
+}
+
+// ShiftList 排班列表
+func ShiftList(c *gin.Context) {
+	shifts := []models.Shift{}
+	db := database.Connector
+	// 检测 user_id
+	if userID, isExit := c.GetQuery("user_id"); isExit == true {
+		userID, _ := strconv.Atoi(userID)
+		db = db.Where("user_id = ?", userID)
+	}
+
+	// 检测 department_id
+	//if departmentID, isExit := c.GetQuery("department_id"); isExit == true {
+	//	departmentID, _ := strconv.Atoi(departmentID)
+	//	db = db.Preload("User", "department_id = ?", departmentID)
+	//}
+
+	// 检测 page
+	page, err := strconv.Atoi(c.Query("page"))
+	if err != nil {
+		page = 1
+	}
+	if page < 1 {
+		page = 1
+	}
+	perPage := config.App.ItemsPerPage
+	total := 0
+
+	db.Limit(perPage).Offset((page - 1) * perPage).Find(&shifts)
+
+	// 用遍历的方法检测 department_id
+	if departmentID, isExit := c.GetQuery("department_id"); isExit == true {
+		departmentID, _ := strconv.Atoi(departmentID)
+		for i := 0; i < len(shifts); {
+			user := models.User{}
+			check := database.Connector
+			check.Where("id = ?", shifts[i].UserID).First(&user)
+			if user.DepartmentID != uint(departmentID) {
+				shifts = append(shifts[:i], shifts[i+1:]...)
+			} else {
+				i++
+			}
+		}
+	}
+
+	db.Model(&shifts).Count(&total)
+	if (page-1)*perPage >= total {
+		response.NoContent(c)
+		c.Abort()
+		return
+	}
+
+	response.ShiftList(c, total, page, shifts)
 }

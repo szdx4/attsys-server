@@ -53,6 +53,8 @@ func Router() *gin.Engine {
 	// Shift
 	// 添加排班
 	r.POST("/shift/user/:id", middleware.Token, controllers.ShiftCreate)
+	// 排班列表
+	r.GET("/shift", middleware.Token, controllers.ShiftList)
 
 	// Leave
 

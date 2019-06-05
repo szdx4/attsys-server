@@ -42,7 +42,7 @@ func HoursShow(c *gin.Context) {
 
 	total := 0
 	db.Limit(perPage).Offset((page - 1) * perPage).Find(&hours)
-	db.Model(&models.Hours{}).Count(&total)
+	db.Model(&hours).Count(&total)
 	if (page-1)*perPage >= total {
 		response.NoContent(c)
 		c.Abort()

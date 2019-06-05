@@ -63,8 +63,12 @@ func Router() *gin.Engine {
 	r.DELETE("/shift/:id", middleware.Token, middleware.Manager, controllers.ShiftDelete)
 
 	// Leave
-	//申请请假
+	// 申请请假
 	r.POST("/leave/user/:id", middleware.Token, controllers.LeaveCreate)
+	// 获取指定用户请假
+	r.GET("/leave/user/:id", middleware.Token, controllers.LeaveShow)
+	//
+
 	// Overtime
 
 	// Sign

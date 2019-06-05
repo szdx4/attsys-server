@@ -33,7 +33,7 @@ type DatabaseConfig struct {
 
 // ConnectionString 返回数据库连接信息字符串
 func (c *DatabaseConfig) ConnectionString() string {
-	return c.User + ":" + c.Password + "@tcp(" + c.Host + ")/" + c.Name + "?charset=utf8&parseTime=True&loc=Local"
+	return c.User + ":" + c.Password + "@tcp(" + c.Host + ")/" + c.Name + "?charset=utf8&parseTime=True&loc=Asia%2fShanghai"
 }
 
 var cfg *goconfig.ConfigFile

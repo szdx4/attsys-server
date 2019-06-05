@@ -73,6 +73,8 @@ func Router() *gin.Engine {
 	r.PUT("/leave/:id", middleware.Token, middleware.Manager, controllers.LeaveUpdate)
 
 	// Overtime
+	// 申请加班
+	r.POST("/overtime/user/:id", middleware.Token, controllers.OvertimeCreate)
 
 	// Sign
 

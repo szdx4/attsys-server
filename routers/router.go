@@ -67,7 +67,8 @@ func Router() *gin.Engine {
 	r.POST("/leave/user/:id", middleware.Token, controllers.LeaveCreate)
 	// 获取指定用户请假
 	r.GET("/leave/user/:id", middleware.Token, controllers.LeaveShow)
-	//
+	// 请假列表
+	r.GET("/leave", middleware.Token, middleware.Manager, controllers.LeaveList)
 
 	// Overtime
 

@@ -15,8 +15,19 @@ func LeaveCreate(c *gin.Context, leaveID uint) {
 	})
 }
 
-// LeaveShow获取指定用户请假响应
+// LeaveShow 获取指定用户请假响应
 func LeaveShow(c *gin.Context, total, page int, leaves []models.Leave) {
+	c.JSON(http.StatusOK, gin.H{
+		"status":       http.StatusOK,
+		"total":        total,
+		"current_page": page,
+		"per_page":     config.App.ItemsPerPage,
+		"data":         leaves,
+	})
+}
+
+// LeaveList 请假列表响应
+func LeaveList(c *gin.Context, total, page int, leaves []models.Leave) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":       http.StatusOK,
 		"total":        total,

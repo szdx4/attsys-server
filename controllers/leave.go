@@ -76,7 +76,7 @@ func LeaveShow(c *gin.Context) {
 	db := database.Connector
 	db = db.Where("user_id = ?", userID)
 	db.Limit(perPage).Offset((page - 1) * perPage).Find(&leaves)
-	database.Connector.Model(&leaves).Count(&total)
+	db.Model(&leaves).Count(&total)
 
 	if (page-1)*perPage >= total {
 		response.NoContent(c)
@@ -87,20 +87,27 @@ func LeaveShow(c *gin.Context) {
 	response.LeaveShow(c, total, page, leaves)
 }
 
-//func UserList(c *gin.Context) {
+// 请假列表
+func LeaveList(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	if err != nil {
+		page = 1
+	}
+	if page < 1 {
+		page = 1
+	}
+	perPage := config.App.ItemsPerPage
+	total := 0
 
-//	perPage := config.App.ItemsPerPage
-//
-//	users := []models.User{}
-//	total := 0
-//	database.Connector.Limit(perPage).Offset((page - 1) * perPage).Find(&users)
-//	database.Connector.Model(&models.User{}).Count(&total)
-//
-//	if (page-1)*perPage >= total {
-//		response.NoContent(c)
-//		c.Abort()
-//		return
-//	}
-//
-//	response.UserList(c, total, page, users)
-//}
+	leaves := []models.Leave{}
+	database.Connector.Limit(perPage).Offset((page - 1) * perPage).Find(&leaves)
+	database.Connector.Model(&leaves).Count(&total)
+
+	if (page-1)*perPage >= total {
+		response.NoContent(c)
+		c.Abort()
+		return
+	}
+
+	response.LeaveList(c, total, page, leaves)
+}

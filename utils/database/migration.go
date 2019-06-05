@@ -9,4 +9,7 @@ func Migrate() {
 	Connector.AutoMigrate(&models.Face{})
 	Connector.AutoMigrate(&models.Shift{})
 	Connector.AutoMigrate(&models.Hours{})
+	Connector.AutoMigrate(&models.Leave{})
+	Connector.AutoMigrate(&models.Overtime{})
+	Connector.AutoMigrate(&models.Sign{})
 }

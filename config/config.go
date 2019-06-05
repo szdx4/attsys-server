@@ -77,3 +77,10 @@ func loadDatabase() {
 	Database.Password = cfg.MustValue("DATABASE", "PASSWORD", "root")
 	Database.Name = cfg.MustValue("DATABASE", "NAME", "attsys")
 }
+
+// 将接收到的时间字符串转换成time.Time
+func StrToTime(str string) (startAt time.Time, err error) {
+	var timeLayOut = "2006-01-02 15:04:05"
+	startAt, err = time.Parse(timeLayOut, str)
+	return
+}

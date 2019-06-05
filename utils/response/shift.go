@@ -25,3 +25,11 @@ func ShiftList(c *gin.Context, total, page int, shifts []models.Shift) {
 		"data":         shifts,
 	})
 }
+
+// ShiftDepartment 部门排班响应
+func ShiftDepartment(c *gin.Context, shiftIds []uint) {
+	c.JSON(http.StatusCreated, gin.H{
+		"status":    http.StatusCreated,
+		"shift_ids": shiftIds,
+	})
+}

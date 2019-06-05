@@ -55,6 +55,8 @@ func Router() *gin.Engine {
 	r.POST("/shift/user/:id", middleware.Token, controllers.ShiftCreate)
 	// 排班列表
 	r.GET("/shift", middleware.Token, controllers.ShiftList)
+	// 部门排班
+	r.POST("/shift/department/:department_id", middleware.Token, middleware.Manager, controllers.ShiftDepartment)
 
 	// Leave
 

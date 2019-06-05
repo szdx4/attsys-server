@@ -36,3 +36,10 @@ func LeaveList(c *gin.Context, total, page int, leaves []models.Leave) {
 		"data":         leaves,
 	})
 }
+
+// LeaveUpdate 审批请假响应
+func LeaveUpdate(c *gin.Context) {
+	c.JSON(http.StatusCreated, gin.H{
+		"status": http.StatusCreated,
+	})
+}

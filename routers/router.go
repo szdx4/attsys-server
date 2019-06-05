@@ -69,6 +69,8 @@ func Router() *gin.Engine {
 	r.GET("/leave/user/:id", middleware.Token, controllers.LeaveShow)
 	// 请假列表
 	r.GET("/leave", middleware.Token, middleware.Manager, controllers.LeaveList)
+	// 审批请假
+	r.PUT("/leave/:id", middleware.Token, middleware.Manager, controllers.LeaveUpdate)
 
 	// Overtime
 

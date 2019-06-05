@@ -30,3 +30,17 @@ func (r *LeaveCreateRequest) Validate() error {
 	}
 	return nil
 }
+
+// LeaveUpdateRequest 审批请假请求
+type LeaveUpdateRequest struct {
+	Status string `json:"status" binding:"required"`
+}
+
+// Validate 验证 LeaveUpdateRequest 请求中的有效性
+func (r *LeaveUpdateRequest) Validate() error {
+	// 验证状态的有效性
+	if r.Status != "wait" && r.Status != "pass" && r.Status != "reject" {
+		return errors.New("Status not valid")
+	}
+	return nil
+}

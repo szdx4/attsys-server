@@ -111,3 +111,34 @@ func LeaveList(c *gin.Context) {
 
 	response.LeaveList(c, total, page, leaves)
 }
+
+// 审批请假
+func LeaveUpdate(c *gin.Context) {
+	var req requests.LeaveUpdateRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.BadRequest(c, err.Error())
+		c.Abort()
+		return
+	}
+
+	if err := req.Validate(); err != nil {
+		response.BadRequest(c, err.Error())
+		c.Abort()
+		return
+	}
+
+	leaveID, _ := strconv.Atoi(c.Param("id"))
+	leave := models.Leave{}
+	database.Connector.Where("id = ?", leaveID).First(&leave)
+	if leave.ID == 0 {
+		response.NotFound(c, "shift not found")
+		c.Abort()
+		return
+	}
+
+	// 修改 leave 的 status
+	leave.Status = req.Status
+	database.Connector.Save(&leave)
+
+	response.LeaveUpdate(c)
+}

@@ -9,3 +9,12 @@ type Hours struct {
 	Date   time.Time `json:"date"`
 	Hours  int       `json:"hours"`
 }
+
+// Hours 响应结构
+type HourData struct {
+	ID       uint      `json:"id"`
+	UserID   uint      `json:"user_id"`
+	UserName string    `json:"user_name"`
+	Date     time.Time `json:"date"`
+	Hours    int       `json:"hours"`
+}

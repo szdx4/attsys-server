@@ -49,5 +49,20 @@ func HoursShow(c *gin.Context) {
 		return
 	}
 
-	response.HoursShow(c, total, page, hours)
+	// 构造 data 响应
+	datas := []models.HourData{}
+	for i := 0; i < len(hours); i++ {
+		user := models.User{}
+		database.Connector.Where("id = ?", hours[i].UserID).First(&user)
+		data := models.HourData{
+			ID:       hours[i].ID,
+			UserID:   hours[i].ID,
+			UserName: user.Name,
+			Date:     hours[i].Date,
+			Hours:    hours[i].Hours,
+		}
+		datas = append(datas, data)
+	}
+
+	response.HoursShow(c, total, page, datas)
 }

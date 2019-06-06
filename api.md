@@ -343,6 +343,8 @@ GET `/shift`
 
  - user_id: 用户 ID，可选
  - department_id: 部门 ID，可选
+ - start_at: 开始日期，可选
+ - end_at: 结束日期，可选
  - page: 分页
 
 #### 响应

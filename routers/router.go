@@ -82,6 +82,8 @@ func Router() *gin.Engine {
 	r.GET("/overtime/user/:id", middleware.Token, middleware.Manager, controllers.OvertimeShow)
 	// 加班申请列表
 	r.GET("/overtime", middleware.Token, middleware.Manager, controllers.OvertimeList)
+	// 审批加班
+	r.PUT("/overtime/:id", middleware.Token, middleware.Manager, controllers.OvertimeUpdate)
 
 	// Sign
 

@@ -110,3 +110,34 @@ func OvertimeList(c *gin.Context) {
 
 	response.OvertimeList(c, total, page, overtime)
 }
+
+// OvertimeUpdate 审批加班
+func OvertimeUpdate(c *gin.Context) {
+	var req requests.OvertimeUpdateRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.BadRequest(c, err.Error())
+		c.Abort()
+		return
+	}
+
+	if err := req.Validate(); err != nil {
+		response.BadRequest(c, err.Error())
+		c.Abort()
+		return
+	}
+
+	overtimeID, _ := strconv.Atoi(c.Param("id"))
+	overtime := models.Overtime{}
+	database.Connector.Where("id = ?", overtimeID).First(&overtime)
+	if overtime.ID == 0 {
+		response.NotFound(c, "overtime not found")
+		c.Abort()
+		return
+	}
+
+	// 修改 overtime 的 status
+	overtime.Status = req.Status
+	database.Connector.Save(&overtime)
+
+	response.OvertimeUpdate(c)
+}

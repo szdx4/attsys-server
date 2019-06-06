@@ -132,7 +132,7 @@ func LeaveUpdate(c *gin.Context) {
 	leave := models.Leave{}
 	database.Connector.Where("id = ?", leaveID).First(&leave)
 	if leave.ID == 0 {
-		response.NotFound(c, "shift not found")
+		response.NotFound(c, "leave not found")
 		c.Abort()
 		return
 	}

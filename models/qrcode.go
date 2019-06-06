@@ -21,7 +21,7 @@ func (m *Qrcode) Image() (string, error) {
 		return "", err
 	}
 
-	base64 := base64.StdEncoding.EncodeToString(png)
+	str := "data:image/png;base64," + base64.StdEncoding.EncodeToString(png)
 
-	return base64, nil
+	return str, nil
 }

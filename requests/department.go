@@ -2,19 +2,20 @@ package requests
 
 import (
 	"errors"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/szdx4/attsys-server/models"
 	"github.com/szdx4/attsys-server/utils/database"
-	"strconv"
 )
 
-// CreateDepartmentRequest 新增部门请求
+// DepartmentCreateRequest 新增部门请求
 type DepartmentCreateRequest struct {
 	Name    string `binding:"required"`
 	Manager uint   `binding:"required"`
 }
 
-// Validate 验证 CreateDepartment 创建部门请求有效性
+// Validate 验证 DepartmentCreateRequest 创建部门请求有效性
 func (r *DepartmentCreateRequest) Validate() error {
 	department := models.Department{}
 	// 名字冲突检测

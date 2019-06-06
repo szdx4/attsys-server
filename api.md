@@ -805,8 +805,8 @@ GET `/message`
         "data": [
             {
                 "id": 1,
-                "from": 1,
-                "to": 2,
+                "from_user_id": 1,
+                "to_user_id": 2,
                 "title": "test title",
                 "content": "test content",
                 "status": "unread/read"
@@ -829,8 +829,8 @@ GET `/message/{message_id}`
         "status": 200,
         "data": {
             "id": 1,
-            "from": 1,
-            "to": 2,
+            "from_user_id": 1,
+            "to_user_id": 2,
             "title": "test title",
             "content": "test content",
             "status": "unread/read"

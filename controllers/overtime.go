@@ -57,3 +57,31 @@ func OvertimeCreate(c *gin.Context) {
 
 	response.OvertimeCreate(c, overtime.ID)
 }
+
+// OvertimeShow 获取指定用户加班
+func OvertimeShow(c *gin.Context) {
+	userID, _ := strconv.Atoi(c.Param("id"))
+	page, err := strconv.Atoi(c.Query("page"))
+	if err != nil {
+		page = 1
+	}
+	if page < 1 {
+		page = 1
+	}
+	perPage := config.App.ItemsPerPage
+	total := 0
+
+	overtime := []models.Overtime{}
+	db := database.Connector
+	db = db.Where("user_id = ?", userID)
+	db.Limit(perPage).Offset((page - 1) * perPage).Find(&overtime)
+	db.Model(&overtime).Count(&total)
+
+	if (page-1)*perPage >= total {
+		response.NoContent(c)
+		c.Abort()
+		return
+	}
+
+	response.OvertimeShow(c, total, page, overtime)
+}

@@ -705,7 +705,7 @@ GET `/sign/user/{user_id}`
         }
     }
 
-### 获取二维码
+### 获取二维码 ok
 
 GET `/sign/qrcode`
 

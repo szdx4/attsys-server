@@ -36,6 +36,12 @@ func (c *DatabaseConfig) ConnectionString() string {
 	return c.User + ":" + c.Password + "@tcp(" + c.Host + ")/" + c.Name + "?charset=utf8&parseTime=True&loc=Asia%2fShanghai"
 }
 
+// QcloudConfig 存储腾讯云 API 信息
+type QcloudConfig struct {
+	SecretID  string
+	SecretKey string
+}
+
 var cfg *goconfig.ConfigFile
 
 // 读取的配置信息
@@ -43,6 +49,7 @@ var (
 	App      AppConfig
 	Server   ServerConfig
 	Database DatabaseConfig
+	Qcloud   QcloudConfig
 )
 
 func init() {
@@ -55,6 +62,7 @@ func init() {
 	loadApp()
 	loadServer()
 	loadDatabase()
+	loadQcloud()
 }
 
 func loadApp() {
@@ -78,7 +86,12 @@ func loadDatabase() {
 	Database.Name = cfg.MustValue("DATABASE", "NAME", "attsys")
 }
 
-// 将接收到的时间字符串转换成time.Time
+func loadQcloud() {
+	Qcloud.SecretID = cfg.MustValue("QCLOUD", "SECRET_ID", "")
+	Qcloud.SecretKey = cfg.MustValue("QCLOUD", "SECRET_KEY", "")
+}
+
+// StrToTime 将接收到的时间字符串转换成 time.Time
 func StrToTime(str string) (startAt time.Time, err error) {
 	var timeLayOut = "2006-01-02 15:04:05"
 	startAt, err = time.Parse(timeLayOut, str)

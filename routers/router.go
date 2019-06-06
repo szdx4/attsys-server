@@ -80,7 +80,8 @@ func Router() *gin.Engine {
 	r.POST("/overtime/user/:id", middleware.Token, controllers.OvertimeCreate)
 	// 获取指定用户加班
 	r.GET("/overtime/user/:id", middleware.Token, middleware.Manager, controllers.OvertimeShow)
-	//
+	// 加班申请列表
+	r.GET("/overtime", middleware.Token, middleware.Manager, controllers.OvertimeList)
 
 	// Sign
 

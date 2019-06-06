@@ -134,3 +134,39 @@ func SignWithFace(c *gin.Context) {
 
 	response.Sign(c, sign.ID)
 }
+
+// SignOff 签退
+func SignOff(c *gin.Context) {
+	signID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.BadRequest(c, "Sign ID invalid")
+		c.Abort()
+		return
+	}
+
+	sign := models.Sign{}
+	database.Connector.Find(&sign, signID)
+
+	if sign.ID == 0 {
+		response.NotFound(c, "Sign not found")
+		c.Abort()
+		return
+	}
+
+	sign.EndAt = time.Now()
+	database.Connector.Save(&sign)
+
+	shift := models.Shift{}
+	database.Connector.Find(&shift, sign.ShiftID)
+
+	if shift.ID == 0 {
+		response.NotFound(c, "Shift not found")
+		c.Abort()
+		return
+	}
+
+	shift.Status = "off"
+	database.Connector.Save(&shift)
+
+	response.SignOff(c)
+}

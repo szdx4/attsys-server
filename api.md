@@ -764,7 +764,7 @@ POST `/sign/face/{user_id}`
         "sign_id: 3
     }
 
-### 签退
+### 签退 ok
 
 POST `/sign/off/{sign_id}`
 

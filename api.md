@@ -745,7 +745,7 @@ POST `/sign/qrcode/{user_id}`
         "sign_id: 3
     }
 
-### 人脸签到
+### 人脸签到 ok
 
 POST `/sign/face/{user_id}`
 

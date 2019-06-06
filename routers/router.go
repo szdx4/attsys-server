@@ -88,6 +88,7 @@ func Router() *gin.Engine {
 	// Sign
 	r.GET("/sign/qrcode", middleware.Token, controllers.SignGetQrcode)
 	r.POST("/sign/qrcode/:id", middleware.Token, controllers.SignWithQrcode)
+	r.POST("/sign/face/:id", middleware.Token, controllers.SignWithFace)
 
 	// Message
 	// 获取指定信息

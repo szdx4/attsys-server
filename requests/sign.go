@@ -4,6 +4,8 @@ import (
 	"errors"
 	"time"
 
+	"github.com/szdx4/attsys-server/utils/qcloud"
+
 	"github.com/szdx4/attsys-server/models"
 	"github.com/szdx4/attsys-server/utils/database"
 )
@@ -24,6 +26,32 @@ func (r *SignWithQrcodeRequest) Validate() error {
 
 	if time.Now().After(qrcode.ExpiredAt) {
 		return errors.New("Qrcode expired")
+	}
+
+	return nil
+}
+
+// SignWithFaceRequest 人脸签到请求
+type SignWithFaceRequest struct {
+	Face string `json:"face"`
+}
+
+// Validate 验证人脸签到请求的合法性
+func (r *SignWithFaceRequest) Validate(userID int) error {
+	face := models.Face{}
+	database.Connector.Where("user_id = ? AND status = 'available'", userID).First(&face)
+
+	if face.ID == 0 {
+		return errors.New("Face info not found")
+	}
+
+	score, err := qcloud.CompareFace(face.Info, r.Face)
+	if err != nil {
+		return errors.New("Cannot call qcloud api")
+	}
+
+	if score < 80 {
+		return errors.New("Face not match")
 	}
 
 	return nil

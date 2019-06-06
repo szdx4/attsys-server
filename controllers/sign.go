@@ -84,3 +84,26 @@ func SignWithQrcode(c *gin.Context) {
 
 	response.SignWithQrcode(c, sign.ID)
 }
+
+// SignWithFace 通过人脸签到
+func SignWithFace(c *gin.Context) {
+	userID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.BadRequest(c, "User ID invalid")
+		c.Abort()
+		return
+	}
+
+	var req requests.SignWithFaceRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.BadRequest(c, err.Error())
+		c.Abort()
+		return
+	}
+
+	if err := req.Validate(userID); err != nil {
+		response.BadRequest(c, err.Error())
+		c.Abort()
+		return
+	}
+}

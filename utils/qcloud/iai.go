@@ -19,7 +19,7 @@ func CompareFace(faceA, faceB string) (float64, error) {
 	cpf.HttpProfile.ReqMethod = "POST"
 	cpf.HttpProfile.ReqTimeout = 10
 	cpf.HttpProfile.Endpoint = "iai.tencentcloudapi.com"
-	cpf.SignMethod = "HmacSHA256"
+	cpf.SignMethod = "TC3HmacSHA256"
 
 	client, _ := iai.NewClient(credential, regions.Beijing, cpf)
 

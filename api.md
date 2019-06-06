@@ -718,7 +718,6 @@ GET `/sign/qrcode`
         "status": 200,
         "data": {
             "qrcode": "data:image/png;...",
-            "count": 10,
             "expired_at": "2019-02-02 11:11:11"
         }
     }

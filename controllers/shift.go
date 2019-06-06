@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/szdx4/attsys-server/config"
 	"github.com/szdx4/attsys-server/models"
@@ -48,6 +49,9 @@ func ShiftCreate(c *gin.Context) {
 		Type:    req.Type,
 		Status:  "no",
 	}
+	fmt.Println(shift.StartAt)
+	fmt.Println(shift.EndAt)
+	fmt.Println(shift.Type)
 
 	database.Connector.Create(&shift)
 	if shift.ID < 1 {
@@ -69,11 +73,15 @@ func ShiftList(c *gin.Context) {
 		db = db.Where("user_id = ?", userID)
 	}
 
-	// 检测 department_id
-	//if departmentID, isExit := c.GetQuery("department_id"); isExit == true {
-	//	departmentID, _ := strconv.Atoi(departmentID)
-	//	db = db.Preload("User", "department_id = ?", departmentID)
-	//}
+	// 检测 start_at
+	if startAt, isExit := c.GetQuery("user_id"); isExit == true {
+		db = db.Where("start_at >= ?", startAt)
+	}
+
+	// 检测 end_at
+	if endAt, isExit := c.GetQuery("user_id"); isExit == true {
+		db = db.Where("end_at <= ?", endAt)
+	}
 
 	// 检测 page
 	page, err := strconv.Atoi(c.Query("page"))

@@ -10,7 +10,7 @@ type Hours struct {
 	Hours  uint      `json:"hours"`
 }
 
-// Hours 响应结构
+// HourData 响应结构
 type HourData struct {
 	ID       uint      `json:"id"`
 	UserID   uint      `json:"user_id"`

@@ -85,3 +85,28 @@ func OvertimeShow(c *gin.Context) {
 
 	response.OvertimeShow(c, total, page, overtime)
 }
+
+// OvertimeList 加班申请列表
+func OvertimeList(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	if err != nil {
+		page = 1
+	}
+	if page < 1 {
+		page = 1
+	}
+	perPage := config.App.ItemsPerPage
+	total := 0
+
+	overtime := []models.Overtime{}
+	database.Connector.Limit(perPage).Offset((page - 1) * perPage).Find(&overtime)
+	database.Connector.Model(&overtime).Count(&total)
+
+	if (page-1)*perPage >= total {
+		response.NoContent(c)
+		c.Abort()
+		return
+	}
+
+	response.OvertimeList(c, total, page, overtime)
+}

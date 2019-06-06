@@ -25,3 +25,14 @@ func OvertimeShow(c *gin.Context, total, page int, overtime []models.Overtime) {
 		"data":         overtime,
 	})
 }
+
+// OvertimeList 加班申请列表
+func OvertimeList(c *gin.Context, total, page int, overtime []models.Overtime) {
+	c.JSON(http.StatusOK, gin.H{
+		"status":       http.StatusOK,
+		"total":        total,
+		"current_page": page,
+		"per_page":     config.App.ItemsPerPage,
+		"data":         overtime,
+	})
+}

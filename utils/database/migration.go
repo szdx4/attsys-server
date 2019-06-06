@@ -12,4 +12,5 @@ func Migrate() {
 	Connector.AutoMigrate(&models.Leave{})
 	Connector.AutoMigrate(&models.Overtime{})
 	Connector.AutoMigrate(&models.Sign{})
+	Connector.AutoMigrate(&models.Qrcode{})
 }

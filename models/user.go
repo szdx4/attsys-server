@@ -13,6 +13,6 @@ type User struct {
 	Hourss       []Hours    `json:"-" gorm:"foreignkey:UserID"`
 	Leaves       []Leave    `json:"-" gorm:"foreignkey:UserID"`
 	Overtimes    []Overtime `json:"-" gorm:"foreignkey:UserID"`
-	MessageFrom  []Message  `json:"-" gorm:"foreignkey:From"`
-	MessageTo    []Message  `json:"-" gorm:"foreignkey:To"`
+	MessageFrom  []Message  `json:"-" gorm:"foreignkey:FromUserID"`
+	MessageTo    []Message  `json:"-" gorm:"foreignkey:ToUserID"`
 }

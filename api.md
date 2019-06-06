@@ -9,7 +9,7 @@
 
 ## 用户相关
 
-### 用户认证
+### 用户认证 （ok）
 
 POST `/user/auth`
 
@@ -25,7 +25,7 @@ POST `/user/auth`
         "token": "{Token}"
     }
 
-### 用户列表
+### 用户列表 （ok）
 
 GET `/user`
 
@@ -56,7 +56,7 @@ GET `/user`
         ]
     }
 
-### 添加用户
+### 添加用户 （ok）
 
 POST `/user`
 
@@ -77,7 +77,7 @@ POST `/user`
         "user_id": 2
     }
 
-### 修改用户
+### 修改用户 （ok）
 
 PUT `/user/{user_id}`
 
@@ -98,7 +98,7 @@ PUT `/user/{user_id}`
         "status": 200
     }
 
-### 获取指定用户信息
+### 获取指定用户信息 （ok）
 
 GET `/user/{user_id}`
 
@@ -116,7 +116,7 @@ GET `/user/{user_id}`
         }
     }
 
-### 删除用户
+### 删除用户 （ok）
 
 DELETE `/user/{user_id}`
 
@@ -132,7 +132,7 @@ DELETE `/user/{user_id}`
 
 ## 部门相关
 
-### 部门列表
+### 部门列表 （ok）
 
 GET `/department`
 
@@ -161,7 +161,7 @@ GET `/department`
         ]
     }
 
-### 添加部门
+### 添加部门 （ok）
 
 POST `/department`
 
@@ -181,7 +181,7 @@ POST `/department`
         "department_id": 2
     }
 
-### 编辑部门
+### 编辑部门 （ok）
 
 PUT `/department/{department_id}`
 
@@ -200,7 +200,7 @@ PUT `/department/{department_id}`
         "status": 200
     }
 
-### 获取指定部门信息
+### 获取指定部门信息 （ok）
 
 GET `/department/{department_id}`
 
@@ -218,7 +218,7 @@ GET `/department/{department_id}`
         }
     }
 
-### 删除部门
+### 删除部门 （ok）
 
 DELETE `/department/{department_id}`
 
@@ -296,7 +296,7 @@ PUT `/face/{face_id}`
 
 ## 工时相关
 
-### 获取工时记录
+### 获取工时记录 （ok）
 
 GET `/hours`
 
@@ -331,7 +331,7 @@ GET `/hours`
 
 ## 排班相关
 
-### 排班列表
+### 排班列表 （ok）
 
 GET `/shift`
 
@@ -365,7 +365,7 @@ GET `/shift`
         ]
     }
 
-### 添加排班
+### 添加排班 （ok）
 
 POST `/shift/user/{user_id}`
 
@@ -386,7 +386,7 @@ POST `/shift/user/{user_id}`
         "shift_id": 2
     }
 
-### 部门排班
+### 部门排班 （ok）
 
 POST `/shift/department/{department_id}`
 
@@ -407,7 +407,7 @@ POST `/shift/department/{department_id}`
         "shift_ids": [2, 3]
     }
 
-### 更新排班状态
+### 更新排班状态 （ok）
 
 PUT `/shift/{shift_id}`
 
@@ -425,7 +425,7 @@ PUT `/shift/{shift_id}`
         "status": 200
     }
 
-### 删除排班
+### 删除排班 （ok）
 
 DELETE `/shift/{shift_id}`
 
@@ -441,7 +441,7 @@ DELETE `/shift/{shift_id}`
 
 ## 请假相关
 
-### 请假列表
+### 请假列表 （ok）
 
 GET `/leave`
 
@@ -473,7 +473,7 @@ GET `/leave`
         ]
     }
 
-### 获取指定用户请假
+### 获取指定用户请假 （ok）
 
 GET `/leave/user/{user_id}`
 
@@ -503,7 +503,7 @@ GET `/leave/user/{user_id}`
         ]
     }
 
-### 申请请假
+### 申请请假 （ok）
 
 POST `/leave/user/{user_id}`
 
@@ -524,7 +524,7 @@ POST `/leave/user/{user_id}`
         "leave_id": 2
     }
 
-### 审批请假
+### 审批请假 （ok）
 
 PUT `/leave/{leave_id}`
 
@@ -544,7 +544,7 @@ PUT `/leave/{leave_id}`
 
 ## 加班相关
 
-### 加班申请列表
+### 加班申请列表 （ok）
 
 GET `/overtime`
 
@@ -576,7 +576,7 @@ GET `/overtime`
         ]
     }
 
-### 获取指定用户加班
+### 获取指定用户加班 （ok）
 
 GET `/overtime/user/{user_id}`
 
@@ -608,7 +608,7 @@ GET `/overtime/user/{user_id}`
         ]
     }
 
-### 申请加班
+### 申请加班 （ok）
 
 POST `/overtime/user/{user_id}`
 
@@ -629,7 +629,7 @@ POST `/overtime/user/{user_id}`
         "overtime_id": 2
     }
 
-### 审批加班
+### 审批加班 （ok）
 
 PUT `/overtime/{overtime_id}`
 

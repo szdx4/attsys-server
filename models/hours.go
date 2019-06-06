@@ -7,7 +7,7 @@ type Hours struct {
 	CommonFields
 	UserID uint      `json:"user_id"`
 	Date   time.Time `json:"date"`
-	Hours  int       `json:"hours"`
+	Hours  uint      `json:"hours"`
 }
 
 // Hours 响应结构

@@ -168,5 +168,17 @@ func SignOff(c *gin.Context) {
 	shift.Status = "off"
 	database.Connector.Save(&shift)
 
+	timeDiff := uint(sign.EndAt.Sub(sign.StartAt).Hours())
+
+	user := shift.User
+	user.Hours += timeDiff
+	database.Connector.Save(&user)
+
+	hours := models.Hours{
+		UserID: user.ID,
+		Date:   time.Now(),
+		Hours:  timeDiff,
+	}
+
 	response.SignOff(c)
 }

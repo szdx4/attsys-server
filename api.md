@@ -766,7 +766,7 @@ POST `/sign/face/{user_id}`
 
 ### 签退
 
-POST `/off/sign/{sign_id}`
+POST `/sign/off/{sign_id}`
 
 #### Header
 

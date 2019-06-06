@@ -86,7 +86,8 @@ func Router() *gin.Engine {
 	r.PUT("/overtime/:id", middleware.Token, middleware.Manager, controllers.OvertimeUpdate)
 
 	// Sign
-	r.GET("/sign/qrcode", middleware.Token, controllers.SignQrcode)
+	r.GET("/sign/qrcode", middleware.Token, controllers.SignGetQrcode)
+	r.POST("/sign/qrcode/:id", middleware.Token)
 
 	// Message
 	// 获取指定信息

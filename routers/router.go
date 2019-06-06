@@ -87,5 +87,10 @@ func Router() *gin.Engine {
 
 	// Sign
 
+	// Message
+	// 获取指定信息
+	r.GET("/message/:id", middleware.Token, controllers.MessageShow)
+	// 获取信息列表
+
 	return r
 }

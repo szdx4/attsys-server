@@ -351,6 +351,7 @@ GET `/hours`
             {
                 "id": 1,
                 "user_id": 1,
+                "user_name": "test",
                 "date": "2019-02-02 11:11:11",
                 "hours": 12
             },

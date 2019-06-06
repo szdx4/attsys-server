@@ -3,7 +3,10 @@ package controllers
 import (
 	"strconv"
 
+	"github.com/szdx4/attsys-server/utils/database"
+
 	"github.com/gin-gonic/gin"
+	"github.com/szdx4/attsys-server/models"
 	"github.com/szdx4/attsys-server/utils/response"
 )
 
@@ -23,4 +26,15 @@ func FaceUserShow(c *gin.Context) {
 		c.Abort()
 		return
 	}
+
+	face := models.Face{}
+	database.Connector.Where("user_id = ? AND status = 'available'", userID).First(&face)
+
+	if face.ID == 0 {
+		response.NoContent(c)
+		c.Abort()
+		return
+	}
+
+	response.FaceShow(c, face)
 }

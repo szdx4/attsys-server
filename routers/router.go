@@ -46,6 +46,7 @@ func Router() *gin.Engine {
 
 	// Face
 	r.GET("/face/user/:id", middleware.Token, controllers.FaceUserShow)
+	r.POST("/face/user/:id", middleware.Token, controllers.FaceCreate)
 
 	// Hours
 	// 获取工时记录

@@ -14,3 +14,11 @@ func FaceShow(c *gin.Context, face models.Face) {
 		"data":   face,
 	})
 }
+
+// FaceCreate 更新人脸信息响应
+func FaceCreate(c *gin.Context, faceID uint) {
+	c.JSON(http.StatusCreated, gin.H{
+		"status":  http.StatusCreated,
+		"face_id": faceID,
+	})
+}

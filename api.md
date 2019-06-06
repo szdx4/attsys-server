@@ -254,7 +254,7 @@ GET `/face/user/{user_id}`
         }
     }
 
-### 更新指定用户人脸信息
+### 更新指定用户人脸信息 ok
 
 POST `/face/user/{user_id}`
 

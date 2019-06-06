@@ -82,7 +82,7 @@ func SignWithQrcode(c *gin.Context) {
 		return
 	}
 
-	response.SignWithQrcode(c, sign.ID)
+	response.Sign(c, sign.ID)
 }
 
 // SignWithFace 通过人脸签到
@@ -106,4 +106,31 @@ func SignWithFace(c *gin.Context) {
 		c.Abort()
 		return
 	}
+
+	shift := models.Shift{}
+	database.Connector.Where("status = 'no' AND user_id = ? AND start_at >= ?", userID, time.Now()).Order("start_at ASC").First(&shift)
+
+	if shift.ID == 0 {
+		response.NotFound(c, "Shift not found")
+		c.Abort()
+		return
+	}
+
+	shift.Status = "on"
+	database.Connector.Save(&shift)
+
+	sign := models.Sign{
+		ShiftID: shift.ID,
+		StartAt: time.Now(),
+		EndAt:   time.Now(),
+	}
+	database.Connector.Create(&sign)
+
+	if sign.ID == 0 {
+		response.InternalServerError(c, "Internal Server Error")
+		c.Abort()
+		return
+	}
+
+	response.Sign(c, sign.ID)
 }

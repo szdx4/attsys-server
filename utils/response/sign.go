@@ -18,8 +18,8 @@ func SignGetQrcode(c *gin.Context, image string, expiredAt time.Time) {
 	})
 }
 
-// SignWithQrcode 二维码签到响应
-func SignWithQrcode(c *gin.Context, signID uint) {
+// Sign 签到响应
+func Sign(c *gin.Context, signID uint) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
 		"sign_id": signID,

@@ -708,7 +708,7 @@ GET `/sign/user/{user_id}`
         }
     }
 
-### 获取二维码
+### 获取二维码 ok
 
 GET `/sign/qrcode`
 
@@ -728,7 +728,7 @@ GET `/sign/qrcode`
 
 ### 二维码签到
 
-POST `/sign/qrcode/user/{user_id}`
+POST `/sign/qrcode/{user_id}`
 
 #### Header
 
@@ -747,7 +747,7 @@ POST `/sign/qrcode/user/{user_id}`
 
 ### 人脸签到
 
-POST `/sign/face/user/{user_id}`
+POST `/sign/face/{user_id}`
 
 #### Header
 

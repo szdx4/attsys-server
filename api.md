@@ -774,3 +774,62 @@ POST `/off/sign/{sign_id}`
     {
         "status": 200
     }
+
+## 信息相关
+
+### 获取信息列表
+
+GET `/message`
+
+#### Header
+
+ - Authorization: Bearer {Token}
+
+#### URL Query
+
+ - from_user_id: 获取指定发送用户的信息，可选
+ - to_user_id: 获取指定接收用户的信息，可选
+ - status: 获取指定状态的信息，可选
+ - page: 分页
+
+#### 响应
+
+    {
+        "status": 200,
+        "total": 100,
+        "current_page": 1,
+        "per_page": 20,
+        "data": [
+            {
+                "id": 1,
+                "from": 1,
+                "to": 2,
+                "title": "test title",
+                "content": "test content",
+                "status": "unread/read"
+            },
+            ...
+        ]
+    }
+
+### 获取指定信息
+
+GET `/message/{message_id}`
+
+#### Header
+
+ - Authorization: Bearer {Token}
+
+#### 响应
+
+    {
+        "status": 200,
+        "data": {
+            "id": 1,
+            "from": 1,
+            "to": 2,
+            "title": "test title",
+            "content": "test content",
+            "status": "unread/read"
+        }
+    }

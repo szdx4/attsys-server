@@ -1,6 +1,8 @@
 package qcloud
 
 import (
+	"strings"
+
 	"github.com/szdx4/attsys-server/config"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
@@ -10,6 +12,15 @@ import (
 
 // CompareFace 人脸比对
 func CompareFace(faceA, faceB string) (float64, error) {
+	if strings.Index(faceA, "data:") > -1 {
+		tmp := strings.Split(faceA, "base64,")
+		faceA = tmp[1]
+	}
+	if strings.Index(faceB, "data:") > -1 {
+		tmp := strings.Split(faceB, "base64,")
+		faceB = tmp[1]
+	}
+
 	credential := common.NewCredential(
 		config.Qcloud.SecretID,
 		config.Qcloud.SecretKey,

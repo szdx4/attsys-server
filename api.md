@@ -234,7 +234,7 @@ DELETE `/department/{department_id}`
 
 ## 人脸相关
 
-### 获取指定用户可用的人脸信息
+### 获取指定用户可用的人脸信息 ok
 
 GET `/face/user/{user_id}`
 
@@ -254,7 +254,7 @@ GET `/face/user/{user_id}`
         }
     }
 
-### 更新指定用户人脸信息
+### 更新指定用户人脸信息 ok
 
 POST `/face/user/{user_id}`
 

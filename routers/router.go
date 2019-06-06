@@ -45,6 +45,8 @@ func Router() *gin.Engine {
 	r.DELETE("/department/:id", middleware.Token, middleware.Master, controllers.DepartmentDelete)
 
 	// Face
+	r.GET("/face/user/:id", middleware.Token, controllers.FaceUserShow)
+	r.POST("/face/user/:id", middleware.Token, controllers.FaceCreate)
 
 	// Hours
 	// 获取工时记录

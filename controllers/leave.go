@@ -2,13 +2,14 @@ package controllers
 
 import (
 	"errors"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/szdx4/attsys-server/config"
 	"github.com/szdx4/attsys-server/models"
 	"github.com/szdx4/attsys-server/requests"
 	"github.com/szdx4/attsys-server/utils/database"
 	"github.com/szdx4/attsys-server/utils/response"
-	"strconv"
 )
 
 // LeaveCreate 申请请假
@@ -59,7 +60,7 @@ func LeaveCreate(c *gin.Context) {
 	response.LeaveCreate(c, leave.ID)
 }
 
-// 获取指定用户请假
+// LeaveShow 获取指定用户请假
 func LeaveShow(c *gin.Context) {
 	userID, _ := strconv.Atoi(c.Param("id"))
 	page, err := strconv.Atoi(c.Query("page"))
@@ -87,7 +88,7 @@ func LeaveShow(c *gin.Context) {
 	response.LeaveShow(c, total, page, leaves)
 }
 
-// 请假列表
+// LeaveList 请假列表
 func LeaveList(c *gin.Context) {
 	page, err := strconv.Atoi(c.Query("page"))
 	if err != nil {
@@ -112,7 +113,7 @@ func LeaveList(c *gin.Context) {
 	response.LeaveList(c, total, page, leaves)
 }
 
-// 审批请假
+// LeaveUpdate 审批请假
 func LeaveUpdate(c *gin.Context) {
 	var req requests.LeaveUpdateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

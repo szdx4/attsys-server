@@ -246,15 +246,12 @@ GET `/face/user/{user_id}`
 
     {
         "status": 200,
-        "data": [
-            {
-                "id": 1,
-                "user_id": 1,
-                "info": "xxxxxxx",
-                "status": "wait/available/discarded"
-            },
-            ...
-        ]
+        "data": {
+            "id": 1,
+            "user_id": 1,
+            "info": "xxxxxxx",
+            "status": "wait/available/discarded"
+        }
     }
 
 ### 更新指定用户人脸信息

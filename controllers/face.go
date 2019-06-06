@@ -3,6 +3,7 @@ package controllers
 import (
 	"strconv"
 
+	"github.com/szdx4/attsys-server/config"
 	"github.com/szdx4/attsys-server/requests"
 	"github.com/szdx4/attsys-server/utils/database"
 
@@ -76,4 +77,39 @@ func FaceCreate(c *gin.Context) {
 	}
 
 	response.FaceCreate(c, face.ID)
+}
+
+// FaceList 获取人脸列表
+func FaceList(c *gin.Context) {
+	faces := []models.Face{}
+	db := database.Connector
+
+	if userID, isExit := c.GetQuery("user_id"); isExit == true {
+		userID, _ := strconv.Atoi(userID)
+		db = db.Where("user_id = ?", userID)
+	}
+
+	if status, isExit := c.GetQuery("status"); isExit == true {
+		status, _ := strconv.Atoi(status)
+		db = db.Where("status = ?", status)
+	}
+
+	page, err := strconv.Atoi(c.Query("page"))
+	if err != nil {
+		page = 1
+	}
+	if page < 1 {
+		page = 1
+	}
+	perPage := config.App.ItemsPerPage
+	total := 0
+
+	db.Limit(perPage).Offset((page - 1) * perPage).Find(&faces).Count(&total)
+	if (page-1)*perPage >= total {
+		response.NoContent(c)
+		c.Abort()
+		return
+	}
+
+	response.FaceList(c, total, page, perPage, faces)
 }

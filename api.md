@@ -111,8 +111,11 @@ GET `/user/{user_id}`
     {
         "status": 200,
         "data": {
-            "name": "test",
-            ...
+             "id": 1,
+             "name": "test",
+             "role": "user/manager/master",
+             "department": 1,
+             "hours": 10
         }
     }
 

@@ -273,7 +273,39 @@ POST `/face/user/{user_id}`
         "face_id": 2
     }
 
-### 审批人脸信息
+### 获取人脸列表 ok
+
+GET `/face`
+
+### Header
+
+ - Authorization: Bearer {Token}
+
+### URL Query 参数
+
+ - user_id: 获取指定用户人脸信息，可选
+ - status: 获取制定状态人脸信息，可选 
+ - page: 分页
+
+### 响应
+
+    {
+        "status": 200,
+        "total": 100
+        "current_page": 1
+        "per_page": 20,
+        "data": [
+            {
+                "id": 1,
+                "user_id": 1,
+                "info": "xxxxxxx",
+                "status": "wait/available/discarded"
+            },
+            ...
+        ]
+    }
+
+### 审批人脸信息 ok
 
 PUT `/face/{face_id}`
 

@@ -3,6 +3,7 @@ package controllers
 import (
 	"strconv"
 
+	"github.com/szdx4/attsys-server/config"
 	"github.com/szdx4/attsys-server/requests"
 	"github.com/szdx4/attsys-server/utils/database"
 
@@ -76,4 +77,76 @@ func FaceCreate(c *gin.Context) {
 	}
 
 	response.FaceCreate(c, face.ID)
+}
+
+// FaceList 获取人脸列表
+func FaceList(c *gin.Context) {
+	faces := []models.Face{}
+	db := database.Connector
+
+	if userID, isExit := c.GetQuery("user_id"); isExit == true {
+		userID, _ := strconv.Atoi(userID)
+		db = db.Where("user_id = ?", userID)
+	}
+
+	if status, isExit := c.GetQuery("status"); isExit == true {
+		status, _ := strconv.Atoi(status)
+		db = db.Where("status = ?", status)
+	}
+
+	page, err := strconv.Atoi(c.Query("page"))
+	if err != nil {
+		page = 1
+	}
+	if page < 1 {
+		page = 1
+	}
+	perPage := config.App.ItemsPerPage
+	total := 0
+
+	db.Limit(perPage).Offset((page - 1) * perPage).Find(&faces).Count(&total)
+	if (page-1)*perPage >= total {
+		response.NoContent(c)
+		c.Abort()
+		return
+	}
+
+	response.FaceList(c, total, page, perPage, faces)
+}
+
+// FaceUpdate 编辑人脸信息
+func FaceUpdate(c *gin.Context) {
+	faceID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.BadRequest(c, "Face ID invalid")
+		c.Abort()
+		return
+	}
+
+	face := models.Face{}
+	database.Connector.Find(&face, faceID)
+	if face.ID == 0 {
+		response.NotFound(c, "Face not found")
+		c.Abort()
+		return
+	}
+
+	if face.Status != "wait" {
+		response.BadRequest(c, "Face status invalid")
+		c.Abort()
+		return
+	}
+
+	faces := []models.Face{}
+	database.Connector.Where("user_id = ? AND status = 'available'", face.UserID).Find(&faces)
+
+	for _, item := range faces {
+		item.Status = "discarded"
+		database.Connector.Save(&item)
+	}
+
+	face.Status = "available"
+	database.Connector.Save(&face)
+
+	response.FaceUpdate(c)
 }

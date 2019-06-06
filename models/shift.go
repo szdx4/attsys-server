@@ -2,7 +2,7 @@ package models
 
 import "time"
 
-// shift 排班模型
+// Shift 排班模型
 type Shift struct {
 	CommonFields
 	UserID  uint      `json:"user_id"`

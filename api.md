@@ -726,7 +726,7 @@ GET `/sign/qrcode`
         }
     }
 
-### 二维码签到
+### 二维码签到 ok
 
 POST `/sign/qrcode/{user_id}`
 

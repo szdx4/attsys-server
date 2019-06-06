@@ -15,7 +15,7 @@ func OvertimeCreate(c *gin.Context, overtimeID uint) {
 	})
 }
 
-// OvertimeShow 获取指定用户加班
+// OvertimeShow 获取指定用户加班响应
 func OvertimeShow(c *gin.Context, total, page int, overtime []models.Overtime) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":       http.StatusOK,
@@ -26,7 +26,7 @@ func OvertimeShow(c *gin.Context, total, page int, overtime []models.Overtime) {
 	})
 }
 
-// OvertimeList 加班申请列表
+// OvertimeList 加班申请列表响应
 func OvertimeList(c *gin.Context, total, page int, overtime []models.Overtime) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":       http.StatusOK,
@@ -34,5 +34,12 @@ func OvertimeList(c *gin.Context, total, page int, overtime []models.Overtime) {
 		"current_page": page,
 		"per_page":     config.App.ItemsPerPage,
 		"data":         overtime,
+	})
+}
+
+// OvertimeUpdate 审批加班响应
+func OvertimeUpdate(c *gin.Context) {
+	c.JSON(http.StatusCreated, gin.H{
+		"status": http.StatusCreated,
 	})
 }

@@ -113,3 +113,40 @@ func FaceList(c *gin.Context) {
 
 	response.FaceList(c, total, page, perPage, faces)
 }
+
+// FaceUpdate 编辑人脸信息
+func FaceUpdate(c *gin.Context) {
+	faceID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.BadRequest(c, "Face ID invalid")
+		c.Abort()
+		return
+	}
+
+	face := models.Face{}
+	database.Connector.Find(&face, faceID)
+	if face.ID == 0 {
+		response.NotFound(c, "Face not found")
+		c.Abort()
+		return
+	}
+
+	if face.Status != "wait" {
+		response.BadRequest(c, "Face status invalid")
+		c.Abort()
+		return
+	}
+
+	faces := []models.Face{}
+	database.Connector.Where("user_id = ? AND status = 'available'", face.UserID).Find(&faces)
+
+	for _, item := range faces {
+		item.Status = "discarded"
+		database.Connector.Save(&item)
+	}
+
+	face.Status = "available"
+	database.Connector.Save(&face)
+
+	response.FaceUpdate(c)
+}

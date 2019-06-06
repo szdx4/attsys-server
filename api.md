@@ -305,7 +305,7 @@ GET `/face`
         ]
     }
 
-### 审批人脸信息
+### 审批人脸信息 ok
 
 PUT `/face/{face_id}`
 

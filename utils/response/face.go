@@ -33,3 +33,10 @@ func FaceList(c *gin.Context, total, page, perPage int, faces []models.Face) {
 		"data":         faces,
 	})
 }
+
+// FaceUpdate 编辑人脸响应
+func FaceUpdate(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"status": http.StatusOK,
+	})
+}

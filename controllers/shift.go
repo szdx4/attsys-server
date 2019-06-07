@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -50,13 +49,10 @@ func ShiftCreate(c *gin.Context) {
 		Type:    req.Type,
 		Status:  "no",
 	}
-	fmt.Println(shift.StartAt)
-	fmt.Println(shift.EndAt)
-	fmt.Println(shift.Type)
 
 	database.Connector.Create(&shift)
 	if shift.ID < 1 {
-		response.InternalServerError(c, "Internal Server Error")
+		response.InternalServerError(c, "Database error")
 		c.Abort()
 		return
 	}

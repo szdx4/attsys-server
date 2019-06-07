@@ -162,9 +162,9 @@ func OvertimeUpdate(c *gin.Context) {
 
 	overtimeID, _ := strconv.Atoi(c.Param("id"))
 	overtime := models.Overtime{}
-	database.Connector.Where("id = ?", overtimeID).First(&overtime)
+	database.Connector.First(&overtime, overtimeID)
 	if overtime.ID == 0 {
-		response.NotFound(c, "overtime not found")
+		response.NotFound(c, "Overtime not found")
 		c.Abort()
 		return
 	}
@@ -172,6 +172,17 @@ func OvertimeUpdate(c *gin.Context) {
 	// 修改 overtime 的 status
 	overtime.Status = req.Status
 	database.Connector.Save(&overtime)
+
+	// 创建工时记录
+	hour := uint(overtime.EndAt.Sub(overtime.StartAt).Hours())
+	hours := models.Hours{
+		UserID: overtime.UserID,
+		Date:   overtime.EndAt,
+		Hours:  hour,
+	}
+	database.Connector.Create(&hours)
+	hours.User.Hours += hour
+	database.Connector.Save(&hours.User)
 
 	response.OvertimeUpdate(c)
 }

@@ -668,17 +668,18 @@ GET `/sign/user/{user_id}`
 
 #### 响应
 
-    no/leave = {
+    no/off/leave = {
         "status": 204
     }
 
-    on/off = {
+    on = {
         "status": 200,
         "data": {
             "id": 1,
-            "shift_id": 1,
             "start_at": "2019-02-02 11:11:11",
-            "end_at": "2019-02-02 11:11:11"
+            "shift_id": 1,
+            "shift_start_at": "2019-02-02 11:11:11",
+            "shift_end_at": "2019-02-02 11:11:11"
         }
     }
 
@@ -742,6 +743,10 @@ POST `/sign/face/{user_id}`
 
 POST `/sign/off/{sign_id}`
 
+#### 说明
+
+响应中的 `overtime` 为是否可以申请加班。
+
 #### Header
 
  - Authorization: Bearer {Token}
@@ -749,7 +754,8 @@ POST `/sign/off/{sign_id}`
 #### 响应
 
     {
-        "status": 200
+        "status": 200,
+        "overtime": true
     }
 
 ## 信息相关
@@ -780,9 +786,10 @@ GET `/message`
             {
                 "id": 1,
                 "from_user_id": 1,
+                "from_user_name": "test",
                 "to_user_id": 2,
+                "to_user_name": "test",
                 "title": "test title",
-                "content": "test content",
                 "status": "unread/read"
             },
             ...
@@ -792,6 +799,10 @@ GET `/message`
 ### 获取指定信息
 
 GET `/message/{message_id}`
+
+#### 说明
+
+调用此接口后 message 会自动变为 read 状态。
 
 #### Header
 
@@ -804,7 +815,9 @@ GET `/message/{message_id}`
         "data": {
             "id": 1,
             "from_user_id": 1,
+            "from_user_name": "test",
             "to_user_id": 2,
+            "to_user_name": "test",
             "title": "test title",
             "content": "test content",
             "status": "unread/read"

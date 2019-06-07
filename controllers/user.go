@@ -55,12 +55,30 @@ func UserShow(c *gin.Context) {
 		return
 	}
 
+	role, _ := c.Get("user_role")
+	authID, _ := c.Get("user_id")
 	user := models.User{}
 	database.Connector.First(&user, userID)
 	if user.ID < 1 {
 		response.NotFound(c, "User not found")
 		c.Abort()
 		return
+	}
+
+	if role == "user" && authID != user.ID {
+		response.Unauthorized(c, "You cannot get others information")
+		c.Abort()
+		return
+	}
+
+	if role == "manager" {
+		manager := models.User{}
+		database.Connector.First(&manager, authID)
+		if manager.DepartmentID != user.DepartmentID {
+			response.Unauthorized(c, "You cannot get other department information")
+			c.Abort()
+			return
+		}
 	}
 
 	response.UserShow(c, user)
@@ -124,7 +142,7 @@ func UserList(c *gin.Context) {
 	if role == "manager" {
 		managerID, _ := c.Get("user_id")
 		manager := models.User{}
-		database.Connector.Find(&manager, managerID)
+		database.Connector.First(&manager, managerID)
 		departmentID := manager.DepartmentID
 
 		database.Connector.Where("department_id = ?", departmentID).Limit(perPage).Offset((page - 1) * perPage).Find(&users)
@@ -184,7 +202,7 @@ func UserUpdate(c *gin.Context) {
 	}
 
 	user := models.User{}
-	database.Connector.Find(&user, userID)
+	database.Connector.First(&user, userID)
 	if user.ID == 0 {
 		response.NotFound(c, "User not found")
 		c.Abort()

@@ -23,7 +23,7 @@ type UserAuthRequest struct {
 // Validate 验证 UserAuthRequest 请求中用户信息的有效性
 func (r *UserAuthRequest) Validate() (*models.User, error) {
 	user := &models.User{}
-	database.Connector.Where("name = ?", r.Name).First(user)
+	database.Connector.Where("name = ?", r.Name).First(&user)
 	if user.ID == 0 {
 		return nil, errors.New("User not found")
 	}
@@ -90,7 +90,7 @@ func (r *UserUpdateRequest) Validate(c *gin.Context) (int, error) {
 
 	// 验证部门的存在与否
 	department := models.Department{}
-	database.Connector.Find(&department, r.Department)
+	database.Connector.First(&department, r.Department)
 	if department.ID == 0 {
 		return 0, errors.New("Department not exists")
 	}

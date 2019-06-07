@@ -553,6 +553,20 @@ PUT `/leave/{leave_id}`
         "status": 200
     }
 
+### 销假
+
+DELETE `/leave/{leave_id}`
+
+#### Header
+
+ - Authorization: Bearer {Token}
+
+#### 响应
+
+    {
+        "status": 200
+    }
+
 ## 加班相关
 
 ### 加班申请列表 （ok）

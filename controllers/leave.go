@@ -3,6 +3,7 @@ package controllers
 import (
 	"errors"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/szdx4/attsys-server/config"
@@ -196,4 +197,49 @@ func LeaveUpdate(c *gin.Context) {
 	}
 
 	response.LeaveUpdate(c)
+}
+
+// LeaveDelete 销假
+func LeaveDelete(c *gin.Context) {
+	leaveID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.BadRequest(c, "Leave ID invalid")
+		c.Abort()
+		return
+	}
+
+	leave := models.Leave{}
+	database.Connector.First(&leave, leaveID)
+	if leave.ID == 0 {
+		response.NotFound(c, "Leave not found")
+		c.Abort()
+		return
+	}
+
+	authID, _ := c.Get("user_id")
+
+	if leave.UserID != authID {
+		response.Unauthorized(c, "You can only cancel your own leave")
+		c.Abort()
+		return
+	}
+
+	if leave.Status != "pass" {
+		response.BadRequest(c, "Leave isnot passed")
+		c.Abort()
+		return
+	}
+
+	currentTime := time.Now()
+	shifts := []models.Shift{}
+	database.Connector.Where("start_at >= ? AND end_at <= ?", currentTime, leave.EndAt).Find(&shifts)
+	for _, shift := range shifts {
+		shift.Status = "no"
+		database.Connector.Save(&shift)
+	}
+
+	leave.Status = "discarded"
+	database.Connector.Save(&leave)
+
+	response.LeaveDelete(c)
 }

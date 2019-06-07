@@ -1,10 +1,11 @@
 package response
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/szdx4/attsys-server/config"
 	"github.com/szdx4/attsys-server/models"
-	"net/http"
 )
 
 // LeaveCreate 申请请假响应
@@ -41,5 +42,12 @@ func LeaveList(c *gin.Context, total, page int, leaves []models.Leave) {
 func LeaveUpdate(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{
 		"status": http.StatusCreated,
+	})
+}
+
+// LeaveDelete 销假响应
+func LeaveDelete(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"status": http.StatusOK,
 	})
 }

@@ -9,6 +9,6 @@ type Leave struct {
 	StartAt time.Time `json:"start_at"`
 	EndAt   time.Time `json:"end_at"`
 	Remark  string    `json:"remark"`
-	Status  string    `json:"status" gorm:"status:enum('wait', 'pass', 'reject')"`
+	Status  string    `json:"status" gorm:"status:enum('wait', 'pass', 'reject', 'discarded')"`
 	User    User      `json:"-"`
 }

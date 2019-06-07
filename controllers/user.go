@@ -216,5 +216,18 @@ func UserUpdate(c *gin.Context) {
 	user.Hours = uint(req.Hours)
 	database.Connector.Save(&user)
 
+	department := models.Department{}
+	database.Connector.First(&department, user.DepartmentID)
+
+	if user.Role == "manager" {
+		department.ManagerID = user.ID
+		database.Connector.Save(&department)
+	}
+
+	if user.Role == "user" && department.ManagerID == user.ID {
+		department.ManagerID = 0
+		database.Connector.Save(&department)
+	}
+
 	response.UserUpdate(c)
 }

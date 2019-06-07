@@ -175,7 +175,6 @@ POST `/department`
 #### JSON 参数
 
  - name: 部门名称
- - manager: 主管 ID
 
 #### 响应
 

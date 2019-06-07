@@ -11,8 +11,7 @@ import (
 
 // DepartmentCreateRequest 新增部门请求
 type DepartmentCreateRequest struct {
-	Name    string `binding:"required"`
-	Manager uint   `binding:"required"`
+	Name string `binding:"required"`
 }
 
 // Validate 验证 DepartmentCreateRequest 创建部门请求有效性
@@ -25,16 +24,7 @@ func (r *DepartmentCreateRequest) Validate() error {
 	}
 	// 名字长度检测
 	if len(r.Name) < 2 {
-		return errors.New("Department name not valid")
-	}
-	// 部门主管 ID 存在性检测
-	manager := models.User{}
-	database.Connector.Where("id = ?", r.Manager).First(&manager)
-	if manager.ID == 0 {
-		return errors.New("Manager not exist")
-	}
-	if !(manager.Role == "manager" || manager.Role == "master") {
-		return errors.New("Manager not exist")
+		return errors.New("Department name must longer than 2")
 	}
 
 	return nil

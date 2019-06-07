@@ -27,13 +27,12 @@ func DepartmentCreate(c *gin.Context) {
 	}
 	// 新建
 	department := models.Department{
-		Name:      req.Name,
-		ManagerID: req.Manager,
+		Name: req.Name,
 	}
 	database.Connector.Create(&department)
 
 	if department.ID < 1 {
-		response.InternalServerError(c, "Internal Server Error")
+		response.InternalServerError(c, "Database error")
 		c.Abort()
 		return
 	}

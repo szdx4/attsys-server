@@ -37,7 +37,12 @@ func OvertimeCreate(c *gin.Context) {
 	}
 
 	shift := models.Shift{}
-	database.Connector.Where("end_at < ?", time.Now()).Order("end_at DESC").First(&shift)
+	database.Connector.Where("end_at < ? AND status = 'off'", time.Now()).Order("end_at DESC").First(&shift)
+	if shift.ID == 0 {
+		response.NotFound(c, "Shift not found")
+		c.Abort()
+		return
+	}
 
 	overtime := models.Overtime{
 		UserID:  uint(userID),

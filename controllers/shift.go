@@ -217,6 +217,19 @@ func ShiftDelete(c *gin.Context) {
 		return
 	}
 
+	role, _ := c.Get("user_role")
+	authID, _ := c.Get("user_id")
+
+	if role == "manager" {
+		manager := models.User{}
+		database.Connector.First(&manager, authID)
+		if manager.DepartmentID != shift.User.DepartmentID {
+			response.Unauthorized(c, "You can only delete your department shifts")
+			c.Abort()
+			return
+		}
+	}
+
 	database.Connector.Delete(&shift)
 
 	response.ShiftDelete(c)

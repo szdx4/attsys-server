@@ -3,13 +3,12 @@ package controllers
 import (
 	"strconv"
 
-	"github.com/szdx4/attsys-server/config"
-	"github.com/szdx4/attsys-server/requests"
-	"github.com/szdx4/attsys-server/utils/database"
-
 	"github.com/gin-gonic/gin"
+	"github.com/szdx4/attsys-server/config"
 	"github.com/szdx4/attsys-server/models"
+	"github.com/szdx4/attsys-server/requests"
 	"github.com/szdx4/attsys-server/response"
+	"github.com/szdx4/attsys-server/utils/database"
 )
 
 // FaceUserShow 获取指定用户可用的人脸信息
@@ -23,7 +22,7 @@ func FaceUserShow(c *gin.Context) {
 
 	authID, _ := c.Get("user_id")
 	role, _ := c.Get("user_role")
-	if role == "user" && authID != userID {
+	if role != "master" && authID != userID {
 		response.Unauthorized(c, "Unauthorized")
 		c.Abort()
 		return

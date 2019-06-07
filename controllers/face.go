@@ -83,12 +83,12 @@ func FaceList(c *gin.Context) {
 	faces := []models.Face{}
 	db := database.Connector
 
-	if userID, isExit := c.GetQuery("user_id"); isExit == true {
+	if userID, isExit := c.GetQuery("user_id"); isExit {
 		userID, _ := strconv.Atoi(userID)
 		db = db.Where("user_id = ?", userID)
 	}
 
-	if status, isExit := c.GetQuery("status"); isExit == true {
+	if status, isExit := c.GetQuery("status"); isExit {
 		status, _ := strconv.Atoi(status)
 		db = db.Where("status = ?", status)
 	}
@@ -103,12 +103,13 @@ func FaceList(c *gin.Context) {
 	perPage := config.App.ItemsPerPage
 	total := 0
 
-	db.Limit(perPage).Offset((page - 1) * perPage).Find(&faces).Count(&total)
+	db.Limit(perPage).Offset((page - 1) * perPage).Find(&faces)
 	if (page-1)*perPage >= total {
 		response.NoContent(c)
 		c.Abort()
 		return
 	}
+	db.Model(&models.Face{}).Count(&total)
 
 	response.FaceList(c, total, page, perPage, faces)
 }

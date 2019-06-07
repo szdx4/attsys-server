@@ -186,5 +186,14 @@ func LeaveUpdate(c *gin.Context) {
 	leave.Status = req.Status
 	database.Connector.Save(&leave)
 
+	if leave.Status == "pass" {
+		shifts := []models.Shift{}
+		database.Connector.Where("start_at >= ? AND end_at <= ?", leave.StartAt, leave.EndAt).Find(&shifts)
+		for _, shift := range shifts {
+			shift.Status = "leave"
+			database.Connector.Save(&shift)
+		}
+	}
+
 	response.LeaveUpdate(c)
 }

@@ -83,7 +83,7 @@ func UserCreate(c *gin.Context) {
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), 10)
 	if err != nil {
-		response.InternalServerError(c, "Internal Server Error")
+		response.InternalServerError(c, "Password hash generate error")
 		c.Abort()
 		return
 	}
@@ -97,7 +97,7 @@ func UserCreate(c *gin.Context) {
 	database.Connector.Create(&user)
 
 	if user.ID < 1 {
-		response.InternalServerError(c, "Internal Server Error")
+		response.InternalServerError(c, "Database error")
 		c.Abort()
 		return
 	}

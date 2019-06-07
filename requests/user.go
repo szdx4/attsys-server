@@ -45,8 +45,8 @@ type UserCreateRequest struct {
 
 // Validate 验证创建用户请求的合法性
 func (r *UserCreateRequest) Validate() error {
-	if len(r.Name) < 2 {
-		return errors.New("User name not valid")
+	if len(r.Name) < config.App.MinUserLength {
+		return errors.New("User name must longer than " + strconv.Itoa(config.App.MinUserLength))
 	}
 
 	user := models.User{}
@@ -56,7 +56,7 @@ func (r *UserCreateRequest) Validate() error {
 	}
 
 	if len(r.Password) < config.App.MinPwdLength {
-		return errors.New("Password not valid")
+		return errors.New("Password must longer than " + strconv.Itoa(config.App.MinPwdLength))
 	}
 
 	return nil

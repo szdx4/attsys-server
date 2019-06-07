@@ -10,4 +10,5 @@ type Leave struct {
 	EndAt   time.Time `json:"end_at"`
 	Remark  string    `json:"remark"`
 	Status  string    `json:"status" gorm:"status:enum('wait', 'pass', 'reject')"`
+	User    User      `json:"-"`
 }

@@ -154,6 +154,9 @@ func LeaveUpdate(c *gin.Context) {
 		return
 	}
 
+	role, _ := c.Get("user_role")
+	authID, _ := c.Get("user_id")
+
 	if err := req.Validate(); err != nil {
 		response.BadRequest(c, err.Error())
 		c.Abort()
@@ -162,11 +165,21 @@ func LeaveUpdate(c *gin.Context) {
 
 	leaveID, _ := strconv.Atoi(c.Param("id"))
 	leave := models.Leave{}
-	database.Connector.Where("id = ?", leaveID).First(&leave)
+	database.Connector.First(&leave, leaveID)
 	if leave.ID == 0 {
-		response.NotFound(c, "leave not found")
+		response.NotFound(c, "Leave not found")
 		c.Abort()
 		return
+	}
+
+	if role == "manager" {
+		manager := models.User{}
+		database.Connector.First(&manager, authID)
+		if manager.DepartmentID != leave.User.DepartmentID {
+			response.Unauthorized(c, "You can only edit your department leave")
+			c.Abort()
+			return
+		}
 	}
 
 	// 修改 leave 的 status

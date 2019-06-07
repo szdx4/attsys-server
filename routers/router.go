@@ -27,7 +27,7 @@ func Router() *gin.Engine {
 	// 获取用户列表
 	r.GET("/user", middleware.Token, middleware.Manager, controllers.UserList)
 	// 删除用户
-	r.DELETE("/user/:id", middleware.Token, middleware.Manager, controllers.UserDelete)
+	r.DELETE("/user/:id", middleware.Token, middleware.Master, controllers.UserDelete)
 	// 修改用户
 	r.PUT("/user/:id", middleware.Token, middleware.Master, controllers.UserUpdate)
 

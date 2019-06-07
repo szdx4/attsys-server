@@ -171,7 +171,7 @@ func UserDelete(c *gin.Context) {
 	}
 
 	user := models.User{}
-	database.Connector.Where("id = ?", userID).First(&user)
+	database.Connector.First(&user, userID)
 
 	if user.ID == 0 {
 		response.NotFound(c, "User not found")

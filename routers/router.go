@@ -45,7 +45,7 @@ func Router() *gin.Engine {
 
 	// Face
 	r.GET("/face/user/:id", middleware.Token, controllers.FaceUserShow)
-	r.POST("/face/user/:id", middleware.Token, middleware.Master, controllers.FaceCreate)
+	r.POST("/face/user/:id", middleware.Token, controllers.FaceCreate)
 	r.PUT("/face/:id", middleware.Token)
 
 	// Hours

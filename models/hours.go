@@ -16,5 +16,5 @@ type HourData struct {
 	UserID   uint      `json:"user_id"`
 	UserName string    `json:"user_name"`
 	Date     time.Time `json:"date"`
-	Hours    int       `json:"hours"`
+	Hours    uint      `json:"hours"`
 }

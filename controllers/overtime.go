@@ -122,8 +122,19 @@ func OvertimeList(c *gin.Context) {
 	total := 0
 
 	overtime := []models.Overtime{}
-	database.Connector.Limit(perPage).Offset((page - 1) * perPage).Find(&overtime)
-	database.Connector.Model(&overtime).Count(&total)
+	db := database.Connector.Joins("LEFT JOIN users ON users.id = overtimes.user_id").Order("created_at DESC")
+
+	role, _ := c.Get("user_role")
+	authID, _ := c.Get("user_id")
+
+	if role == "manager" {
+		manager := models.User{}
+		database.Connector.First(&manager, authID)
+		db.Where("users.department_id = ?", manager.DepartmentID)
+	}
+
+	db.Limit(perPage).Offset((page - 1) * perPage).Find(&overtime)
+	db.Model(&models.Overtime{}).Count(&total)
 
 	if (page-1)*perPage >= total {
 		response.NoContent(c)

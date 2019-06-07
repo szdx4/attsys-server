@@ -25,7 +25,7 @@ func UserAuth(c *gin.Context) {
 
 	user, err := req.Validate()
 	if err != nil {
-		response.Unauthorized(c, "Wrong username or password")
+		response.Unauthorized(c, err.Error())
 		c.Abort()
 		return
 	}
@@ -33,12 +33,12 @@ func UserAuth(c *gin.Context) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":         user.ID,
 		"role":       user.Role,
-		"expired_at": time.Now().UTC().Add(time.Hour * 2).Format(time.UnixDate),
+		"expired_at": time.Now().UTC().Add(time.Hour * time.Duration(config.App.TokenValid)).Format(time.RFC3339),
 	})
 
 	tokenString, err := token.SignedString([]byte(config.App.EncryptKey))
 	if err != nil {
-		response.InternalServerError(c, "Internal Server Error")
+		response.InternalServerError(c, "Token sign error")
 		c.Abort()
 		return
 	}

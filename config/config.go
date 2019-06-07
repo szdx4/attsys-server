@@ -13,6 +13,7 @@ type AppConfig struct {
 	EncryptKey   string
 	MinPwdLength int
 	ItemsPerPage int
+	TokenValid   int
 }
 
 // ServerConfig 存储 HTTP 服务器配置
@@ -70,6 +71,7 @@ func loadApp() {
 	App.EncryptKey = cfg.MustValue("APP", "ENCRYPT_KEY", "attsys-server")
 	App.MinPwdLength = cfg.MustInt("APP", "MIN_PWD_LENGTH", 7)
 	App.ItemsPerPage = cfg.MustInt("APP", "ITEMS_PER_PAGE", 20)
+	App.TokenValid = cfg.MustInt("APP", "TOKEN_VALID", 2)
 }
 
 func loadServer() {

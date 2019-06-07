@@ -49,7 +49,7 @@ func Token(c *gin.Context) {
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok {
-		expiredAt, err := time.Parse(time.UnixDate, claims["expired_at"].(string))
+		expiredAt, err := time.Parse(time.RFC3339, claims["expired_at"].(string))
 		if err != nil {
 			response.Unauthorized(c, "Auth token not valid 1")
 			c.Abort()

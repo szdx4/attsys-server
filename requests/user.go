@@ -2,8 +2,9 @@ package requests
 
 import (
 	"errors"
-	"github.com/gin-gonic/gin"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 
 	//"math/bits"
 
@@ -21,17 +22,15 @@ type UserAuthRequest struct {
 
 // Validate 验证 UserAuthRequest 请求中用户信息的有效性
 func (r *UserAuthRequest) Validate() (*models.User, error) {
-	user := &models.User{
-		Name: r.Name,
-	}
-	database.Connector.First(user)
+	user := &models.User{}
+	database.Connector.Where("name = ?", r.Name).First(user)
 	if user.ID == 0 {
 		return nil, errors.New("User not found")
 	}
 
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(r.Password))
 	if err != nil {
-		return nil, err
+		return nil, errors.New("Password invalid")
 	}
 
 	return user, nil

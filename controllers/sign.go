@@ -179,6 +179,7 @@ func SignOff(c *gin.Context) {
 		Date:   time.Now(),
 		Hours:  timeDiff,
 	}
+	database.Connector.Create(&hours)
 
 	response.SignOff(c)
 }

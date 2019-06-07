@@ -1,10 +1,11 @@
 package response
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/szdx4/attsys-server/config"
 	"github.com/szdx4/attsys-server/models"
-	"net/http"
 )
 
 // ShiftCreate 添加排班响应
@@ -27,10 +28,10 @@ func ShiftList(c *gin.Context, total, page int, shifts []models.Shift) {
 }
 
 // ShiftDepartment 部门排班响应
-func ShiftDepartment(c *gin.Context, shiftIds []uint) {
+func ShiftDepartment(c *gin.Context, shiftIDs []uint) {
 	c.JSON(http.StatusCreated, gin.H{
 		"status":    http.StatusCreated,
-		"shift_ids": shiftIds,
+		"shift_ids": shiftIDs,
 	})
 }
 

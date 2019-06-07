@@ -124,7 +124,7 @@ func FaceUpdate(c *gin.Context) {
 	}
 
 	face := models.Face{}
-	database.Connector.Find(&face, faceID)
+	database.Connector.First(&face, faceID)
 	if face.ID == 0 {
 		response.NotFound(c, "Face not found")
 		c.Abort()

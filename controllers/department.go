@@ -67,17 +67,29 @@ func DepartmentList(c *gin.Context) {
 func DepartmentShow(c *gin.Context) {
 	departmentID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		response.BadRequest(c, "User ID invalid")
+		response.BadRequest(c, "Department ID invalid")
 		c.Abort()
 		return
 	}
 
 	department := models.Department{}
 	database.Connector.First(&department, departmentID)
-	if department.ID < 1 {
-		response.NotFound(c, "User not found")
+	if department.ID == 0 {
+		response.NotFound(c, "Department not found")
 		c.Abort()
 		return
+	}
+
+	role, _ := c.Get("user_role")
+	if role != "master" {
+		userID, _ := c.Get("user_id")
+		user := models.User{}
+		database.Connector.First(&user, userID)
+		if user.DepartmentID != uint(departmentID) {
+			response.Unauthorized(c, "You can only get your department information")
+			c.Abort()
+			return
+		}
 	}
 
 	response.DepartmentShow(c, department)

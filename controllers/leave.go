@@ -73,11 +73,32 @@ func LeaveShow(c *gin.Context) {
 	perPage := config.App.ItemsPerPage
 	total := 0
 
+	role, _ := c.Get("user_role")
+	authID, _ := c.Get("user_id")
+
+	if role == "user" && authID != userID {
+		response.Unauthorized(c, "You can only get your leave")
+		c.Abort()
+		return
+	}
+
+	if role == "manager" {
+		manager := models.User{}
+		database.Connector.First(&manager, authID)
+		user := models.User{}
+		database.Connector.First(&user, userID)
+		if manager.DepartmentID != user.DepartmentID {
+			response.Unauthorized(c, "You can only get your department leave")
+			c.Abort()
+			return
+		}
+	}
+
 	leaves := []models.Leave{}
 	db := database.Connector
 	db = db.Where("user_id = ?", userID)
 	db.Limit(perPage).Offset((page - 1) * perPage).Find(&leaves)
-	db.Model(&leaves).Count(&total)
+	db.Model(&models.Leave{}).Count(&total)
 
 	if (page-1)*perPage >= total {
 		response.NoContent(c)

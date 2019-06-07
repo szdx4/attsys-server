@@ -70,7 +70,7 @@ func FaceCreate(c *gin.Context) {
 	database.Connector.Create(&face)
 
 	if face.ID == 0 {
-		response.InternalServerError(c, "Internal Server Error")
+		response.InternalServerError(c, "Database error")
 		c.Abort()
 		return
 	}

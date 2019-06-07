@@ -11,6 +11,7 @@ import (
 	"github.com/szdx4/attsys-server/requests"
 	"github.com/szdx4/attsys-server/response"
 	"github.com/szdx4/attsys-server/utils/database"
+	"github.com/szdx4/attsys-server/utils/message"
 )
 
 // LeaveCreate 申请请假
@@ -43,6 +44,17 @@ func LeaveCreate(c *gin.Context) {
 	}
 
 	userID, _ := strconv.Atoi(c.Param("id"))
+	authID, _ := c.Get("user_id")
+
+	if userID != authID {
+		response.Unauthorized(c, "You can only apply leave for yourself")
+		c.Abort()
+		return
+	}
+
+	user := models.User{}
+	database.Connector.First(&user, userID)
+
 	leave := models.Leave{
 		UserID:  uint(userID),
 		StartAt: startAt,
@@ -57,6 +69,9 @@ func LeaveCreate(c *gin.Context) {
 		c.Abort()
 		return
 	}
+
+	managerID := user.Department.ManagerID
+	message.Send(user.ID, managerID, "请假申请", "理由："+leave.Remark)
 
 	response.LeaveCreate(c, leave.ID)
 }
@@ -194,6 +209,9 @@ func LeaveUpdate(c *gin.Context) {
 			shift.Status = "leave"
 			database.Connector.Save(&shift)
 		}
+		message.Send(uint(authID.(int)), leave.UserID, "请假审批结果", "请假审批通过")
+	} else {
+		message.Send(uint(authID.(int)), leave.UserID, "请假审批结果", "请假审批未通过")
 	}
 
 	response.LeaveUpdate(c)

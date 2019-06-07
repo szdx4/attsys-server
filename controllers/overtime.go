@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/szdx4/attsys-server/utils/message"
+
 	"github.com/gin-gonic/gin"
 	"github.com/szdx4/attsys-server/config"
 	"github.com/szdx4/attsys-server/models"
@@ -36,6 +38,9 @@ func OvertimeCreate(c *gin.Context) {
 		return
 	}
 
+	user := models.User{}
+	database.Connector.First(&user, userID)
+
 	shift := models.Shift{}
 	database.Connector.Where("end_at < ? AND status = 'off'", time.Now()).Order("end_at DESC").First(&shift)
 	if shift.ID == 0 {
@@ -57,6 +62,8 @@ func OvertimeCreate(c *gin.Context) {
 		c.Abort()
 		return
 	}
+
+	message.Send(user.ID, user.Department.ManagerID, "加班申请", "理由："+overtime.Remark)
 
 	response.OvertimeCreate(c, overtime.ID)
 }
@@ -169,20 +176,39 @@ func OvertimeUpdate(c *gin.Context) {
 		return
 	}
 
+	role, _ := c.Get("user_role")
+	authID, _ := c.Get("user_id")
+
+	if role == "manager" {
+		manager := models.User{}
+		database.Connector.First(&manager, authID)
+		if manager.DepartmentID != overtime.User.DepartmentID {
+			response.Unauthorized(c, "You can only edit your department overtime")
+			c.Abort()
+			return
+		}
+	}
+
 	// 修改 overtime 的 status
 	overtime.Status = req.Status
 	database.Connector.Save(&overtime)
 
-	// 创建工时记录
-	hour := uint(overtime.EndAt.Sub(overtime.StartAt).Hours())
-	hours := models.Hours{
-		UserID: overtime.UserID,
-		Date:   overtime.EndAt,
-		Hours:  hour,
+	if overtime.Status == "pass" {
+		// 创建工时记录
+		hour := uint(overtime.EndAt.Sub(overtime.StartAt).Hours())
+		hours := models.Hours{
+			UserID: overtime.UserID,
+			Date:   overtime.EndAt,
+			Hours:  hour,
+		}
+		database.Connector.Create(&hours)
+		hours.User.Hours += hour
+		database.Connector.Save(&hours.User)
+
+		message.Send(uint(authID.(int)), overtime.UserID, "加班申请结果", "加班申请通过")
+	} else {
+		message.Send(uint(authID.(int)), overtime.UserID, "加班申请结果", "加班申请未通过")
 	}
-	database.Connector.Create(&hours)
-	hours.User.Hours += hour
-	database.Connector.Save(&hours.User)
 
 	response.OvertimeUpdate(c)
 }

@@ -5,8 +5,8 @@ import (
 	"github.com/szdx4/attsys-server/utils/database"
 )
 
-// SendMessage 发送信息
-func SendMessage(fromID, toID uint, title, content string) {
+// Send 发送信息
+func Send(fromID, toID uint, title, content string) {
 	message := models.Message{
 		Title:      title,
 		Content:    content,

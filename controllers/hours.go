@@ -13,7 +13,7 @@ import (
 // HoursShow 获取工时记录
 func HoursShow(c *gin.Context) {
 	hours := []models.Hours{}
-	db := database.Connector
+	db := database.Connector.Joins("LEFT JOIN users ON hours.user_id = users.id")
 
 	role, _ := c.Get("user_role")
 	authID, _ := c.Get("user_id")
@@ -54,8 +54,14 @@ func HoursShow(c *gin.Context) {
 		page = 1
 	}
 	perPage := config.App.ItemsPerPage
-
 	total := 0
+
+	if role == "manager" {
+		manager := models.User{}
+		database.Connector.First(&manager, authID)
+		db.Where("users.department_id = ?", manager.DepartmentID)
+	}
+
 	db.Limit(perPage).Offset((page - 1) * perPage).Find(&hours)
 	db.Model(&models.Hours{}).Count(&total)
 	if (page-1)*perPage >= total {
@@ -67,14 +73,6 @@ func HoursShow(c *gin.Context) {
 	// 构造 data 响应
 	datas := []models.HourData{}
 	for i := 0; i < len(hours); i++ {
-		if role == "manager" {
-			manager := models.User{}
-			database.Connector.First(&manager, authID)
-			if hours[i].User.DepartmentID != manager.DepartmentID {
-				continue
-			}
-		}
-
 		data := models.HourData{
 			ID:       hours[i].ID,
 			UserID:   hours[i].ID,

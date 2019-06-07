@@ -15,6 +15,7 @@ import (
 func main() {
 	database.Connect()
 	database.Migrate()
+	database.Seed()
 
 	router := routers.Router()
 

@@ -118,8 +118,21 @@ func UserList(c *gin.Context) {
 
 	users := []models.User{}
 	total := 0
-	database.Connector.Limit(perPage).Offset((page - 1) * perPage).Find(&users)
-	database.Connector.Model(&models.User{}).Count(&total)
+
+	role, _ := c.Get("user_role")
+
+	if role == "manager" {
+		managerID, _ := c.Get("user_id")
+		manager := models.User{}
+		database.Connector.Find(&manager, managerID)
+		departmentID := manager.DepartmentID
+
+		database.Connector.Where("department_id = ?", departmentID).Limit(perPage).Offset((page - 1) * perPage).Find(&users)
+		database.Connector.Where("department_id = ?", departmentID).Model(&models.User{}).Count(&total)
+	} else {
+		database.Connector.Limit(perPage).Offset((page - 1) * perPage).Find(&users)
+		database.Connector.Model(&models.User{}).Count(&total)
+	}
 
 	if (page-1)*perPage >= total {
 		response.NoContent(c)

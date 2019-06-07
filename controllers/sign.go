@@ -157,7 +157,7 @@ func SignOff(c *gin.Context) {
 	database.Connector.Save(&sign)
 
 	shift := models.Shift{}
-	database.Connector.Find(&shift, sign.ShiftID)
+	database.Connector.First(&shift, sign.ShiftID)
 
 	if shift.ID == 0 {
 		response.NotFound(c, "Shift not found")
@@ -176,7 +176,7 @@ func SignOff(c *gin.Context) {
 
 	hours := models.Hours{
 		UserID: user.ID,
-		Date:   time.Now(),
+		Date:   sign.EndAt,
 		Hours:  timeDiff,
 	}
 	database.Connector.Create(&hours)

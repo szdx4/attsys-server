@@ -20,14 +20,14 @@ func SignGetQrcode(c *gin.Context) {
 	database.Connector.Create(&qrcode)
 
 	if qrcode.ID == 0 {
-		response.InternalServerError(c, "Internal Server Error")
+		response.InternalServerError(c, "Database error")
 		c.Abort()
 		return
 	}
 
 	image, err := qrcode.Image()
 	if err != nil {
-		response.InternalServerError(c, "Internal Server Error")
+		response.InternalServerError(c, "Qrcode generate error")
 		c.Abort()
 		return
 	}
@@ -58,7 +58,7 @@ func SignWithQrcode(c *gin.Context) {
 	}
 
 	shift := models.Shift{}
-	database.Connector.Where("status = 'no' AND user_id = ? AND start_at >= ?", userID, time.Now()).Order("start_at ASC").First(&shift)
+	database.Connector.Where("status = 'no' AND user_id = ? AND end_at >= ?", userID, time.Now()).Order("start_at ASC").First(&shift)
 
 	if shift.ID == 0 {
 		response.NotFound(c, "Shift not found")
@@ -77,7 +77,7 @@ func SignWithQrcode(c *gin.Context) {
 	database.Connector.Create(&sign)
 
 	if sign.ID == 0 {
-		response.InternalServerError(c, "Internal Server Error")
+		response.InternalServerError(c, "Database error")
 		c.Abort()
 		return
 	}
@@ -108,7 +108,7 @@ func SignWithFace(c *gin.Context) {
 	}
 
 	shift := models.Shift{}
-	database.Connector.Where("status = 'no' AND user_id = ? AND start_at >= ?", userID, time.Now()).Order("start_at ASC").First(&shift)
+	database.Connector.Where("status = 'no' AND user_id = ? AND end_at >= ?", userID, time.Now()).Order("start_at ASC").First(&shift)
 
 	if shift.ID == 0 {
 		response.NotFound(c, "Shift not found")
@@ -127,7 +127,7 @@ func SignWithFace(c *gin.Context) {
 	database.Connector.Create(&sign)
 
 	if sign.ID == 0 {
-		response.InternalServerError(c, "Internal Server Error")
+		response.InternalServerError(c, "Database error")
 		c.Abort()
 		return
 	}
@@ -157,7 +157,7 @@ func SignOff(c *gin.Context) {
 	database.Connector.Save(&sign)
 
 	shift := models.Shift{}
-	database.Connector.Find(&shift, sign.ShiftID)
+	database.Connector.First(&shift, sign.ShiftID)
 
 	if shift.ID == 0 {
 		response.NotFound(c, "Shift not found")
@@ -176,10 +176,46 @@ func SignOff(c *gin.Context) {
 
 	hours := models.Hours{
 		UserID: user.ID,
-		Date:   time.Now(),
+		Date:   sign.EndAt,
 		Hours:  timeDiff,
 	}
 	database.Connector.Create(&hours)
 
 	response.SignOff(c)
+}
+
+// SignStatus 获取用户签到状态
+func SignStatus(c *gin.Context) {
+	userID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.BadRequest(c, "User ID invalid")
+		c.Abort()
+		return
+	}
+
+	user := models.User{}
+	database.Connector.First(&user, userID)
+	if user.ID == 0 {
+		response.NotFound(c, "User not found")
+		c.Abort()
+		return
+	}
+
+	shift := models.Shift{}
+	database.Connector.Where("status = 'on'").First(&shift)
+	if shift.ID == 0 {
+		response.NoContent(c)
+		c.Abort()
+		return
+	}
+
+	sign := models.Sign{}
+	database.Connector.Where("shift_id = ?", shift.ID).First(&sign)
+	if sign.ID == 0 {
+		response.NoContent(c)
+		c.Abort()
+		return
+	}
+
+	response.SignStatus(c, sign.ID)
 }

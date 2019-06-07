@@ -28,27 +28,54 @@ func MessageShow(c *gin.Context) {
 		return
 	}
 
+	authID, _ := c.Get("user_id")
+	if message.FromUserID != authID && message.ToUserID != authID {
+		response.Unauthorized(c, "This is not your message")
+		c.Abort()
+		return
+	}
+
+	message.Status = "read"
+	database.Connector.Save(&message)
+
 	response.MessageShow(c, message)
 }
 
 // MessageList 获取信息列表
 func MessageList(c *gin.Context) {
 	messages := []models.Message{}
-	db := database.Connector
+	db := database.Connector.Order("created_at DESC")
+
+	role, _ := c.Get("user_role")
+	authID, _ := c.Get("user_id")
+	flag := false
+
 	// 检测 from_user_id
-	if fromUserID, isExist := c.GetQuery("from_user_id"); isExist == true {
+	if fromUserID, isExist := c.GetQuery("from_user_id"); isExist {
 		fromUserID, _ := strconv.Atoi(fromUserID)
 		db = db.Where("from_user_id = ?", fromUserID)
+		if fromUserID == authID {
+			flag = true
+		}
 	}
 
 	// 检测 to_user_id
-	if toUserID, isExist := c.GetQuery("to_user_id"); isExist == true {
+	if toUserID, isExist := c.GetQuery("to_user_id"); isExist {
 		toUserID, _ := strconv.Atoi(toUserID)
 		db = db.Where("to_user_id = ?", toUserID)
+		if toUserID == authID {
+			flag = true
+		}
+	}
+
+	if !flag && role != "master" {
+		response.Unauthorized(c, "You are not authorized to get these messages")
+		c.Abort()
+		return
 	}
 
 	// 检测 status
-	if status, isExist := c.GetQuery("status"); isExist == true {
+	if status, isExist := c.GetQuery("status"); isExist {
 		db = db.Where("status = ?", status)
 	}
 
@@ -61,10 +88,10 @@ func MessageList(c *gin.Context) {
 		page = 1
 	}
 	perPage := config.App.ItemsPerPage
-
 	total := 0
+
 	db.Limit(perPage).Offset((page - 1) * perPage).Find(&messages)
-	db.Model(&messages).Count(&total)
+	db.Model(&models.Message{}).Count(&total)
 	if (page-1)*perPage >= total {
 		response.NoContent(c)
 		c.Abort()

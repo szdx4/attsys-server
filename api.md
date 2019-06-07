@@ -553,6 +553,20 @@ PUT `/leave/{leave_id}`
         "status": 200
     }
 
+### 销假
+
+DELETE `/leave/{leave_id}`
+
+#### Header
+
+ - Authorization: Bearer {Token}
+
+#### 响应
+
+    {
+        "status": 200
+    }
+
 ## 加班相关
 
 ### 加班申请列表 （ok）
@@ -662,25 +676,19 @@ PUT `/overtime/{overtime_id}`
 
 GET `/sign/user/{user_id}`
 
+#### 说明
+
+如果用户已经签到，则返回对应签到条目的 ID，即 `sign_id`;如果没有签到，则返回 `204 No Content`。
+
 #### Header
 
  - Authorization: Bearer {Token}
 
 #### 响应
 
-    no/off/leave = {
-        "status": 204
-    }
-
-    on = {
+    {
         "status": 200,
-        "data": {
-            "id": 1,
-            "start_at": "2019-02-02 11:11:11",
-            "shift_id": 1,
-            "shift_start_at": "2019-02-02 11:11:11",
-            "shift_end_at": "2019-02-02 11:11:11"
-        }
+        "sign_id": 2
     }
 
 ### 获取二维码 ok

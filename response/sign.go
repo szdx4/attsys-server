@@ -32,3 +32,11 @@ func SignOff(c *gin.Context) {
 		"status": http.StatusOK,
 	})
 }
+
+// SignStatus 签到状态响应
+func SignStatus(c *gin.Context, signID uint) {
+	c.JSON(http.StatusOK, gin.H{
+		"status":  http.StatusOK,
+		"sign_id": signID,
+	})
+}

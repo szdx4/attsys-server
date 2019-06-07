@@ -26,7 +26,7 @@ type OvertimeUpdateRequest struct {
 // Validate 验证 OvertimeUpdateRequest 请求中的有效性
 func (r *OvertimeUpdateRequest) Validate() error {
 	// 验证状态的有效性
-	if r.Status != "wait" && r.Status != "pass" && r.Status != "reject" {
+	if r.Status != "pass" && r.Status != "reject" {
 		return errors.New("Status not valid")
 	}
 	return nil

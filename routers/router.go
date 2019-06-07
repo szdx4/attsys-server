@@ -72,22 +72,24 @@ func Router() *gin.Engine {
 	r.GET("/leave", middleware.Token, middleware.Manager, controllers.LeaveList)
 	// 审批请假
 	r.PUT("/leave/:id", middleware.Token, middleware.Manager, controllers.LeaveUpdate)
+	r.DELETE("/leave/:id", middleware.Token, controllers.LeaveDelete)
 
 	// Overtime
 	// 申请加班
 	r.POST("/overtime/user/:id", middleware.Token, controllers.OvertimeCreate)
 	// 获取指定用户加班
-	r.GET("/overtime/user/:id", middleware.Token, middleware.Manager, controllers.OvertimeShow)
+	r.GET("/overtime/user/:id", middleware.Token, controllers.OvertimeShow)
 	// 加班申请列表
 	r.GET("/overtime", middleware.Token, middleware.Manager, controllers.OvertimeList)
 	// 审批加班
 	r.PUT("/overtime/:id", middleware.Token, middleware.Manager, controllers.OvertimeUpdate)
 
 	// Sign
-	r.GET("/sign/qrcode", middleware.Token, controllers.SignGetQrcode)
+	r.GET("/sign/qrcode", middleware.Token, middleware.Manager, controllers.SignGetQrcode)
 	r.POST("/sign/qrcode/:id", middleware.Token, controllers.SignWithQrcode)
 	r.POST("/sign/face/:id", middleware.Token, controllers.SignWithFace)
 	r.POST("/sign/off/:id", middleware.Token, controllers.SignOff)
+	r.GET("/sign/user/:id", middleware.Token, controllers.SignStatus)
 
 	// Message
 	// 获取指定信息

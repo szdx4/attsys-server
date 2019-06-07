@@ -58,6 +58,12 @@ func (r *UserCreateRequest) Validate() error {
 	if len(r.Password) < config.App.MinPwdLength {
 		return errors.New("Password must longer than " + strconv.Itoa(config.App.MinPwdLength))
 	}
+	// 验证部门的存在与否
+	department := models.Department{}
+	database.Connector.First(&department, r.Department)
+	if department.ID == 0 {
+		return errors.New("Department not exists")
+	}
 
 	return nil
 }

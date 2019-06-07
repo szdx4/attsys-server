@@ -106,17 +106,3 @@ func (r *ShiftDepartmentRequest) Validate(departmentID int, role string, authID 
 
 	return nil
 }
-
-// ShiftUpdateRequest 更新排班状态
-type ShiftUpdateRequest struct {
-	Status string `binding:"required"`
-}
-
-// Validate 验证 ShiftUpdateRequest 请求中的有效性
-func (r *ShiftUpdateRequest) Validate() error {
-	// 验证状态的有效性
-	if r.Status != "no" && r.Status != "on" && r.Status != "off" && r.Status != "leave" {
-		return errors.New("Status not valid")
-	}
-	return nil
-}

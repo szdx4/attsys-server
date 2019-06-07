@@ -436,24 +436,6 @@ POST `/shift/department/{department_id}`
         "shift_ids": [2, 3]
     }
 
-### 更新排班状态 （ok）
-
-PUT `/shift/{shift_id}`
-
-#### Header
-
- - Authorization: Bearer {Token}
-
-#### JSON 参数
-
- - status: 排班状态
-
-#### 响应
-
-    {
-        "status": 200
-    }
-
 ### 删除排班 （ok）
 
 DELETE `/shift/{shift_id}`

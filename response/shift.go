@@ -35,13 +35,6 @@ func ShiftDepartment(c *gin.Context, shiftIDs []uint) {
 	})
 }
 
-// ShiftUpdate 更新排班状态响应
-func ShiftUpdate(c *gin.Context) {
-	c.JSON(http.StatusCreated, gin.H{
-		"status": http.StatusCreated,
-	})
-}
-
 // ShiftDelete 删除排班响应
 func ShiftDelete(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{

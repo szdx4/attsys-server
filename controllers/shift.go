@@ -67,21 +67,58 @@ func ShiftCreate(c *gin.Context) {
 // ShiftList 排班列表
 func ShiftList(c *gin.Context) {
 	shifts := []models.Shift{}
-	db := database.Connector
+	db := database.Connector.Joins("LEFT JOIN users ON shifts.user_id = users.id")
+
+	role, _ := c.Get("user_role")
+	authID, _ := c.Get("user_id")
+
 	// 检测 user_id
-	if userID, isExit := c.GetQuery("user_id"); isExit == true {
+	if userID, isExit := c.GetQuery("user_id"); isExit {
 		userID, _ := strconv.Atoi(userID)
+
+		if role == "user" && authID != userID {
+			response.Unauthorized(c, "You can only get your information")
+			c.Abort()
+			return
+		}
+
 		db = db.Where("user_id = ?", userID)
+	} else if role == "user" {
+		response.Unauthorized(c, "You can only get your information")
+		c.Abort()
+		return
 	}
 
 	// 检测 start_at
-	if startAt, isExit := c.GetQuery("user_id"); isExit == true {
+	if startAt, isExit := c.GetQuery("user_id"); isExit {
 		db = db.Where("start_at >= ?", startAt)
 	}
 
 	// 检测 end_at
-	if endAt, isExit := c.GetQuery("user_id"); isExit == true {
+	if endAt, isExit := c.GetQuery("user_id"); isExit {
 		db = db.Where("end_at <= ?", endAt)
+	}
+
+	// 检测 department_id
+	if departmentID, isExit := c.GetQuery("department_id"); isExit {
+		departmentID, _ := strconv.Atoi(departmentID)
+
+		if role == "manager" {
+			manager := models.User{}
+			database.Connector.First(&manager, authID)
+
+			if manager.DepartmentID != uint(departmentID) {
+				response.Unauthorized(c, "You can only get your department information")
+				c.Abort()
+				return
+			}
+		}
+
+		db.Where("users.department_id = ?", departmentID)
+	} else if role == "manager" {
+		response.Unauthorized(c, "You can only get your department information")
+		c.Abort()
+		return
 	}
 
 	// 检测 page
@@ -96,23 +133,8 @@ func ShiftList(c *gin.Context) {
 	total := 0
 
 	db.Limit(perPage).Offset((page - 1) * perPage).Find(&shifts)
+	db.Model(&models.Shift{}).Count(&total)
 
-	// 用遍历的方法检测 department_id
-	if departmentID, isExit := c.GetQuery("department_id"); isExit == true {
-		departmentID, _ := strconv.Atoi(departmentID)
-		for i := 0; i < len(shifts); {
-			user := models.User{}
-			check := database.Connector
-			check.Where("id = ?", shifts[i].UserID).First(&user)
-			if user.DepartmentID != uint(departmentID) {
-				shifts = append(shifts[:i], shifts[i+1:]...)
-			} else {
-				i++
-			}
-		}
-	}
-
-	db.Model(&shifts).Count(&total)
 	if (page-1)*perPage >= total {
 		response.NoContent(c)
 		c.Abort()

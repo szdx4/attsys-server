@@ -8,6 +8,7 @@ type Hours struct {
 	UserID uint      `json:"user_id"`
 	Date   time.Time `json:"date"`
 	Hours  uint      `json:"hours"`
+	User   User      `json:"-"`
 }
 
 // HourData 响应结构

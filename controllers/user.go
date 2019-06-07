@@ -65,7 +65,7 @@ func UserShow(c *gin.Context) {
 		return
 	}
 
-	if role == "user" && authID != user.ID {
+	if role == "user" && authID != userID {
 		response.Unauthorized(c, "You cannot get others information")
 		c.Abort()
 		return

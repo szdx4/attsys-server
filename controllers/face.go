@@ -9,7 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/szdx4/attsys-server/models"
-	"github.com/szdx4/attsys-server/utils/response"
+	"github.com/szdx4/attsys-server/response"
 )
 
 // FaceUserShow 获取指定用户可用的人脸信息

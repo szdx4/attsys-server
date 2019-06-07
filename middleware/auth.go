@@ -8,7 +8,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/szdx4/attsys-server/config"
-	"github.com/szdx4/attsys-server/utils/response"
+	"github.com/szdx4/attsys-server/response"
 )
 
 // Token 验证 Token 中间件

@@ -98,7 +98,7 @@ func DepartmentUpdate(c *gin.Context) {
 		return
 	}
 
-	userID, err := strconv.Atoi(c.Param("id"))
+	departmentID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		response.BadRequest(c, "Department ID invalid")
 		c.Abort()
@@ -107,7 +107,7 @@ func DepartmentUpdate(c *gin.Context) {
 
 	// 从数据库中查找
 	department := models.Department{}
-	database.Connector.Where("id = ?", userID).First(&department)
+	database.Connector.First(&department, departmentID)
 	if department.ID == 0 {
 		response.NotFound(c, "Department not found")
 		c.Abort()
@@ -116,7 +116,6 @@ func DepartmentUpdate(c *gin.Context) {
 
 	// 编辑部门的相应信息
 	department.Name = req.Name
-	department.ManagerID = uint(req.Manager)
 	database.Connector.Save(&department)
 
 	response.DepartmentUpdate(c)

@@ -194,7 +194,6 @@ PUT `/department/{department_id}`
 #### JSON 参数
 
  - name: 部门名称
- - manager: 主管 ID
 
 #### 响应
 

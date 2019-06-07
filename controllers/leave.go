@@ -122,8 +122,19 @@ func LeaveList(c *gin.Context) {
 	total := 0
 
 	leaves := []models.Leave{}
-	database.Connector.Limit(perPage).Offset((page - 1) * perPage).Find(&leaves)
-	database.Connector.Model(&leaves).Count(&total)
+	db := database.Connector.Joins("LEFT JOIN users ON users.id = leaves.user_id")
+
+	role, _ := c.Get("user_role")
+	authID, _ := c.Get("user_id")
+
+	if role == "manager" {
+		manager := models.User{}
+		database.Connector.First(&manager, authID)
+		db.Where("users.department_id = ?", manager.DepartmentID)
+	}
+
+	db.Limit(perPage).Offset((page - 1) * perPage).Find(&leaves)
+	db.Model(&models.Leave{}).Count(&total)
 
 	if (page-1)*perPage >= total {
 		response.NoContent(c)

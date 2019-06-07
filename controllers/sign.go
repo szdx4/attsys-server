@@ -183,3 +183,39 @@ func SignOff(c *gin.Context) {
 
 	response.SignOff(c)
 }
+
+// SignStatus 获取用户签到状态
+func SignStatus(c *gin.Context) {
+	userID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.BadRequest(c, "User ID invalid")
+		c.Abort()
+		return
+	}
+
+	user := models.User{}
+	database.Connector.First(&user, userID)
+	if user.ID == 0 {
+		response.NotFound(c, "User not found")
+		c.Abort()
+		return
+	}
+
+	shift := models.Shift{}
+	database.Connector.Where("status = 'on'").First(&shift)
+	if shift.ID == 0 {
+		response.NoContent(c)
+		c.Abort()
+		return
+	}
+
+	sign := models.Sign{}
+	database.Connector.Where("shift_id = ?", shift.ID).First(&sign)
+	if sign.ID == 0 {
+		response.NoContent(c)
+		c.Abort()
+		return
+	}
+
+	response.SignStatus(c, sign.ID)
+}

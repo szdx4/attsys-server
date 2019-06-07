@@ -314,10 +314,6 @@ PUT `/face/{face_id}`
 
  - Authorization: Bearer {Token}
 
-#### JSON 参数
-
- - status: 人脸状态
-
 #### 响应
 
     {

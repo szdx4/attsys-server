@@ -28,6 +28,16 @@ func MessageShow(c *gin.Context) {
 		return
 	}
 
+	authID, _ := c.Get("user_id")
+	if message.FromUserID != authID && message.ToUserID != authID {
+		response.Unauthorized(c, "This is not your message")
+		c.Abort()
+		return
+	}
+
+	message.Status = "read"
+	database.Connector.Save(&message)
+
 	response.MessageShow(c, message)
 }
 

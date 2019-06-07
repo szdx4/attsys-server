@@ -629,8 +629,6 @@ POST `/overtime/user/{user_id}`
 
 #### JSON 参数
 
- - start_at: 开始时间
- - end_at: 结束时间
  - remark: 理由
 
 #### 响应

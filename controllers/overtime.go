@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"errors"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/szdx4/attsys-server/config"
@@ -27,31 +27,28 @@ func OvertimeCreate(c *gin.Context) {
 		return
 	}
 
-	// 构造并存入数据库
-	startAt, err := config.StrToTime(req.StartAt)
-	if err != nil {
-		response.BadRequest(c, errors.New("start_at not valid").Error())
-		c.Abort()
-		return
-	}
-	endAt, err := config.StrToTime(req.EndAt)
-	if err != nil {
-		response.BadRequest(c, errors.New("end_at not valid").Error())
+	authID, _ := c.Get("user_id")
+	userID, _ := strconv.Atoi(c.Param("id"))
+
+	if authID != userID {
+		response.BadRequest(c, "You can only apply overtime for yourself")
 		c.Abort()
 		return
 	}
 
-	userID, _ := strconv.Atoi(c.Param("id"))
+	shift := models.Shift{}
+	database.Connector.Where("end_at < ?", time.Now()).Order("end_at DESC").First(&shift)
+
 	overtime := models.Overtime{
 		UserID:  uint(userID),
-		StartAt: startAt,
-		EndAt:   endAt,
+		StartAt: shift.EndAt,
+		EndAt:   time.Now(),
 		Remark:  req.Remark,
 		Status:  "wait",
 	}
 	database.Connector.Create(&overtime)
 	if overtime.ID < 1 {
-		response.InternalServerError(c, "Internal Server Error")
+		response.InternalServerError(c, "Database error")
 		c.Abort()
 		return
 	}

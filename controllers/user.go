@@ -4,16 +4,14 @@ import (
 	"strconv"
 	"time"
 
-	"golang.org/x/crypto/bcrypt"
-
-	"github.com/szdx4/attsys-server/utils/database"
-
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/szdx4/attsys-server/config"
 	"github.com/szdx4/attsys-server/models"
 	"github.com/szdx4/attsys-server/requests"
+	"github.com/szdx4/attsys-server/utils/database"
 	"github.com/szdx4/attsys-server/utils/response"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // UserAuth 用户认证

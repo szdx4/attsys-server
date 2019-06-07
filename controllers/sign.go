@@ -20,14 +20,14 @@ func SignGetQrcode(c *gin.Context) {
 	database.Connector.Create(&qrcode)
 
 	if qrcode.ID == 0 {
-		response.InternalServerError(c, "Internal Server Error")
+		response.InternalServerError(c, "Database error")
 		c.Abort()
 		return
 	}
 
 	image, err := qrcode.Image()
 	if err != nil {
-		response.InternalServerError(c, "Internal Server Error")
+		response.InternalServerError(c, "Qrcode generate error")
 		c.Abort()
 		return
 	}

@@ -52,7 +52,7 @@ func LeaveCreate(c *gin.Context) {
 
 	database.Connector.Create(&leave)
 	if leave.ID < 1 {
-		response.InternalServerError(c, "Internal Server Error")
+		response.InternalServerError(c, "Database error")
 		c.Abort()
 		return
 	}

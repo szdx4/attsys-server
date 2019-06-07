@@ -2,6 +2,7 @@ package requests
 
 import (
 	"errors"
+
 	"github.com/szdx4/attsys-server/config"
 )
 
@@ -28,6 +29,7 @@ func (r *LeaveCreateRequest) Validate() error {
 	if startAt.After(endAt) {
 		return errors.New("Time not valid")
 	}
+
 	return nil
 }
 

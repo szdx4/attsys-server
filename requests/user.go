@@ -71,38 +71,46 @@ type UserUpdateRequest struct {
 }
 
 // Validate 验证 UserUpdateRequest 请求中信息的有效性
-func (r *UserUpdateRequest) Validate(c *gin.Context) error {
+func (r *UserUpdateRequest) Validate(c *gin.Context) (int, error) {
 	// 验证名字的有效性
-	if len(r.Name) < 2 {
-		return errors.New("User name not valid")
+	if len(r.Name) < config.App.MinUserLength {
+		return 0, errors.New("User name must longer than " + strconv.Itoa(config.App.MinUserLength))
 	}
 
 	// 验证名字的冲突性
 	userID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return errors.New("User ID invalid")
+		return 0, errors.New("User ID invalid")
 	}
 	user := models.User{}
-	database.Connector.Where("name = ?", r.Name).First(&user)
-	if user.ID > 0 && user.ID != uint(userID) {
-		return errors.New("User name exists")
+	database.Connector.Where("name = ? AND id <> ?", r.Name, userID).First(&user)
+	if user.ID > 0 {
+		return 0, errors.New("User name exists")
 	}
 
-	// 验证 department 的存在与否
+	// 验证部门的存在与否
 	department := models.Department{}
-	database.Connector.Where("id = ?", r.Department).First(&department)
+	database.Connector.Find(&department, r.Department)
 	if department.ID == 0 {
-		return errors.New("department not exists")
+		return 0, errors.New("Department not exists")
 	}
 
-	// 验证 role 的有效性
+	// 验证角色的有效性
 	if r.Role != "user" && r.Role != "manager" && r.Role != "master" {
-		return errors.New("User role not valid")
+		return 0, errors.New("User role not valid")
+	}
+	if r.Role == "manager" {
+		user := models.User{}
+		database.Connector.Where("user_id <> ? AND department_id = ? AND role = 'manager'", userID, r.Department).First(&user)
+		if user.ID > 0 {
+			return 0, errors.New("Department can only have one manager")
+		}
 	}
 
 	// 验证 Hours 的有效性
-	if r.Hours <= 0 {
-		return errors.New("User hours wrong")
+	if r.Hours < 0 {
+		return 0, errors.New("User hours not valid")
 	}
-	return nil
+
+	return userID, nil
 }

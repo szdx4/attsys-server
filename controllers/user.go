@@ -176,26 +176,21 @@ func UserUpdate(c *gin.Context) {
 		return
 	}
 
-	if err := req.Validate(c); err != nil {
+	userID, err := req.Validate(c)
+	if err != nil {
 		response.BadRequest(c, err.Error())
 		c.Abort()
 		return
 	}
 
-	userID, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		response.BadRequest(c, "User ID invalid")
-		c.Abort()
-		return
-	}
-
 	user := models.User{}
-	database.Connector.Where("id = ?", userID).First(&user)
+	database.Connector.Find(&user, userID)
 	if user.ID == 0 {
 		response.NotFound(c, "User not found")
 		c.Abort()
 		return
 	}
+
 	// 修改用户的相应信息
 	user.Name = req.Name
 	user.DepartmentID = uint(req.Department)

@@ -63,13 +63,13 @@ func (r *ShiftCreateRequest) Validate(c *gin.Context) error {
 
 // ShiftDepartmentRequest 部门排班
 type ShiftDepartmentRequest struct {
-	StartAt string `json:"start_at"`
-	EndAt   string `json:"end_at"`
+	StartAt string `binding:"required" json:"start_at"`
+	EndAt   string `binding:"required" json:"end_at"`
 	Type    string `binding:"required"`
 }
 
 // Validate 验证 ShiftDepartmentRequest 请求中的有效性
-func (r *ShiftDepartmentRequest) Validate() error {
+func (r *ShiftDepartmentRequest) Validate(departmentID int, role string, authID int) error {
 	// 将接收的 string 格式转换成 Time
 	startAt, err := config.StrToTime(r.StartAt)
 	if err != nil {
@@ -86,9 +86,24 @@ func (r *ShiftDepartmentRequest) Validate() error {
 	}
 
 	// 验证类型的有效性
-	if r.Type != "normal" && r.Type != "overtime" && r.Type != "allovertime" {
+	if r.Type != "normal" && r.Type != "allovertime" {
 		return errors.New("Type not valid")
 	}
+
+	department := models.Department{}
+	database.Connector.First(&department, departmentID)
+	if department.ID == 0 {
+		return errors.New("Department not found")
+	}
+
+	if role == "manager" {
+		manager := models.User{}
+		database.Connector.First(&manager, authID)
+		if manager.DepartmentID != uint(departmentID) {
+			return errors.New("You can only arrange your department shifts")
+		}
+	}
+
 	return nil
 }
 

@@ -142,6 +142,11 @@ func ShiftList(c *gin.Context) {
 
 // ShiftDepartment 部门排班
 func ShiftDepartment(c *gin.Context) {
+	departmentID, _ := strconv.Atoi(c.Param("department_id"))
+
+	role, _ := c.Get("user_role")
+	authID, _ := c.Get("user_id")
+
 	var req requests.ShiftDepartmentRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.BadRequest(c, err.Error())
@@ -149,14 +154,13 @@ func ShiftDepartment(c *gin.Context) {
 		return
 	}
 
-	if err := req.Validate(); err != nil {
+	if err := req.Validate(departmentID, role.(string), authID.(int)); err != nil {
 		response.BadRequest(c, err.Error())
 		c.Abort()
 		return
 	}
 
 	// 查找出所有部门员工
-	departmentID, _ := strconv.Atoi(c.Param("department_id"))
 	users := []models.User{}
 	database.Connector.Where("department_id = ?", departmentID).Find(&users)
 
@@ -175,25 +179,25 @@ func ShiftDepartment(c *gin.Context) {
 	}
 
 	// 存入数据库
-	var shiftIds []uint
-	for i := 0; i < len(users); i++ {
-		shiftIds = append(shiftIds, users[i].ID)
+	var shiftIDs []uint
+	for _, user := range users {
 		shift := models.Shift{
-			UserID:  users[i].ID,
+			UserID:  user.ID,
 			StartAt: startAt,
 			EndAt:   endAt,
 			Type:    req.Type,
 			Status:  "no",
 		}
 		database.Connector.Create(&shift)
-		if shift.ID < 1 {
-			response.InternalServerError(c, "Internal Server Error")
+		if shift.ID == 0 {
+			response.InternalServerError(c, "Database error")
 			c.Abort()
 			return
 		}
+		shiftIDs = append(shiftIDs, user.ID)
 	}
 
-	response.ShiftDepartment(c, shiftIds)
+	response.ShiftDepartment(c, shiftIDs)
 }
 
 // ShiftUpdate 更新排班状态

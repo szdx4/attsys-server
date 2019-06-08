@@ -86,12 +86,12 @@ func ShiftList(c *gin.Context) {
 	}
 
 	// 检测 start_at
-	if startAt, isExit := c.GetQuery("user_id"); isExit {
+	if startAt, isExit := c.GetQuery("start_at"); isExit {
 		db = db.Where("start_at >= ?", startAt)
 	}
 
 	// 检测 end_at
-	if endAt, isExit := c.GetQuery("user_id"); isExit {
+	if endAt, isExit := c.GetQuery("end_at"); isExit {
 		db = db.Where("end_at <= ?", endAt)
 	}
 

@@ -59,7 +59,7 @@ func HoursShow(c *gin.Context) {
 	if role == "manager" {
 		manager := models.User{}
 		database.Connector.First(&manager, authID)
-		db.Where("users.department_id = ?", manager.DepartmentID)
+		db = db.Where("users.department_id = ?", manager.DepartmentID)
 	}
 
 	db.Limit(perPage).Offset((page - 1) * perPage).Find(&hours)

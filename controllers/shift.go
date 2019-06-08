@@ -72,6 +72,7 @@ func ShiftList(c *gin.Context) {
 	if userID, isExit := c.GetQuery("user_id"); isExit {
 		userID, _ := strconv.Atoi(userID)
 
+		// user 只能查询自己的排班
 		if role == "user" && authID != userID {
 			response.Unauthorized(c, "You can only get your information")
 			c.Abort()
@@ -80,6 +81,7 @@ func ShiftList(c *gin.Context) {
 
 		db = db.Where("user_id = ?", userID)
 	} else if role == "user" {
+		// user 不能得到列表
 		response.Unauthorized(c, "You can only get your information")
 		c.Abort()
 		return
@@ -99,6 +101,7 @@ func ShiftList(c *gin.Context) {
 	if departmentID, isExit := c.GetQuery("department_id"); isExit {
 		departmentID, _ := strconv.Atoi(departmentID)
 
+		// manager 只能查看自己的部门
 		if role == "manager" {
 			manager := models.User{}
 			database.Connector.First(&manager, authID)
@@ -110,8 +113,9 @@ func ShiftList(c *gin.Context) {
 			}
 		}
 
-		db.Where("users.department_id = ?", departmentID)
+		db = db.Where("users.department_id = ?", departmentID)
 	} else if role == "manager" {
+		// manager不能得到全体列表
 		response.Unauthorized(c, "You can only get your department information")
 		c.Abort()
 		return

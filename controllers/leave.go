@@ -238,7 +238,7 @@ func LeaveDelete(c *gin.Context) {
 
 	authID, _ := c.Get("user_id")
 
-	if leave.UserID != authID {
+	if leave.UserID != uint(authID.(int)) {
 		response.Unauthorized(c, "You can only cancel your own leave")
 		c.Abort()
 		return

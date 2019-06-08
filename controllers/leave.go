@@ -183,7 +183,7 @@ func LeaveUpdate(c *gin.Context) {
 
 	leaveID, _ := strconv.Atoi(c.Param("id"))
 	leave := models.Leave{}
-	database.Connector.First(&leave, leaveID)
+	database.Connector.Preload("User").First(&leave, leaveID)
 	if leave.ID == 0 {
 		response.NotFound(c, "Leave not found")
 		c.Abort()

@@ -245,7 +245,7 @@ func LeaveDelete(c *gin.Context) {
 	}
 
 	if leave.Status != "pass" {
-		response.BadRequest(c, "Leave isnot passed")
+		response.BadRequest(c, "Leave is not passed")
 		c.Abort()
 		return
 	}

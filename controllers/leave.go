@@ -127,6 +127,7 @@ func LeaveShow(c *gin.Context) {
 
 // LeaveList 请假列表
 func LeaveList(c *gin.Context) {
+	// 检测 page
 	page, err := strconv.Atoi(c.Query("page"))
 	if err != nil {
 		page = 1
@@ -144,9 +145,10 @@ func LeaveList(c *gin.Context) {
 	authID, _ := c.Get("user_id")
 
 	if role == "manager" {
+		// 用户只能获得本部门的请假列表
 		manager := models.User{}
 		database.Connector.First(&manager, authID)
-		db.Where("users.department_id = ?", manager.DepartmentID)
+		db = db.Where("users.department_id = ?", manager.DepartmentID)
 	}
 
 	db.Limit(perPage).Offset((page - 1) * perPage).Find(&leaves)

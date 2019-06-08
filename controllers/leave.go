@@ -238,18 +238,21 @@ func LeaveDelete(c *gin.Context) {
 
 	authID, _ := c.Get("user_id")
 
+	// 只能给自己销假
 	if leave.UserID != uint(authID.(int)) {
 		response.Unauthorized(c, "You can only cancel your own leave")
 		c.Abort()
 		return
 	}
 
+	// 只能给审核通过的请假销假
 	if leave.Status != "pass" {
 		response.BadRequest(c, "Leave is not passed")
 		c.Abort()
 		return
 	}
 
+	// 销假之后将后续排班
 	currentTime := time.Now()
 	shifts := []models.Shift{}
 	database.Connector.Where("start_at >= ? AND end_at <= ?", currentTime, leave.EndAt).Find(&shifts)

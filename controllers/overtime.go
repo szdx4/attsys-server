@@ -84,12 +84,14 @@ func OvertimeShow(c *gin.Context) {
 	role, _ := c.Get("user_role")
 	authID, _ := c.Get("user_id")
 
+	// 用户只能获取自己的加班
 	if role == "user" && userID != authID {
 		response.Unauthorized(c, "You can only get your own overtime")
 		c.Abort()
 		return
 	}
 
+	// 部门主管只能获得本部门的员工加班
 	if role == "manager" {
 		manager := models.User{}
 		database.Connector.First(&manager, authID)
@@ -102,6 +104,7 @@ func OvertimeShow(c *gin.Context) {
 		}
 	}
 
+	// 查找加班
 	overtime := []models.Overtime{}
 	db := database.Connector.Where("user_id = ?", userID)
 	db.Limit(perPage).Offset((page - 1) * perPage).Find(&overtime)

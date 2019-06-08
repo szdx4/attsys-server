@@ -171,9 +171,10 @@ func OvertimeUpdate(c *gin.Context) {
 		return
 	}
 
+	// 查找指定加班
 	overtimeID, _ := strconv.Atoi(c.Param("id"))
 	overtime := models.Overtime{}
-	database.Connector.First(&overtime, overtimeID)
+	database.Connector.Preload("User").First(&overtime, overtimeID)
 	if overtime.ID == 0 {
 		response.NotFound(c, "Overtime not found")
 		c.Abort()
@@ -183,6 +184,7 @@ func OvertimeUpdate(c *gin.Context) {
 	role, _ := c.Get("user_role")
 	authID, _ := c.Get("user_id")
 
+	// 主管只能给本部门加班审核
 	if role == "manager" {
 		manager := models.User{}
 		database.Connector.First(&manager, authID)

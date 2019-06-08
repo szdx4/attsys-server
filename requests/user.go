@@ -105,9 +105,11 @@ func (r *UserUpdateRequest) Validate(c *gin.Context) (int, error) {
 	if r.Role != "user" && r.Role != "manager" && r.Role != "master" {
 		return 0, errors.New("User role not valid")
 	}
+
+	// 处理部门主管冲突
 	if r.Role == "manager" {
 		user := models.User{}
-		database.Connector.Where("user_id <> ? AND department_id = ? AND role = 'manager'", userID, r.Department).First(&user)
+		database.Connector.Where("id <> ? AND department_id = ? AND role = 'manager'", userID, r.Department).First(&user)
 		if user.ID > 0 {
 			return 0, errors.New("Department can only have one manager")
 		}

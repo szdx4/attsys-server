@@ -115,10 +115,5 @@ func (r *UserUpdateRequest) Validate(c *gin.Context) (int, error) {
 		}
 	}
 
-	// 验证 Hours 的有效性
-	if r.Hours < 0 {
-		return 0, errors.New("User hours not valid")
-	}
-
 	return userID, nil
 }

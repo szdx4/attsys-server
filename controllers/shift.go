@@ -213,7 +213,7 @@ func ShiftDelete(c *gin.Context) {
 		return
 	}
 	shift := models.Shift{}
-	database.Connector.First(&shift, shiftID)
+	database.Connector.First(&shift, shiftID).Related(&shift.User)
 
 	if shift.ID == 0 {
 		response.NotFound(c, "Shift not found")

@@ -35,7 +35,6 @@ func (r *ShiftCreateRequest) Validate(c *gin.Context) error {
 	}
 
 	// 验证个人排班的冲突性
-	shifts := []models.Shift{}
 	userID, _ := strconv.Atoi(c.Param("id"))
 
 	user := models.User{}
@@ -44,12 +43,13 @@ func (r *ShiftCreateRequest) Validate(c *gin.Context) error {
 		return errors.New("User not found")
 	}
 
+	shift := models.Shift{}
 	db := database.Connector
 	db = db.Where("user_id = ?", userID)
-	db = db.Where("start_at <= ?", r.EndAt)
-	db = db.Where("end_at >= ?", r.StartAt)
-	db.Find(&shifts)
-	if len(shifts) != 0 {
+	db = db.Where("start_at < ?", endAt)
+	db = db.Where("end_at > ?", startAt)
+	db.First(&shift)
+	if shift.ID > 0 {
 		return errors.New("Time is conflicting")
 	}
 

@@ -30,6 +30,8 @@ func Router() *gin.Engine {
 	r.DELETE("/user/:id", middleware.Token, middleware.Master, controllers.UserDelete)
 	// 修改用户
 	r.PUT("/user/:id", middleware.Token, middleware.Master, controllers.UserUpdate)
+	// 修改密码
+	r.PUT("/user/:id/password", middleware.Token, controllers.UserPassword)
 
 	// Department
 	// 添加部门

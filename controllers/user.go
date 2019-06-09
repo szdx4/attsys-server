@@ -222,3 +222,37 @@ func UserUpdate(c *gin.Context) {
 
 	response.UserUpdate(c)
 }
+
+// UserPassword 修改密码
+func UserPassword(c *gin.Context) {
+	role, _ := c.Get("user_role")
+	authID, _ := c.Get("user_id")
+
+	userID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.BadRequest(c, "User ID invalid")
+		c.Abort()
+		return
+	}
+
+	var req requests.UserPasswordRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.BadRequest(c, err.Error())
+		c.Abort()
+		return
+	}
+
+	pwdHash, err := req.Validate(role.(string), authID.(int), userID)
+	if err != nil {
+		response.BadRequest(c, err.Error())
+		c.Abort()
+		return
+	}
+
+	user := models.User{}
+	database.Connector.First(&user, userID)
+	user.Password = pwdHash
+	database.Connector.Save(&user)
+
+	response.UserPassword(c)
+}

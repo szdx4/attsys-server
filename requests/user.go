@@ -117,3 +117,45 @@ func (r *UserUpdateRequest) Validate(c *gin.Context) (int, error) {
 
 	return userID, nil
 }
+
+// UserPasswordRequest 修改密码请求
+type UserPasswordRequest struct {
+	OldPassword string `json:"old_password"`
+	NewPassword string `json:"new_password" binding:"required"`
+}
+
+// Validate 验证修改密码请求的合法性
+func (r *UserPasswordRequest) Validate(role string, authID, userID int) (string, error) {
+	if role == "user" && r.OldPassword == "" {
+		return "", errors.New("Old password missing")
+	}
+
+	if role == "user" && authID != userID {
+		return "", errors.New("You can only modify your own password")
+	}
+
+	user := models.User{}
+	database.Connector.First(&user, userID)
+
+	if user.ID == 0 {
+		return "", errors.New("User not found")
+	}
+
+	if role == "user" {
+		err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(r.OldPassword))
+		if err != nil {
+			return "", errors.New("Password invalid")
+		}
+	}
+
+	if len(r.NewPassword) < config.App.MinPwdLength {
+		return "", errors.New("Password must longer than " + strconv.Itoa(config.App.MinPwdLength))
+	}
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(r.NewPassword), 10)
+	if err != nil {
+		return "", errors.New("Password hash generate error")
+	}
+
+	return string(hash), nil
+}

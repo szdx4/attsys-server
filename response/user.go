@@ -58,3 +58,10 @@ func UserUpdate(c *gin.Context) {
 		"status": http.StatusOK,
 	})
 }
+
+// UserPassword 修改密码响应
+func UserPassword(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"status": http.StatusOK,
+	})
+}

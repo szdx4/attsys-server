@@ -193,6 +193,35 @@ func SignStatus(c *gin.Context) {
 		return
 	}
 
+	role, _ := c.Get("user_role")
+	authID, _ := c.Get("user_id")
+
+	// 用户只能获取自己的签到情况
+	if role == "user" && userID != authID {
+		response.Unauthorized(c, "You can only get your own sign status")
+		c.Abort()
+		return
+	}
+
+	// 部门主管只能获得本部门的员工签到情况
+	if role == "manager" {
+		manager := models.User{}
+		database.Connector.First(&manager, authID)
+		user := models.User{}
+		database.Connector.First(&user, userID)
+		if user.ID == 0 {
+			response.NotFound(c, "User not found")
+			c.Abort()
+			return
+		}
+		if manager.DepartmentID != user.DepartmentID {
+			response.Unauthorized(c, "You can only get your department sign status")
+			c.Abort()
+			return
+		}
+	}
+
+	// 确认用户的存在性
 	user := models.User{}
 	database.Connector.First(&user, userID)
 	if user.ID == 0 {
@@ -201,6 +230,7 @@ func SignStatus(c *gin.Context) {
 		return
 	}
 
+	// 查找用户的已经签到的排班
 	shift := models.Shift{}
 	database.Connector.Where("status = 'on'").First(&shift)
 	if shift.ID == 0 {

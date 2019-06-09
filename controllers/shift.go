@@ -63,7 +63,7 @@ func ShiftCreate(c *gin.Context) {
 // ShiftList 排班列表
 func ShiftList(c *gin.Context) {
 	shifts := []models.Shift{}
-	db := database.Connector.Joins("LEFT JOIN users ON shifts.user_id = users.id")
+	db := database.Connector.Preload("User").Joins("LEFT JOIN users ON shifts.user_id = users.id")
 
 	role, _ := c.Get("user_role")
 	authID, _ := c.Get("user_id")

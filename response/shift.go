@@ -22,7 +22,7 @@ func ShiftList(c *gin.Context, total, page int, shifts []models.Shift) {
 	for _, shift := range shifts {
 		list = append(list, gin.H{
 			"id":         shift.ID,
-			"user_id":    shift.UserID,
+			"user_id":    shift.User.ID,
 			"user_name":  shift.User.Name,
 			"start_at":   shift.StartAt,
 			"end_at":     shift.EndAt,

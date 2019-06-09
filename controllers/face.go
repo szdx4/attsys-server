@@ -88,6 +88,13 @@ func FaceCreate(c *gin.Context) {
 
 // FaceList 获取人脸列表
 func FaceList(c *gin.Context) {
+	role, _ := c.Get("user_role")
+	if role != "master" {
+		response.Unauthorized(c, "You cannot get face list")
+		c.Abort()
+		return
+	}
+
 	faces := []models.Face{}
 	db := database.Connector.Preload("User")
 

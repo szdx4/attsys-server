@@ -33,7 +33,7 @@ func UserAuth(c *gin.Context) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":         user.ID,
 		"role":       user.Role,
-		"expired_at": time.Now().UTC().Add(time.Hour * time.Duration(config.App.TokenValid)).Format(time.RFC3339),
+		"expired_at": time.Now().Add(time.Hour * time.Duration(config.App.TokenValid)).Format(time.RFC3339),
 	})
 
 	tokenString, err := token.SignedString([]byte(config.App.EncryptKey))

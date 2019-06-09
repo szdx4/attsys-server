@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/szdx4/attsys-server/utils/qcloud"
+
 	"github.com/szdx4/attsys-server/config"
 	"github.com/szdx4/attsys-server/routers"
 	"github.com/szdx4/attsys-server/utils/database"
@@ -16,6 +18,9 @@ func main() {
 	database.Connect()
 	database.Migrate()
 	database.Seed()
+
+	qcloud.GroupInit()
+	qcloud.PersonInit()
 
 	router := routers.Router()
 

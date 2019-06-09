@@ -43,6 +43,7 @@ func (c *DatabaseConfig) ConnectionString() string {
 type QcloudConfig struct {
 	SecretID  string
 	SecretKey string
+	GroupName string
 }
 
 var cfg *goconfig.ConfigFile
@@ -95,6 +96,7 @@ func loadDatabase() {
 func loadQcloud() {
 	Qcloud.SecretID = cfg.MustValue("QCLOUD", "SECRET_ID", "")
 	Qcloud.SecretKey = cfg.MustValue("QCLOUD", "SECRET_KEY", "")
+	Qcloud.GroupName = cfg.MustValue("QCLOUD", "GROUP_NAME", "")
 }
 
 // StrToTime 将接收到的时间字符串转换成 time.Time

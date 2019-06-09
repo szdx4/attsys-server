@@ -89,7 +89,7 @@ func Router() *gin.Engine {
 	// Sign
 	r.GET("/sign/qrcode", middleware.Token, middleware.Manager, controllers.SignGetQrcode)
 	r.POST("/sign/qrcode/:id", middleware.Token, controllers.SignWithQrcode)
-	r.POST("/sign/face/:id", middleware.Token, controllers.SignWithFace)
+	r.POST("/sign/face/:id", middleware.Token, middleware.Manager, controllers.SignWithFace)
 	r.POST("/sign/off/:id", middleware.Token, controllers.SignOff)
 	r.GET("/sign/user/:id", middleware.Token, controllers.SignStatus)
 

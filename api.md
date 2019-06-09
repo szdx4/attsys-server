@@ -176,8 +176,7 @@ GET `/department`
         "data": [
             {
                 "id": 1,
-                "name": "X 部门",
-                "manager": 1
+                "name": "X 部门"
             },
             ...
         ]

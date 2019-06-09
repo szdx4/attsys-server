@@ -846,10 +846,16 @@ GET `/message`
         "data": [
             {
                 "id": 1,
-                "from_user_id": 1,
-                "from_user_name": "test",
-                "to_user_id": 2,
-                "to_user_name": "test",
+                "from": {
+                    "id": 1,
+                    "name": "test",
+                    ...
+                },
+                "to": {
+                    "id": 2,
+                    "name": "test2",
+                    ...
+                },
                 "title": "test title",
                 "status": "unread/read"
             },
@@ -875,10 +881,16 @@ GET `/message/{message_id}`
         "status": 200,
         "data": {
             "id": 1,
-            "from_user_id": 1,
-            "from_user_name": "test",
-            "to_user_id": 2,
-            "to_user_name": "test",
+            "from": {
+                "id": 1,
+                "name": "test",
+                ...
+            },
+            "to": {
+                "id": 2,
+                "name": "test2",
+                ...
+            },
             "title": "test title",
             "content": "test content",
             "status": "unread/read"

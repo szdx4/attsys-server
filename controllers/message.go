@@ -21,7 +21,7 @@ func MessageShow(c *gin.Context) {
 
 	//查找到信息
 	message := models.Message{}
-	database.Connector.First(&message, messageID)
+	database.Connector.Preload("FromUser").Preload("ToUser").First(&message, messageID)
 	if message.ID < 1 {
 		response.NotFound(c, "Message not found")
 		c.Abort()
@@ -44,7 +44,7 @@ func MessageShow(c *gin.Context) {
 // MessageList 获取信息列表
 func MessageList(c *gin.Context) {
 	messages := []models.Message{}
-	db := database.Connector.Order("created_at DESC")
+	db := database.Connector.Preload("FromUser").Preload("ToUser").Order("created_at DESC")
 
 	role, _ := c.Get("user_role")
 	authID, _ := c.Get("user_id")

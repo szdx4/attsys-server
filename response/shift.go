@@ -18,27 +18,12 @@ func ShiftCreate(c *gin.Context, shiftID uint) {
 
 // ShiftList 排班列表响应
 func ShiftList(c *gin.Context, total, page int, shifts []models.Shift) {
-	list := []gin.H{}
-	for _, shift := range shifts {
-		list = append(list, gin.H{
-			"id":         shift.ID,
-			"user_id":    shift.User.ID,
-			"user_name":  shift.User.Name,
-			"start_at":   shift.StartAt,
-			"end_at":     shift.EndAt,
-			"type":       shift.Type,
-			"status":     shift.Status,
-			"created_at": shift.CreatedAt,
-			"updated_at": shift.UpdatedAt,
-		})
-	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"status":       http.StatusOK,
 		"total":        total,
 		"current_page": page,
 		"per_page":     config.App.ItemsPerPage,
-		"data":         list,
+		"data":         shifts,
 	})
 }
 

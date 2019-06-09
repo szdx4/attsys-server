@@ -417,8 +417,11 @@ GET `/shift`
         "data": [
             {
                 "id": 1,
-                "user_id": 1,
-                "user_name": "test name",
+                "user": {
+                    "id": 1,
+                    "name": "test",
+                    ...
+                },
                 "start_at": "2019-02-02 11:11:11",
                 "end_at": "2019-02-02 11:11:11",
                 "type": "normal/allovertime",

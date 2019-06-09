@@ -30,7 +30,7 @@ func MessageShow(c *gin.Context) {
 
 	// 只有发送人和接受者可以读取指定信息
 	authID, _ := c.Get("user_id")
-	if message.FromUserID != authID && message.ToUserID != authID {
+	if message.FromUserID != uint(authID.(int)) && message.ToUserID != uint(authID.(int)) {
 		response.Unauthorized(c, "This is not your message")
 		c.Abort()
 		return

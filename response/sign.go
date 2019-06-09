@@ -27,9 +27,10 @@ func Sign(c *gin.Context, signID uint) {
 }
 
 // SignOff 签退响应
-func SignOff(c *gin.Context) {
+func SignOff(c *gin.Context, canOvertime bool) {
 	c.JSON(http.StatusOK, gin.H{
-		"status": http.StatusOK,
+		"status":   http.StatusOK,
+		"overtime": canOvertime,
 	})
 }
 

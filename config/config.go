@@ -9,12 +9,13 @@ import (
 
 // AppConfig 存储应用配置
 type AppConfig struct {
-	RunMode       string
-	EncryptKey    string
-	MinPwdLength  int
-	ItemsPerPage  int
-	TokenValid    int
-	MinUserLength int
+	RunMode            string
+	EncryptKey         string
+	MinPwdLength       int
+	ItemsPerPage       int
+	TokenValid         int
+	MinUserLength      int
+	MinOvertimeMinutes int
 }
 
 // ServerConfig 存储 HTTP 服务器配置
@@ -74,6 +75,7 @@ func loadApp() {
 	App.ItemsPerPage = cfg.MustInt("APP", "ITEMS_PER_PAGE", 20)
 	App.TokenValid = cfg.MustInt("APP", "TOKEN_VALID", 2)
 	App.MinUserLength = cfg.MustInt("APP", "MIN_USER_LENGTH", 2)
+	App.MinOvertimeMinutes = cfg.MustInt("APP", "MIN_OVERTIME_MINUTES", 60)
 }
 
 func loadServer() {

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/szdx4/attsys-server/config"
 	"github.com/szdx4/attsys-server/models"
 	"github.com/szdx4/attsys-server/requests"
 	"github.com/szdx4/attsys-server/response"
@@ -145,7 +146,7 @@ func SignOff(c *gin.Context) {
 	}
 
 	sign := models.Sign{}
-	database.Connector.Find(&sign, signID)
+	database.Connector.Preload("Shift").Preload("User").First(&sign, signID)
 
 	if sign.ID == 0 {
 		response.NotFound(c, "Sign not found")
@@ -153,24 +154,23 @@ func SignOff(c *gin.Context) {
 		return
 	}
 
-	sign.EndAt = time.Now()
+	diff := time.Now().Sub(sign.Shift.EndAt).Minutes()
+	canOvertime := false
+
+	if diff > float64(config.App.MinOvertimeMinutes) {
+		sign.EndAt = sign.Shift.EndAt
+		canOvertime = true
+	} else {
+		sign.EndAt = time.Now()
+	}
 	database.Connector.Save(&sign)
 
-	shift := models.Shift{}
-	database.Connector.First(&shift, sign.ShiftID)
-
-	if shift.ID == 0 {
-		response.NotFound(c, "Shift not found")
-		c.Abort()
-		return
-	}
-
-	shift.Status = "off"
-	database.Connector.Save(&shift)
+	sign.Shift.Status = "off"
+	database.Connector.Save(&sign.Shift)
 
 	timeDiff := uint(sign.EndAt.Sub(sign.StartAt).Hours())
 
-	user := shift.User
+	user := sign.Shift.User
 	user.Hours += timeDiff
 	database.Connector.Save(&user)
 
@@ -181,7 +181,7 @@ func SignOff(c *gin.Context) {
 	}
 	database.Connector.Create(&hours)
 
-	response.SignOff(c)
+	response.SignOff(c, canOvertime)
 }
 
 // SignStatus 获取用户签到状态

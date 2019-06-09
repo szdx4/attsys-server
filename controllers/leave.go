@@ -114,7 +114,7 @@ func LeaveShow(c *gin.Context) {
 	}
 
 	leaves := []models.Leave{}
-	db := database.Connector
+	db := database.Connector.Preload("User")
 	db = db.Where("user_id = ?", userID)
 	db.Limit(perPage).Offset((page - 1) * perPage).Find(&leaves)
 	db.Model(&models.Leave{}).Count(&total)

@@ -29,27 +29,12 @@ func LeaveShow(c *gin.Context, total, page int, leaves []models.Leave) {
 
 // LeaveList 请假列表响应
 func LeaveList(c *gin.Context, total, page int, leaves []models.Leave) {
-	list := []gin.H{}
-	for _, item := range leaves {
-		list = append(list, gin.H{
-			"id":         item.ID,
-			"user_id":    item.User.ID,
-			"user_name":  item.User.Name,
-			"start_at":   item.StartAt,
-			"end_at":     item.EndAt,
-			"remark":     item.Remark,
-			"status":     item.Status,
-			"created_at": item.CreatedAt,
-			"updated_at": item.UpdatedAt,
-		})
-	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"status":       http.StatusOK,
 		"total":        total,
 		"current_page": page,
 		"per_page":     config.App.ItemsPerPage,
-		"data":         list,
+		"data":         leaves,
 	})
 }
 

@@ -112,12 +112,12 @@ func FaceList(c *gin.Context) {
 	total := 0
 
 	db.Limit(perPage).Offset((page - 1) * perPage).Find(&faces)
+	db.Model(&models.Face{}).Count(&total)
 	if (page-1)*perPage >= total {
 		response.NoContent(c)
 		c.Abort()
 		return
 	}
-	db.Model(&models.Face{}).Count(&total)
 
 	response.FaceList(c, total, page, perPage, faces)
 }

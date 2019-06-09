@@ -2,8 +2,10 @@ package requests
 
 import (
 	"errors"
+	"strconv"
 	"time"
 
+	"github.com/szdx4/attsys-server/config"
 	"github.com/szdx4/attsys-server/utils/qcloud"
 
 	"github.com/szdx4/attsys-server/models"
@@ -45,12 +47,11 @@ func (r *SignWithFaceRequest) Validate(userID int) error {
 		return errors.New("Face info not found")
 	}
 
-	score, err := qcloud.CompareFace(face.Info, r.Face)
+	resID, err := qcloud.SearchFaces(config.Qcloud.GroupName, r.Face)
 	if err != nil {
-		return errors.New("Cannot call qcloud api")
+		return errors.New("Face not match")
 	}
-
-	if score < 80 {
+	if resID != strconv.Itoa(userID) {
 		return errors.New("Face not match")
 	}
 

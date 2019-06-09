@@ -51,9 +51,13 @@ func Router() *gin.Engine {
 	r.DELETE("/department/:id", middleware.Token, middleware.Master, controllers.DepartmentDelete)
 
 	// Face
+	// 获取指定人脸信息
 	r.GET("/face/user/:id", middleware.Token, controllers.FaceUserShow)
+	// 更新人脸信息
 	r.POST("/face/user/:id", middleware.Token, controllers.FaceCreate)
+	// 审批人脸信息
 	r.PUT("/face/:id", middleware.Token, middleware.Master, controllers.FaceUpdate)
+	// 获取人脸列表
 	r.GET("/face", middleware.Token, middleware.Master, controllers.FaceList)
 
 	// Hours
@@ -92,10 +96,15 @@ func Router() *gin.Engine {
 	r.PUT("/overtime/:id", middleware.Token, middleware.Manager, controllers.OvertimeUpdate)
 
 	// Sign
+	// 获取二维码
 	r.GET("/sign/qrcode", middleware.Token, middleware.Manager, controllers.SignGetQrcode)
+	// 二维码签到
 	r.POST("/sign/qrcode/:id", middleware.Token, controllers.SignWithQrcode)
+	// 人脸签到
 	r.POST("/sign/face/:id", middleware.Token, middleware.Manager, controllers.SignWithFace)
+	// 签退
 	r.POST("/sign/off/:id", middleware.Token, controllers.SignOff)
+	// 获取用户当前签到状态
 	r.GET("/sign/user/:id", middleware.Token, controllers.SignStatus)
 
 	// Message

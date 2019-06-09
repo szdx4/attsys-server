@@ -37,7 +37,7 @@ func MessageShow(c *gin.Context) {
 	}
 
 	// 如果是接受者读取指定信息，则变为已读
-	if message.ToUserID == authID {
+	if message.ToUserID == uint(authID.(int)) {
 		message.Status = "read"
 	}
 

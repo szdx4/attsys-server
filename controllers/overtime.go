@@ -110,7 +110,7 @@ func OvertimeShow(c *gin.Context) {
 
 	// 查找加班
 	overtime := []models.Overtime{}
-	db := database.Connector.Where("user_id = ?", userID)
+	db := database.Connector.Preload("User").Where("user_id = ?", userID).Order("created_at DESC")
 	db.Limit(perPage).Offset((page - 1) * perPage).Find(&overtime)
 	db.Model(&models.Overtime{}).Count(&total)
 
@@ -136,7 +136,7 @@ func OvertimeList(c *gin.Context) {
 	total := 0
 
 	overtime := []models.Overtime{}
-	db := database.Connector.Joins("LEFT JOIN users ON users.id = overtimes.user_id").Order("created_at DESC")
+	db := database.Connector.Preload("User").Joins("LEFT JOIN users ON users.id = overtimes.user_id").Order("created_at DESC")
 
 	role, _ := c.Get("user_role")
 	authID, _ := c.Get("user_id")

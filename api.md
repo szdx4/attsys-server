@@ -636,7 +636,11 @@ GET `/overtime`
         "data": [
             {
                 "id": 1,
-                "user_id": 1,
+                "user": {
+                    "id": 1,
+                    "name": "test",
+                    ...
+                },
                 "start_at": "2019-02-02 11:11:11",
                 "end_at": "2019-02-02 11:11:11",
                 "remark": "任务未完成",
@@ -668,7 +672,11 @@ GET `/overtime/user/{user_id}`
         "data": [
             {
                 "id": 1,
-                "user_id": 1,
+                "user": {
+                    "id": 1,
+                    "name": "test",
+                    ...
+                },
                 "start_at": "2019-02-02 11:11:11",
                 "end_at": "2019-02-02 11:11:11",
                 "remark": "任务未完成",

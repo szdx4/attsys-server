@@ -2,14 +2,53 @@ package qcloud
 
 import (
 	goerrors "errors"
+	"fmt"
+	"log"
+	"strconv"
 	"strings"
+	"time"
 
+	"github.com/szdx4/attsys-server/models"
+	"github.com/szdx4/attsys-server/utils/database"
+
+	"github.com/szdx4/attsys-server/config"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/regions"
 	iai "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/iai/v20180301"
 )
+
+// GroupInit 初始化人员库
+func GroupInit() {
+	var err error
+
+	err = DeleteGroup(config.Qcloud.GroupName)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	err = CreateGroup(config.Qcloud.GroupName)
+	for err != nil {
+		fmt.Println("waiting for group delete ...")
+		time.Sleep(60 * time.Second)
+		err = CreateGroup(config.Qcloud.GroupName)
+	}
+}
+
+// PersonInit 人员初始化
+func PersonInit() {
+	faces := []models.Face{}
+	database.Connector.Where("status = 'available'").Find(&faces)
+
+	for _, face := range faces {
+		userID := strconv.Itoa(int(face.UserID))
+		err := CreatePerson(config.Qcloud.GroupName, userID, face.Info)
+		if err != nil {
+			log.Printf("User %s face add error: %s\n", userID, err.Error())
+		}
+	}
+}
 
 func getQcloudIaiClient() *iai.Client {
 	credential := common.NewCredential(

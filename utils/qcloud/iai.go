@@ -136,6 +136,25 @@ func CreatePerson(groupID, personID, image string) error {
 	return nil
 }
 
+// DeletePersonFromGroup 删除人员
+func DeletePersonFromGroup(groupID, personID string) error {
+	client := getQcloudIaiClient()
+
+	request := iai.NewDeletePersonFromGroupRequest()
+	request.GroupId = common.StringPtr(groupID)
+	request.PersonId = common.StringPtr(personID)
+
+	_, err := client.DeletePersonFromGroup(request)
+	if _, ok := err.(*errors.TencentCloudSDKError); ok {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // SearchFaces 人脸搜索
 func SearchFaces(groupID, image string) (string, error) {
 	image = getImageBase64(image)

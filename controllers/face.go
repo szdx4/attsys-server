@@ -3,6 +3,8 @@ package controllers
 import (
 	"strconv"
 
+	"github.com/szdx4/attsys-server/utils/qcloud"
+
 	"github.com/gin-gonic/gin"
 	"github.com/szdx4/attsys-server/config"
 	"github.com/szdx4/attsys-server/models"
@@ -155,6 +157,9 @@ func FaceUpdate(c *gin.Context) {
 
 	face.Status = "available"
 	database.Connector.Save(&face)
+
+	qcloud.DeletePersonFromGroup(config.Qcloud.GroupName, strconv.Itoa(int(face.UserID)))
+	qcloud.CreatePerson(config.Qcloud.GroupName, strconv.Itoa(int(face.UserID)), face.Info)
 
 	response.FaceUpdate(c)
 }

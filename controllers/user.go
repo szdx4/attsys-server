@@ -58,7 +58,7 @@ func UserShow(c *gin.Context) {
 	role, _ := c.Get("user_role")
 	authID, _ := c.Get("user_id")
 	user := models.User{}
-	database.Connector.First(&user, userID)
+	database.Connector.Preload("Department").First(&user, userID)
 	if user.ID < 1 {
 		response.NotFound(c, "User not found")
 		c.Abort()
@@ -145,11 +145,13 @@ func UserList(c *gin.Context) {
 		database.Connector.First(&manager, managerID)
 		departmentID := manager.DepartmentID
 
-		database.Connector.Where("department_id = ?", departmentID).Limit(perPage).Offset((page - 1) * perPage).Find(&users)
-		database.Connector.Where("department_id = ?", departmentID).Model(&models.User{}).Count(&total)
+		db := database.Connector.Where("department_id = ?", departmentID).Preload("Department")
+		db.Limit(perPage).Offset((page - 1) * perPage).Find(&users)
+		db.Model(&models.User{}).Count(&total)
 	} else {
-		database.Connector.Limit(perPage).Offset((page - 1) * perPage).Find(&users)
-		database.Connector.Model(&models.User{}).Count(&total)
+		db := database.Connector.Preload("Department")
+		db.Limit(perPage).Offset((page - 1) * perPage).Find(&users)
+		db.Model(&models.User{}).Count(&total)
 	}
 
 	if (page-1)*perPage >= total {

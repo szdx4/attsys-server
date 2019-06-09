@@ -49,7 +49,10 @@ GET `/user`
                 "id": 1,
                 "name": "test",
                 "role": "user/manager/master",
-                "department": 1,
+                "department": {
+                    "id": 1,
+                    "name": "test"
+                },
                 "hours": 10
             },
             ...
@@ -114,7 +117,10 @@ GET `/user/{user_id}`
              "id": 1,
              "name": "test",
              "role": "user/manager/master",
-             "department": 1,
+             "department": {
+                 "id": 1,
+                 "name": "test"
+             },
              "hours": 10
         }
     }

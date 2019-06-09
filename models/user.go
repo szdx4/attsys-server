@@ -6,8 +6,8 @@ type User struct {
 	Name         string     `json:"name"`
 	Password     string     `json:"-"`
 	Role         string     `json:"role" gorm:"type:enum('user','manager','master')"`
-	DepartmentID uint       `json:"department"`
-	Department   Department `json:"-"`
+	DepartmentID uint       `json:"-"`
+	Department   Department `json:"department"`
 	Hours        uint       `json:"hours"`
 	Shifts       []Shift    `json:"-" gorm:"foreignkey:UserID"`
 	Hourss       []Hours    `json:"-" gorm:"foreignkey:UserID"`

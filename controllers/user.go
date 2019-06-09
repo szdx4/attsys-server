@@ -220,17 +220,5 @@ func UserUpdate(c *gin.Context) {
 	department := models.Department{}
 	database.Connector.First(&department, user.DepartmentID)
 
-	// 设置部门主管
-	if user.Role == "manager" {
-		department.ManagerID = user.ID
-		database.Connector.Save(&department)
-	}
-
-	// 部门没有主管
-	if user.Role == "user" && department.ManagerID == user.ID {
-		department.ManagerID = 0
-		database.Connector.Save(&department)
-	}
-
 	response.UserUpdate(c)
 }

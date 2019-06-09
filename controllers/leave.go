@@ -10,6 +10,7 @@ import (
 	"github.com/szdx4/attsys-server/models"
 	"github.com/szdx4/attsys-server/requests"
 	"github.com/szdx4/attsys-server/response"
+	"github.com/szdx4/attsys-server/utils/common"
 	"github.com/szdx4/attsys-server/utils/database"
 	"github.com/szdx4/attsys-server/utils/message"
 )
@@ -70,8 +71,10 @@ func LeaveCreate(c *gin.Context) {
 		return
 	}
 
-	managerID := user.Department.ManagerID
-	message.Send(user.ID, managerID, "请假申请", "理由："+leave.Remark)
+	manager := common.DepartmentManager(user.Department)
+	if manager != nil {
+		message.Send(user.ID, manager.ID, "请假申请", "理由："+leave.Remark)
+	}
 
 	response.LeaveCreate(c, leave.ID)
 }

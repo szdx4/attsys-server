@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/szdx4/attsys-server/utils/common"
 	"github.com/szdx4/attsys-server/utils/message"
 
 	"github.com/gin-gonic/gin"
@@ -63,7 +64,10 @@ func OvertimeCreate(c *gin.Context) {
 		return
 	}
 
-	message.Send(user.ID, user.Department.ManagerID, "加班申请", "理由："+overtime.Remark)
+	manager := common.DepartmentManager(user.Department)
+	if manager != nil {
+		message.Send(user.ID, manager.ID, "加班申请", "理由："+overtime.Remark)
+	}
 
 	response.OvertimeCreate(c, overtime.ID)
 }

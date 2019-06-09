@@ -133,6 +133,25 @@ DELETE `/user/{user_id}`
         "status": 200
     }
 
+### 修改密码
+
+PUT `/user/{user_id}/password`
+
+#### Header
+
+ - Authorization: Bearer {Token}
+
+#### JSON 参数
+
+ - old_password: 原密码，manager 和 master 权限可选
+ - new_password: 新密码
+
+#### 响应
+
+    {
+        "status": 200
+    }
+
 ## 部门相关
 
 ### 部门列表 （ok）

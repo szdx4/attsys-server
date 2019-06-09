@@ -16,6 +16,8 @@ func Router() *gin.Engine {
 
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowOrigins = []string{"*"}
+	corsConfig.AllowHeaders = []string{"*"}
+	corsConfig.AllowMethods = []string{"*"}
 	r.Use(cors.New(corsConfig))
 
 	gin.SetMode(config.App.RunMode)

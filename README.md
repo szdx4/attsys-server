@@ -10,3 +10,4 @@
     go get -u -v golang.org/x/crypto/bcrypt
     go get -u -v github.com/skip2/go-qrcode
     go get -u -v github.com/tencentcloud/tencentcloud-sdk-go
+    go get -u -v github.com/gin-contrib/cors

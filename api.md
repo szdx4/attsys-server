@@ -258,6 +258,10 @@ DELETE `/department/{department_id}`
 
 GET `/face/user/{user_id}`
 
+#### 说明
+
+人脸格式样例见 `face.base64.txt` 文件。
+
 #### Header
 
  - Authorization: Bearer {Token}

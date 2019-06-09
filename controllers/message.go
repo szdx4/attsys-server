@@ -28,6 +28,7 @@ func MessageShow(c *gin.Context) {
 		return
 	}
 
+	// 只有发送人和接受者可以读取指定信息
 	authID, _ := c.Get("user_id")
 	if message.FromUserID != authID && message.ToUserID != authID {
 		response.Unauthorized(c, "This is not your message")
@@ -35,7 +36,11 @@ func MessageShow(c *gin.Context) {
 		return
 	}
 
-	message.Status = "read"
+	// 如果是接受者读取指定信息，则变为已读
+	if message.ToUserID == authID {
+		message.Status = "read"
+	}
+
 	database.Connector.Save(&message)
 
 	response.MessageShow(c, message)

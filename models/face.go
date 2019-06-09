@@ -4,7 +4,7 @@ package models
 type Face struct {
 	CommonFields
 	UserID uint   `json:"-"`
-	Info   string `json:"info" gorm:"type:text"`
+	Info   string `json:"info" gorm:"type:longtext"`
 	Status string `json:"status" gorm:"type:enum('wait','available','discarded')"`
 	User   User   `json:"user"`
 }

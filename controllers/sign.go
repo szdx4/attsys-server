@@ -58,6 +58,16 @@ func SignWithQrcode(c *gin.Context) {
 		return
 	}
 
+	// 获得登录者得 id
+	authID, _ := c.Get("user_id")
+
+	// 用户只能获取自己的签到情况
+	if userID != authID {
+		response.Unauthorized(c, "You can only sign for yourself")
+		c.Abort()
+		return
+	}
+
 	shift := models.Shift{}
 	database.Connector.Where("status = 'no' AND user_id = ? AND end_at >= ?", userID, time.Now()).Order("start_at ASC").First(&shift)
 

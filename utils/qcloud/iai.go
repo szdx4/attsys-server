@@ -52,8 +52,8 @@ func PersonInit() {
 
 func getQcloudIaiClient() *iai.Client {
 	credential := common.NewCredential(
-		"AKIDOaaKvJVXM8g28Bycx9KI3ZsBIAsQlrjO",
-		"ax4wjJisrcATWVGo7DF2at43oSu8AwUv",
+		config.Qcloud.SecretID,
+		config.Qcloud.SecretKey,
 	)
 
 	cpf := profile.NewClientProfile()

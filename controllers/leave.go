@@ -139,7 +139,7 @@ func LeaveList(c *gin.Context) {
 	total := 0
 
 	leaves := []models.Leave{}
-	db := database.Connector.Joins("LEFT JOIN users ON users.id = leaves.user_id")
+	db := database.Connector.Preload("User").Joins("LEFT JOIN users ON users.id = leaves.user_id")
 
 	role, _ := c.Get("user_role")
 	authID, _ := c.Get("user_id")

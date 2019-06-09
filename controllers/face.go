@@ -55,9 +55,17 @@ func FaceCreate(c *gin.Context) {
 		return
 	}
 
+	authID, _ := c.Get("user_id")
+
 	userID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		response.BadRequest(c, "User ID invalid")
+		c.Abort()
+		return
+	}
+
+	if userID != authID.(int) {
+		response.Unauthorized(c, "You can only update face info for yourself")
 		c.Abort()
 		return
 	}

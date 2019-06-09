@@ -44,6 +44,12 @@ func LeaveCreate(c *gin.Context) {
 		return
 	}
 
+	if startAt.Before(time.Now()) {
+		response.BadRequest(c, "You cannot apply leave before now")
+		c.Abort()
+		return
+	}
+
 	userID, _ := strconv.Atoi(c.Param("id"))
 	authID, _ := c.Get("user_id")
 

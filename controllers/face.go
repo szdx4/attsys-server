@@ -29,7 +29,7 @@ func FaceUserShow(c *gin.Context) {
 	}
 
 	face := models.Face{}
-	database.Connector.Where("user_id = ? AND status = 'available'", userID).First(&face)
+	database.Connector.Preload("User").Where("user_id = ? AND status = 'available'", userID).First(&face)
 
 	if face.ID == 0 {
 		response.NoContent(c)
@@ -89,7 +89,7 @@ func FaceCreate(c *gin.Context) {
 // FaceList 获取人脸列表
 func FaceList(c *gin.Context) {
 	faces := []models.Face{}
-	db := database.Connector
+	db := database.Connector.Preload("User")
 
 	if userID, isExit := c.GetQuery("user_id"); isExit {
 		userID, _ := strconv.Atoi(userID)

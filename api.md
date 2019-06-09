@@ -272,7 +272,11 @@ GET `/face/user/{user_id}`
         "status": 200,
         "data": {
             "id": 1,
-            "user_id": 1,
+            "user": {
+                "id": 1,
+                "name": "test name",
+                ...
+            },
             "info": "xxxxxxx",
             "status": "wait/available/discarded"
         }
@@ -321,7 +325,11 @@ GET `/face`
         "data": [
             {
                 "id": 1,
-                "user_id": 1,
+                "user": {
+                    "id": 1,
+                    "name": "name",
+                    ...
+                },
                 "info": "xxxxxxx",
                 "status": "wait/available/discarded"
             },

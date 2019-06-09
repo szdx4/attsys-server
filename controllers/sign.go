@@ -15,7 +15,7 @@ import (
 // SignGetQrcode 获取二维码
 func SignGetQrcode(c *gin.Context) {
 	qrcode := models.Qrcode{
-		ExpiredAt: time.Now().Add(60 * time.Second),
+		ExpiredAt: time.Now().Add(time.Duration(config.App.QrcodeValidMinutes) * time.Minute),
 	}
 	qrcode.RandToken()
 	database.Connector.Create(&qrcode)

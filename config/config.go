@@ -16,6 +16,7 @@ type AppConfig struct {
 	TokenValid         int
 	MinUserLength      int
 	MinOvertimeMinutes int
+	QrcodeValidMinutes int
 }
 
 // ServerConfig 存储 HTTP 服务器配置
@@ -77,6 +78,7 @@ func loadApp() {
 	App.TokenValid = cfg.MustInt("APP", "TOKEN_VALID", 2)
 	App.MinUserLength = cfg.MustInt("APP", "MIN_USER_LENGTH", 2)
 	App.MinOvertimeMinutes = cfg.MustInt("APP", "MIN_OVERTIME_MINUTES", 60)
+	App.QrcodeValidMinutes = cfg.MustInt("APP", "QRCODE_VALID_MINUTES", 1)
 }
 
 func loadServer() {

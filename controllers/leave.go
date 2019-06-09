@@ -31,13 +31,13 @@ func LeaveCreate(c *gin.Context) {
 	}
 
 	// 构造并存入数据库
-	startAt, err := config.StrToTime(req.StartAt)
+	startAt, err := common.ParseTime(req.StartAt)
 	if err != nil {
 		response.BadRequest(c, errors.New("start_at not valid").Error())
 		c.Abort()
 		return
 	}
-	endAt, err := config.StrToTime(req.EndAt)
+	endAt, err := common.ParseTime(req.EndAt)
 	if err != nil {
 		response.BadRequest(c, errors.New("end_at not valid").Error())
 		c.Abort()

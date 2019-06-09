@@ -3,7 +3,7 @@ package requests
 import (
 	"errors"
 
-	"github.com/szdx4/attsys-server/config"
+	"github.com/szdx4/attsys-server/utils/common"
 )
 
 // LeaveCreateRequest 申请请假请求
@@ -16,11 +16,11 @@ type LeaveCreateRequest struct {
 // Validate 验证 LeaveCreateRequest 请求中的有效性
 func (r *LeaveCreateRequest) Validate() error {
 	// 将接收的 string 格式转换成 Time
-	startAt, err := config.StrToTime(r.StartAt)
+	startAt, err := common.ParseTime(r.StartAt)
 	if err != nil {
 		return errors.New("start_at not valid")
 	}
-	endAt, err := config.StrToTime(r.EndAt)
+	endAt, err := common.ParseTime(r.EndAt)
 	if err != nil {
 		return errors.New("end_at not valid")
 	}

@@ -5,8 +5,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/szdx4/attsys-server/config"
 	"github.com/szdx4/attsys-server/models"
+	"github.com/szdx4/attsys-server/utils/common"
 	"github.com/szdx4/attsys-server/utils/database"
 )
 
@@ -20,11 +20,11 @@ type ShiftCreateRequest struct {
 // Validate 验证 ShiftCreateRequest 请求中的有效性
 func (r *ShiftCreateRequest) Validate(c *gin.Context) error {
 	// 将接收的 string 格式转换成 Time
-	startAt, err := config.StrToTime(r.StartAt)
+	startAt, err := common.ParseTime(r.StartAt)
 	if err != nil {
 		return errors.New("start_at not valid")
 	}
-	endAt, err := config.StrToTime(r.EndAt)
+	endAt, err := common.ParseTime(r.EndAt)
 	if err != nil {
 		return errors.New("end_at not valid")
 	}
@@ -71,11 +71,11 @@ type ShiftDepartmentRequest struct {
 // Validate 验证 ShiftDepartmentRequest 请求中的有效性
 func (r *ShiftDepartmentRequest) Validate(departmentID int, role string, authID int) error {
 	// 将接收的 string 格式转换成 Time
-	startAt, err := config.StrToTime(r.StartAt)
+	startAt, err := common.ParseTime(r.StartAt)
 	if err != nil {
 		return errors.New("start_at not valid")
 	}
-	endAt, err := config.StrToTime(r.EndAt)
+	endAt, err := common.ParseTime(r.EndAt)
 	if err != nil {
 		return errors.New("end_at not valid")
 	}

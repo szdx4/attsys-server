@@ -3,6 +3,7 @@ package controllers
 import (
 	"errors"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/szdx4/attsys-server/config"
@@ -37,6 +38,12 @@ func ShiftCreate(c *gin.Context) {
 	endAt, err := config.StrToTime(req.EndAt)
 	if err != nil {
 		response.BadRequest(c, errors.New("end_at not valid").Error())
+		c.Abort()
+		return
+	}
+
+	if startAt.Before(time.Now()) {
+		response.BadRequest(c, "You cannot arrange shift before now")
 		c.Abort()
 		return
 	}

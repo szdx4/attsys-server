@@ -13,7 +13,7 @@ import (
 // HoursShow 获取工时记录
 func HoursShow(c *gin.Context) {
 	hours := []models.Hours{}
-	db := database.Connector.Joins("LEFT JOIN users ON hours.user_id = users.id")
+	db := database.Connector.Preload("User").Order("created_at DESC").Joins("LEFT JOIN users ON hours.user_id = users.id")
 
 	role, _ := c.Get("user_role")
 	authID, _ := c.Get("user_id")
@@ -70,18 +70,5 @@ func HoursShow(c *gin.Context) {
 		return
 	}
 
-	// 构造 data 响应
-	datas := []models.HourData{}
-	for i := 0; i < len(hours); i++ {
-		data := models.HourData{
-			ID:       hours[i].ID,
-			UserID:   hours[i].ID,
-			UserName: hours[i].User.Name,
-			Date:     hours[i].Date,
-			Hours:    hours[i].Hours,
-		}
-		datas = append(datas, data)
-	}
-
-	response.HoursShow(c, total, page, datas)
+	response.HoursShow(c, total, page, hours)
 }

@@ -13,6 +13,7 @@ import (
 
 // Token 验证 Token 中间件
 func Token(c *gin.Context) {
+	// 获得 HTTP Headers 中 Authorization 的值
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" {
 		response.Unauthorized(c, "This action need authorized")
@@ -20,6 +21,7 @@ func Token(c *gin.Context) {
 		return
 	}
 
+	// 将 Authorization 分段
 	auth := strings.Fields(authHeader)
 	if len(auth) < 2 {
 		response.Unauthorized(c, "This action need authorized")
@@ -27,14 +29,17 @@ func Token(c *gin.Context) {
 		return
 	}
 
+	// 判断 Token 类型（仅支持 Bearer Token）
 	if auth[0] != "Bearer" {
 		response.BadRequest(c, "Token type unsupported")
 		c.Abort()
 		return
 	}
 
+	// 获得 Token
 	tokenString := auth[1]
 
+	// 验证 Token 的有效性
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -48,10 +53,11 @@ func Token(c *gin.Context) {
 		return
 	}
 
+	// 解析 Token 中编码的信息
 	if claims, ok := token.Claims.(jwt.MapClaims); ok {
 		expiredAt, err := time.Parse(time.RFC3339, claims["expired_at"].(string))
 		if err != nil {
-			response.Unauthorized(c, "Auth token not valid 1")
+			response.Unauthorized(c, "Auth token not valid")
 			c.Abort()
 			return
 		}

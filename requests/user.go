@@ -22,17 +22,20 @@ type UserAuthRequest struct {
 
 // Validate 验证 UserAuthRequest 请求中用户信息的有效性
 func (r *UserAuthRequest) Validate() (*models.User, error) {
+	// 验证用户存在性
 	user := &models.User{}
 	database.Connector.Where("name = ?", r.Name).First(&user)
 	if user.ID == 0 {
 		return nil, errors.New("User not found")
 	}
 
+	// 验证密码的有效性
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(r.Password))
 	if err != nil {
 		return nil, errors.New("Password invalid")
 	}
 
+	// 无误则返回空
 	return user, nil
 }
 
@@ -45,26 +48,31 @@ type UserCreateRequest struct {
 
 // Validate 验证创建用户请求的合法性
 func (r *UserCreateRequest) Validate() error {
+	// 验证用户名长度
 	if len(r.Name) < config.App.MinUserLength {
 		return errors.New("User name must longer than " + strconv.Itoa(config.App.MinUserLength))
 	}
 
+	// 验证用户存在性
 	user := models.User{}
 	database.Connector.Where("name = ?", r.Name).First(&user)
 	if user.ID > 0 {
 		return errors.New("User name exists")
 	}
 
+	// 验证密码长度
 	if len(r.Password) < config.App.MinPwdLength {
 		return errors.New("Password must longer than " + strconv.Itoa(config.App.MinPwdLength))
 	}
-	// 验证部门的存在与否
+
+	// 验证所属部门的存在性
 	department := models.Department{}
 	database.Connector.First(&department, r.Department)
 	if department.ID == 0 {
 		return errors.New("Department not exists")
 	}
 
+	// 无误则返回空
 	return nil
 }
 
@@ -115,6 +123,7 @@ func (r *UserUpdateRequest) Validate(c *gin.Context) (int, error) {
 		}
 	}
 
+	// 无误则返回空
 	return userID, nil
 }
 
@@ -126,10 +135,12 @@ type UserPasswordRequest struct {
 
 // Validate 验证修改密码请求的合法性
 func (r *UserPasswordRequest) Validate(role string, authID, userID int) (string, error) {
+	// 验证原密码存在性
 	if role == "user" && r.OldPassword == "" {
 		return "", errors.New("Old password missing")
 	}
 
+	// 验证用户修改自己密码
 	if role == "user" && authID != userID {
 		return "", errors.New("You can only modify your own password")
 	}
@@ -148,6 +159,7 @@ func (r *UserPasswordRequest) Validate(role string, authID, userID int) (string,
 		}
 	}
 
+	// 验证用户新密码长度
 	if len(r.NewPassword) < config.App.MinPwdLength {
 		return "", errors.New("Password must longer than " + strconv.Itoa(config.App.MinPwdLength))
 	}
@@ -157,5 +169,6 @@ func (r *UserPasswordRequest) Validate(role string, authID, userID int) (string,
 		return "", errors.New("Password hash generate error")
 	}
 
+	// 无误则返回空
 	return string(hash), nil
 }

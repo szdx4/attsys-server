@@ -29,7 +29,7 @@ func (r *ShiftCreateRequest) Validate(c *gin.Context) error {
 		return errors.New("end_at not valid")
 	}
 
-	// 验证给出排班的有效性
+	// 验证给出排班的先后有效性
 	if startAt.After(endAt) {
 		return errors.New("Time not valid")
 	}
@@ -53,11 +53,12 @@ func (r *ShiftCreateRequest) Validate(c *gin.Context) error {
 		return errors.New("Time is conflicting")
 	}
 
-	// 验证类型的有效性
+	// 验证排班类型的有效性
 	if r.Type != "normal" && r.Type != "allovertime" {
 		return errors.New("Type not valid")
 	}
 
+	// 无误则返回空
 	return nil
 }
 
@@ -96,6 +97,7 @@ func (r *ShiftDepartmentRequest) Validate(departmentID int, role string, authID 
 		return errors.New("Department not found")
 	}
 
+	// 验证
 	if role == "manager" {
 		manager := models.User{}
 		database.Connector.First(&manager, authID)

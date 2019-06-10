@@ -25,11 +25,12 @@ func (r *LeaveCreateRequest) Validate() error {
 		return errors.New("end_at not valid")
 	}
 
-	// 验证给出请假时间的有效性
+	// 验证请假时间的先后有效性
 	if startAt.After(endAt) {
 		return errors.New("Time not valid")
 	}
 
+	// 无误则返回空
 	return nil
 }
 
@@ -45,5 +46,6 @@ func (r *LeaveUpdateRequest) Validate() error {
 		return errors.New("Status not valid")
 	}
 
+	// 无误则返回空
 	return nil
 }

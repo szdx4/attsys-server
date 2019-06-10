@@ -11,10 +11,12 @@ type OvertimeCreateRequest struct {
 
 // Validate 验证 OvertimeCreateRequest 请求中的有效性
 func (r *OvertimeCreateRequest) Validate() error {
+	// 验证加班原因不能为空
 	if len(r.Remark) == 0 {
 		return errors.New("Remark cannot be empty")
 	}
 
+	// 无误则返回空
 	return nil
 }
 
@@ -29,5 +31,7 @@ func (r *OvertimeUpdateRequest) Validate() error {
 	if r.Status != "pass" && r.Status != "reject" {
 		return errors.New("Status not valid")
 	}
+
+	// 无误则返回空
 	return nil
 }

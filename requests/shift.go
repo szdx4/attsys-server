@@ -37,12 +37,14 @@ func (r *ShiftCreateRequest) Validate(c *gin.Context) error {
 	// 验证个人排班的冲突性
 	userID, _ := strconv.Atoi(c.Param("id"))
 
+	// 验证用户是否存在
 	user := models.User{}
 	database.Connector.First(&user, userID)
 	if user.ID == 0 {
 		return errors.New("User not found")
 	}
 
+	// 判断排班时间是否有冲突
 	shift := models.Shift{}
 	db := database.Connector
 	db = db.Where("user_id = ?", userID)
@@ -90,12 +92,14 @@ func (r *ShiftDepartmentRequest) Validate(departmentID int, role string, authID 
 		return errors.New("Type not valid")
 	}
 
+	// 验证部门是否存在
 	department := models.Department{}
 	database.Connector.First(&department, departmentID)
 	if department.ID == 0 {
 		return errors.New("Department not found")
 	}
 
+	// 验证认证用户权限
 	if role == "manager" {
 		manager := models.User{}
 		database.Connector.First(&manager, authID)

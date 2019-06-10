@@ -9,10 +9,4 @@ type User struct {
 	DepartmentID uint       `json:"-"`
 	Department   Department `json:"department"`
 	Hours        uint       `json:"hours"`
-	Shifts       []Shift    `json:"-" gorm:"foreignkey:UserID"`
-	Hourss       []Hours    `json:"-" gorm:"foreignkey:UserID"`
-	Leaves       []Leave    `json:"-" gorm:"foreignkey:UserID"`
-	Overtimes    []Overtime `json:"-" gorm:"foreignkey:UserID"`
-	MessageFrom  []Message  `json:"-" gorm:"foreignkey:FromUserID"`
-	MessageTo    []Message  `json:"-" gorm:"foreignkey:ToUserID"`
 }

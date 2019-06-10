@@ -7,6 +7,7 @@ import (
 
 // Master 验证用户是否具有 master 的权限
 func Master(c *gin.Context) {
+	// 获取认证用户角色
 	role, ok := c.Get("user_role")
 	if !ok {
 		response.Unauthorized(c, "Access Denied")
@@ -14,6 +15,7 @@ func Master(c *gin.Context) {
 		return
 	}
 
+	// 判断用户权限
 	if role != "master" {
 		response.Unauthorized(c, "Access Denied")
 		c.Abort()

@@ -14,18 +14,19 @@ import (
 
 // SignGetQrcode 获取二维码
 func SignGetQrcode(c *gin.Context) {
+	// 创建一个二维码
 	qrcode := models.Qrcode{
 		ExpiredAt: time.Now().Add(time.Duration(config.App.QrcodeValidMinutes) * time.Minute),
 	}
 	qrcode.RandToken()
 	database.Connector.Create(&qrcode)
-
 	if qrcode.ID == 0 {
 		response.InternalServerError(c, "Database error")
 		c.Abort()
 		return
 	}
 
+	// 获得二维码图片的 dataURL
 	image, err := qrcode.Image()
 	if err != nil {
 		response.InternalServerError(c, "Qrcode generate error")
@@ -33,11 +34,13 @@ func SignGetQrcode(c *gin.Context) {
 		return
 	}
 
+	// 发送响应
 	response.SignGetQrcode(c, image, qrcode.ExpiredAt)
 }
 
 // SignWithQrcode 通过二维码签到
 func SignWithQrcode(c *gin.Context) {
+	// 获取 URL 中的用户 ID
 	userID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		response.BadRequest(c, "User ID invalid")
@@ -52,13 +55,14 @@ func SignWithQrcode(c *gin.Context) {
 		return
 	}
 
+	// 验证提交数据的合法性
 	if err := req.Validate(); err != nil {
 		response.BadRequest(c, err.Error())
 		c.Abort()
 		return
 	}
 
-	// 获得登录者得 id
+	// 获取认证用户信息
 	authID, _ := c.Get("user_id")
 
 	// 用户只能获取自己的签到情况
@@ -68,36 +72,39 @@ func SignWithQrcode(c *gin.Context) {
 		return
 	}
 
+	// 找到下一个未签到的排班
 	shift := models.Shift{}
 	database.Connector.Where("status = 'no' AND user_id = ? AND end_at >= ?", userID, time.Now()).Order("start_at ASC").First(&shift)
-
 	if shift.ID == 0 {
 		response.NotFound(c, "Shift not found")
 		c.Abort()
 		return
 	}
 
+	// 将排班状态更改为已签到
 	shift.Status = "on"
 	database.Connector.Save(&shift)
 
+	// 建立签到记录
 	sign := models.Sign{
 		ShiftID: shift.ID,
 		StartAt: time.Now(),
 		EndAt:   time.Now(),
 	}
 	database.Connector.Create(&sign)
-
 	if sign.ID == 0 {
 		response.InternalServerError(c, "Database error")
 		c.Abort()
 		return
 	}
 
+	// 发送响应
 	response.Sign(c, sign.ID)
 }
 
 // SignWithFace 通过人脸签到
 func SignWithFace(c *gin.Context) {
+	// 获取 URL 中的用户 ID
 	userID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		response.BadRequest(c, "User ID invalid")
@@ -112,42 +119,46 @@ func SignWithFace(c *gin.Context) {
 		return
 	}
 
+	// 验证提交数据的合法性
 	if err := req.Validate(userID); err != nil {
 		response.BadRequest(c, err.Error())
 		c.Abort()
 		return
 	}
 
+	// 找到下一个未签到的排班
 	shift := models.Shift{}
 	database.Connector.Where("status = 'no' AND user_id = ? AND end_at >= ?", userID, time.Now()).Order("start_at ASC").First(&shift)
-
 	if shift.ID == 0 {
 		response.NotFound(c, "Shift not found")
 		c.Abort()
 		return
 	}
 
+	// 将排班状态更改为已签到
 	shift.Status = "on"
 	database.Connector.Save(&shift)
 
+	// 建立签到记录
 	sign := models.Sign{
 		ShiftID: shift.ID,
 		StartAt: time.Now(),
 		EndAt:   time.Now(),
 	}
 	database.Connector.Create(&sign)
-
 	if sign.ID == 0 {
 		response.InternalServerError(c, "Database error")
 		c.Abort()
 		return
 	}
 
+	// 发送响应
 	response.Sign(c, sign.ID)
 }
 
 // SignOff 签退
 func SignOff(c *gin.Context) {
+	// 获取 URL 中的签到 ID
 	signID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		response.BadRequest(c, "Sign ID invalid")
@@ -155,35 +166,41 @@ func SignOff(c *gin.Context) {
 		return
 	}
 
+	// 查询签到记录
 	sign := models.Sign{}
 	database.Connector.Preload("Shift").Preload("User").First(&sign, signID)
-
 	if sign.ID == 0 {
 		response.NotFound(c, "Sign not found")
 		c.Abort()
 		return
 	}
 
+	// 计算能否申请加班
 	diff := time.Now().Sub(sign.Shift.EndAt).Minutes()
 	canOvertime := false
-
 	if diff > float64(config.App.MinOvertimeMinutes) {
 		sign.EndAt = sign.Shift.EndAt
 		canOvertime = true
 	} else {
 		sign.EndAt = time.Now()
 	}
+
+	// 保存签到记录
 	database.Connector.Save(&sign)
 
+	// 更改排班状态
 	sign.Shift.Status = "off"
 	database.Connector.Save(&sign.Shift)
 
+	// 计算工时
 	timeDiff := uint(sign.EndAt.Sub(sign.StartAt).Hours())
 
+	// 为用户加工时
 	user := sign.Shift.User
 	user.Hours += timeDiff
 	database.Connector.Save(&user)
 
+	// 创建工时记录
 	hours := models.Hours{
 		UserID: user.ID,
 		Date:   sign.EndAt,
@@ -191,11 +208,13 @@ func SignOff(c *gin.Context) {
 	}
 	database.Connector.Create(&hours)
 
+	// 发送响应
 	response.SignOff(c, canOvertime)
 }
 
 // SignStatus 获取用户签到状态
 func SignStatus(c *gin.Context) {
+	// 获取 URL 中的用户 ID
 	userID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		response.BadRequest(c, "User ID invalid")
@@ -203,6 +222,7 @@ func SignStatus(c *gin.Context) {
 		return
 	}
 
+	// 获取认证用户信息
 	role, _ := c.Get("user_role")
 	authID, _ := c.Get("user_id")
 
@@ -249,6 +269,7 @@ func SignStatus(c *gin.Context) {
 		return
 	}
 
+	// 查找排班对应的签到记录
 	sign := models.Sign{}
 	database.Connector.Where("shift_id = ?", shift.ID).First(&sign)
 	if sign.ID == 0 {
@@ -257,5 +278,6 @@ func SignStatus(c *gin.Context) {
 		return
 	}
 
+	// 发送响应
 	response.SignStatus(c, sign.ID)
 }

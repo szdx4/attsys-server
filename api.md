@@ -747,7 +747,13 @@ GET `/sign/user/{user_id}`
 
     {
         "status": 200,
-        "sign_id": 2
+        "sign_id": 2,
+        "shift": {
+            "id": 1,
+            "start_at": "2019-xxxx",
+            "end_at": "2019-xxxx",
+            ...
+        }
     }
 
 ### 获取二维码 ok

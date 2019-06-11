@@ -279,5 +279,5 @@ func SignStatus(c *gin.Context) {
 	}
 
 	// 发送响应
-	response.SignStatus(c, sign.ID)
+	response.SignStatus(c, sign.ID, shift)
 }

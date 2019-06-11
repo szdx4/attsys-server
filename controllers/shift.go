@@ -279,6 +279,13 @@ func ShiftAll(c *gin.Context) {
 	// 存入数据库
 	var shiftIDs []uint
 	for _, user := range users {
+		// 处理请假冲突
+		leaveCheck := models.Shift{}
+		database.Connector.Where("user_id = ? AND start_at <= ? AND end_at >= ? AND status = pass", user.ID, endAt, startAt).First(&leaveCheck)
+		if leaveCheck.ID != 0 {
+			continue
+		}
+
 		shift := models.Shift{
 			UserID:  user.ID,
 			StartAt: startAt,

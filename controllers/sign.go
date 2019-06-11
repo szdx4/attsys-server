@@ -180,7 +180,7 @@ func SignOff(c *gin.Context) {
 
 	// 查询签到记录
 	sign := models.Sign{}
-	database.Connector.Preload("Shift").Preload("User").First(&sign, signID)
+	database.Connector.Preload("Shift").Preload("Shift.User").First(&sign, signID)
 	if sign.ID == 0 {
 		response.NotFound(c, "Sign not found")
 		c.Abort()

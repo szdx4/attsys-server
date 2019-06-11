@@ -179,9 +179,20 @@ func (r *ShiftUpdateRequest) Validate(c *gin.Context) error {
 		return errors.New("Shift ID not valid")
 	}
 	shift := models.Shift{}
-	database.Connector.First(&shift, shiftID)
+	database.Connector.Preload("User").First(&shift, shiftID)
 	if shift.ID == 0 {
 		return errors.New("Shift not found")
+	}
+
+	// 验证认证用户权限
+	role, _ := c.Get("user_role")
+	authID, _ := c.Get("user_id")
+	if role == "manager" {
+		manager := models.User{}
+		database.Connector.First(&manager, authID)
+		if manager.DepartmentID != shift.User.DepartmentID {
+			return errors.New("You cannot modify other department shift")
+		}
 	}
 
 	// 判断排班时间是否有冲突

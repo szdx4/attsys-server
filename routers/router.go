@@ -77,6 +77,8 @@ func Router() *gin.Engine {
 	r.POST("/shift/all", middleware.Token, middleware.Master, controllers.ShiftAll)
 	// 删除排班
 	r.DELETE("/shift/:id", middleware.Token, middleware.Manager, controllers.ShiftDelete)
+	// 修改排班
+	r.PUT("/shift/:id", middleware.Token, middleware.Manager, controllers.ShiftUpdate)
 
 	// Leave
 	// 申请请假

@@ -339,3 +339,68 @@ func ShiftDelete(c *gin.Context) {
 	// 发送响应
 	response.ShiftDelete(c)
 }
+
+// ShiftUpdate 修改排班
+func ShiftUpdate(c *gin.Context) {
+	var req requests.ShiftUpdateRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.BadRequest(c, err.Error())
+		c.Abort()
+		return
+	}
+
+	// 验证提交数据的合法性
+	if err := req.Validate(c); err != nil {
+		response.BadRequest(c, err.Error())
+		c.Abort()
+		return
+	}
+
+	// 解析 start_at 和 end_at 字段
+	startAt, err := common.ParseTime(req.StartAt)
+	if err != nil {
+		response.BadRequest(c, "start_at not valid")
+		c.Abort()
+		return
+	}
+	endAt, err := common.ParseTime(req.EndAt)
+	if err != nil {
+		response.BadRequest(c, "end_at not valid")
+		c.Abort()
+		return
+	}
+
+	// 排班不能在现在之前
+	if startAt.Before(time.Now()) {
+		response.BadRequest(c, "You cannot arrange shift before now")
+		c.Abort()
+		return
+	}
+
+	// 查询对应的排班
+	shiftID, _ := strconv.Atoi(c.Param("id"))
+	shift := models.Shift{}
+	database.Connector.First(&shift, shiftID)
+
+	// 修改排班数据
+	shift.StartAt = startAt
+	shift.EndAt = endAt
+
+	// 如果是永久修改
+	if req.Effect == "all" {
+		shifts := []models.Shift{}
+		db := database.Connector
+		db = db.Where("user_id = ?", shift.UserID)
+		db = db.Where("start_at > ?", shift.EndAt)
+		db.Find(&shifts)
+
+		for _, item := range shifts {
+			item.StartAt = shift.StartAt
+			item.EndAt = shift.EndAt
+			database.Connector.Save(&item)
+		}
+	}
+
+	// 发送响应
+	response.ShiftUpdate(c)
+}

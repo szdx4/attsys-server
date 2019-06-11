@@ -537,6 +537,28 @@ DELETE `/shift/{shift_id}`
         "status": 200
     }
 
+### 修改排班
+
+PUT `/shift/{shift_id}`
+
+#### 说明
+
+#### Header
+
+ - Authorization: Bearer {Token}
+
+#### JSON 参数
+
+ - start_at: 开始时间
+ - end_at: 结束时间
+ - effect: temp/all  temp 代表只修改这一次排班，即临时修改;all 代表修改这一次和之后所有的排班，即永久修改
+
+#### 响应
+
+    {
+        "status": 200
+    }
+
 ## 请假相关
 
 ### 请假列表 （ok）

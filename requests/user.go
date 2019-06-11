@@ -81,7 +81,7 @@ type UserUpdateRequest struct {
 	Name       string `binding:"required"`
 	Department uint   `binding:"required"`
 	Role       string `binding:"required"`
-	Hours      uint   `binding:"required"`
+	Hours      uint
 }
 
 // Validate 验证 UserUpdateRequest 请求中信息的有效性

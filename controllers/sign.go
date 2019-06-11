@@ -212,7 +212,7 @@ func SignOff(c *gin.Context) {
 	database.Connector.Save(&sign.Shift)
 
 	// 计算工时
-	timeDiff := uint(sign.EndAt.Sub(sign.StartAt).Hours())
+	timeDiff := uint(sign.Shift.EndAt.Sub(sign.StartAt).Hours())
 
 	// 为用户加工时
 	user := sign.Shift.User

@@ -2,15 +2,14 @@ package main
 
 import (
 	"fmt"
+	"github.com/szdx4/attsys-server/utils/qcloud"
 	"log"
 	"net/http"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/szdx4/attsys-server/config"
 	"github.com/szdx4/attsys-server/routers"
 	"github.com/szdx4/attsys-server/utils/database"
-	"github.com/szdx4/attsys-server/utils/qcloud"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {

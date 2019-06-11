@@ -188,6 +188,13 @@ func SignOff(c *gin.Context) {
 	// 保存签到记录
 	database.Connector.Save(&sign)
 
+	// 判断是否重复签退
+	if sign.Shift.Status == "off" {
+		response.BadRequest(c, "Shift had signed off")
+		c.Abort()
+		return
+	}
+
 	// 更改排班状态
 	sign.Shift.Status = "off"
 	database.Connector.Save(&sign.Shift)

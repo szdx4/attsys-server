@@ -80,6 +80,29 @@ POST `/user`
         "user_id": 2
     }
 
+### 批量添加用户 （ok）
+
+POST `/user/batch`
+
+#### 说明
+
+批量添加用户的csv文档格式样例见 user_batch.csv 文件
+
+#### Header
+
+ - Authorization: Bearer {Token}
+
+#### JSON 参数
+
+ - batch: 批量用户信息
+
+#### 响应
+
+    {
+        "status": 201,
+        "user_ids": [2, 3]
+    }
+    
 ### 修改用户 （ok）
 
 PUT `/user/{user_id}`

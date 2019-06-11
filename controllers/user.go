@@ -1,7 +1,10 @@
 package controllers
 
 import (
+	"encoding/base64"
+	"encoding/csv"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -280,4 +283,115 @@ func UserPassword(c *gin.Context) {
 
 	// 发送响应
 	response.UserPassword(c)
+}
+
+// UserBatch 批量添加用户
+func UserBatch(c *gin.Context) {
+	var req requests.UserBatchRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.BadRequest(c, err.Error())
+		c.Abort()
+		return
+	}
+
+	// 验证提交数据的合法性
+	if err := req.Validate(); err != nil {
+		response.BadRequest(c, err.Error())
+		c.Abort()
+		return
+	}
+
+	// 解码
+	batchBytes, _ := base64.StdEncoding.DecodeString(req.Batch)
+	reader := strings.NewReader(string(batchBytes))
+	csvReader := csv.NewReader(reader)
+	rows, err := csvReader.ReadAll()
+	if err != nil {
+		response.BadRequest(c, "csv file format invalid")
+		c.Abort()
+		return
+	}
+
+	res := []response.UserBatchResponse{}
+
+	for _, row := range rows {
+		resp := response.UserBatchResponse{}
+		name := row[0]
+		password := row[1]
+		departmentID, err := strconv.Atoi(row[2])
+		if err != nil {
+			resp.Message = "DepartmentID invalid"
+			resp.Status = 400
+			res = append(res, resp)
+			continue
+		}
+
+		// 验证用户名长度
+		if len(name) < config.App.MinUserLength {
+			resp.Message = "User name must longer than " + strconv.Itoa(config.App.MinUserLength)
+			resp.Status = 400
+			res = append(res, resp)
+			continue
+		}
+
+		// 验证用户名存在性
+		user := models.User{}
+		database.Connector.Where("name = ?", name).First(&user)
+		if user.ID != 0 {
+			resp.Message = "User name exists"
+			resp.Status = 400
+			res = append(res, resp)
+			continue
+		}
+
+		// 验证密码长度
+		if len(password) < config.App.MinPwdLength {
+			resp.Message = "Password must longer than " + strconv.Itoa(config.App.MinPwdLength)
+			resp.Status = 400
+			res = append(res, resp)
+			continue
+		}
+
+		// 验证部门是否存在
+		department := models.Department{}
+		database.Connector.First(&department, departmentID)
+		if department.ID == 0 {
+			resp.Message = "Department not exists"
+			resp.Status = 400
+			res = append(res, resp)
+			continue
+		}
+
+		// 生成密码的 bcrypt hash
+		hash, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+		if err != nil {
+			resp.Message = "Password hash generate error"
+			resp.Status = 500
+			res = append(res, resp)
+			continue
+		}
+
+		// 创建用户
+		newUser := models.User{
+			Name:         name,
+			Password:     string(hash),
+			DepartmentID: uint(departmentID),
+			Role:         "user",
+		}
+		database.Connector.Create(&newUser)
+		if newUser.ID < 1 {
+			resp.Message = "Database error"
+			resp.Status = 500
+			res = append(res, resp)
+			continue
+		}
+
+		// 创建成功
+		resp.UserID = newUser.ID
+		resp.Status = 201
+		res = append(res, resp)
+	}
+
+	// 返回响应
+	response.UserBatch(c, res)
 }

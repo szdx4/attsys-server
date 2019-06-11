@@ -65,3 +65,14 @@ func UserPassword(c *gin.Context) {
 		"status": http.StatusOK,
 	})
 }
+
+// UserBatch 响应单元
+type UserBatchResponse struct {
+	Status  int    `json:"status"`
+	UserID  uint   `json:"user_id"`
+	Message string `json:"message"`
+}
+
+func UserBatch(c *gin.Context, res []UserBatchResponse) {
+	c.JSON(http.StatusOK, res)
+}

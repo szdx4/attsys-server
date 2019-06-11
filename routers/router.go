@@ -27,6 +27,8 @@ func Router() *gin.Engine {
 	// User
 	// 用户认证
 	r.POST("/user/auth", controllers.UserAuth)
+	// 批量添加用户
+	r.POST("/user/batch", middleware.Token, middleware.Master, controllers.UserBatch)
 	// 获取指定用户信息
 	r.GET("/user/:id", middleware.Token, controllers.UserShow)
 	// 添加用户

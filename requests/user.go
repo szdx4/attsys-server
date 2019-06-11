@@ -1,11 +1,10 @@
 package requests
 
 import (
+	"encoding/base64"
 	"errors"
-	"strconv"
-
 	"github.com/gin-gonic/gin"
-
+	"strconv"
 	//"math/bits"
 
 	"github.com/szdx4/attsys-server/config"
@@ -173,4 +172,21 @@ func (r *UserPasswordRequest) Validate(role string, authID, userID int) (string,
 
 	// 无误则返回空
 	return string(hash), nil
+}
+
+// UserBatchRequest 批量添加用户请求
+type UserBatchRequest struct {
+	Batch string `binding:"required"`
+}
+
+// Validate 验证批量添加用户请求的和合法性
+func (r *UserBatchRequest) Validate() error {
+	// 验证 base64 编码正确性
+	_, err := base64.StdEncoding.DecodeString(r.Batch)
+	if err != nil {
+		return errors.New("csv file format invalid")
+	}
+
+	// 无误则返回空
+	return nil
 }

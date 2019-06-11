@@ -479,6 +479,27 @@ POST `/shift/department/{department_id}`
         "shift_ids": [2, 3]
     }
 
+### 全单位排班 （ok）
+
+POST '/shift/all'
+
+#### Header
+
+ - Authorization: Bearer {Token}
+
+#### JSON 参数
+
+ - start_at: 开始时间
+ - end_at: 结束时间
+ - type: 排班类型
+
+#### 响应
+
+    {
+        "status": 201,
+        "shift_ids": [2, 3]
+    }
+    
 ### 删除排班 （ok）
 
 DELETE `/shift/{shift_id}`

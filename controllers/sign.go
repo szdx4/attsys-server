@@ -72,8 +72,14 @@ func SignWithQrcode(c *gin.Context) {
 		return
 	}
 
-	// 找到下一个未签到的排班
+	// 验证是否重复签到
 	shift := models.Shift{}
+	database.Connector.Where("status = 'on' AND user_id = ?", userID).First(&shift)
+	if shift.ID == 0 {
+		response.BadRequest(c, "Shift had signed on")
+	}
+
+	// 找到下一个未签到的排班
 	database.Connector.Where("status = 'no' AND user_id = ? AND end_at >= ?", userID, time.Now()).Order("start_at ASC").First(&shift)
 	if shift.ID == 0 {
 		response.NotFound(c, "Shift not found")
@@ -126,8 +132,14 @@ func SignWithFace(c *gin.Context) {
 		return
 	}
 
-	// 找到下一个未签到的排班
+	// 验证是否重复签到
 	shift := models.Shift{}
+	database.Connector.Where("status = 'on' AND user_id = ?", userID).First(&shift)
+	if shift.ID == 0 {
+		response.BadRequest(c, "Shift had signed on")
+	}
+
+	// 找到下一个未签到的排班
 	database.Connector.Where("status = 'no' AND user_id = ? AND end_at >= ?", userID, time.Now()).Order("start_at ASC").First(&shift)
 	if shift.ID == 0 {
 		response.NotFound(c, "Shift not found")

@@ -98,10 +98,17 @@ POST `/user/batch`
 
 #### 响应
 
-    {
-        "status": 201,
-        "user_ids": [2, 3]
-    }
+    [
+        {
+            "status": 201,
+            "user_id": 2
+        },
+        {
+            "status": 400,
+            "message": "why failed"
+        },
+        ...
+    ]
     
 ### 修改用户 （ok）
 

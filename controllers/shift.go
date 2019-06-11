@@ -242,6 +242,63 @@ func ShiftDepartment(c *gin.Context) {
 	response.ShiftDepartment(c, shiftIDs)
 }
 
+// ShiftAll 全单位排班
+func ShiftAll(c *gin.Context) {
+	var req requests.ShiftAllRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.BadRequest(c, err.Error())
+		c.Abort()
+		return
+	}
+
+	// 验证提交数据的合法性
+	if err := req.Validate(); err != nil {
+		response.BadRequest(c, err.Error())
+		c.Abort()
+		return
+	}
+
+	// 查找出所有员工和部门主管
+	users := []models.User{}
+	database.Connector.Where("role <> ?", "master").Find(&users)
+
+	// 获得起始时间
+	startAt, err := common.ParseTime(req.StartAt)
+	if err != nil {
+		response.BadRequest(c, "start_at not valid")
+		c.Abort()
+		return
+	}
+	endAt, err := common.ParseTime(req.EndAt)
+	if err != nil {
+		response.BadRequest(c, "end_at not valid")
+		c.Abort()
+		return
+	}
+
+	// 存入数据库
+	var shiftIDs []uint
+	for _, user := range users {
+		shift := models.Shift{
+			UserID:  user.ID,
+			StartAt: startAt,
+			EndAt:   endAt,
+			Type:    req.Type,
+			Status:  "no",
+		}
+		database.Connector.Create(&shift)
+		if shift.ID == 0 {
+			response.InternalServerError(c, "Database error")
+			c.Abort()
+			return
+		}
+		shiftIDs = append(shiftIDs, user.ID)
+	}
+
+	// 发送响应
+	response.ShiftAll(c, shiftIDs)
+}
+
 // ShiftDelete 删除排班
 func ShiftDelete(c *gin.Context) {
 	// 获取 URL 中的排班 ID

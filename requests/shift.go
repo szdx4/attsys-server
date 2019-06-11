@@ -111,3 +111,35 @@ func (r *ShiftDepartmentRequest) Validate(departmentID int, role string, authID 
 
 	return nil
 }
+
+// ShiftAllRequest 全单位排班
+type ShiftAllRequest struct {
+	StartAt string `binding:"required" json:"start_at"`
+	EndAt   string `binding:"required" json:"end_at"`
+	Type    string `binding:"required"`
+}
+
+// Validate 验证 ShiftAllRequest 请求中的有效性
+func (r *ShiftAllRequest) Validate() error {
+	// 将接收的 string 格式转换成 Time
+	startAt, err := common.ParseTime(r.StartAt)
+	if err != nil {
+		return errors.New("start_at not valid")
+	}
+	endAt, err := common.ParseTime(r.EndAt)
+	if err != nil {
+		return errors.New("end_at not valid")
+	}
+
+	// 验证给出排班的有效性
+	if startAt.After(endAt) {
+		return errors.New("Time not valid")
+	}
+
+	// 验证类型的有效性
+	if r.Type != "normal" && r.Type != "allovertime" {
+		return errors.New("Type not valid")
+	}
+
+	return nil
+}

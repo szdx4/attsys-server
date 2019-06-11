@@ -41,3 +41,11 @@ func ShiftDelete(c *gin.Context) {
 		"status": http.StatusOK,
 	})
 }
+
+// ShiftAll 全单位排班响应
+func ShiftAll(c *gin.Context, shiftIDs []uint) {
+	c.JSON(http.StatusCreated, gin.H{
+		"status":    http.StatusCreated,
+		"shift_ids": shiftIDs,
+	})
+}

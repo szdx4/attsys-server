@@ -308,6 +308,41 @@ func ShiftAll(c *gin.Context) {
 			continue
 		}
 
+		// 处理排班时间冲突
+		shiftChecks := []models.Shift{}
+		database.Connector.Where("user_id = ? AND start_at <= ? AND end_at >= ?", user.ID, endAt, startAt).Find(&shiftChecks)
+		if shiftChecks != nil {
+			// 确定冲突时间段的最早最晚时间
+			var startEarly, endLate time.Time
+			for _, shiftCheck := range shiftChecks {
+				if shiftCheck.StartAt.Before(startEarly) {
+					startEarly = shiftCheck.StartAt
+				}
+				if shiftCheck.EndAt.After(endLate) {
+					endLate = shiftCheck.EndAt
+				}
+
+				// 删除冲突排班
+				database.Connector.Delete(&shiftCheck)
+			}
+
+			//保留唯一排班
+			shift := models.Shift{
+				UserID:  user.ID,
+				StartAt: startEarly,
+				EndAt:   endLate,
+				Type:    req.Type,
+				Status:  "no",
+			}
+			database.Connector.Create(&shift)
+			if shift.ID == 0 {
+				response.InternalServerError(c, "Database error")
+				c.Abort()
+				return
+			}
+			continue
+		}
+
 		shift := models.Shift{
 			UserID:  user.ID,
 			StartAt: startAt,

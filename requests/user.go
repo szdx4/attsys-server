@@ -35,6 +35,7 @@ func (r *UserAuthRequest) Validate() (*models.User, error) {
 		return nil, errors.New("Password invalid")
 	}
 
+	// 无误则返回空
 	return user, nil
 }
 
@@ -71,6 +72,7 @@ func (r *UserCreateRequest) Validate() error {
 		return errors.New("Department not exists")
 	}
 
+	// 无误则返回空
 	return nil
 }
 
@@ -121,6 +123,7 @@ func (r *UserUpdateRequest) Validate(c *gin.Context) (int, error) {
 		}
 	}
 
+	// 无误则返回空
 	return userID, nil
 }
 
@@ -168,5 +171,6 @@ func (r *UserPasswordRequest) Validate(role string, authID, userID int) (string,
 		return "", errors.New("Password hash generate error")
 	}
 
+	// 无误则返回空
 	return string(hash), nil
 }

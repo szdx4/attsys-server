@@ -13,6 +13,7 @@ type FaceCreateRequest struct {
 
 // Validate 验证更新人脸请求的合法性
 func (r *FaceCreateRequest) Validate() error {
+	// 验证 base64 编码正确性
 	tmp := strings.Split(r.Info, "base64,")
 	imageBase64 := tmp[1]
 
@@ -21,5 +22,6 @@ func (r *FaceCreateRequest) Validate() error {
 		return errors.New("Invalid image format")
 	}
 
+	// 无误则返回空
 	return nil
 }

@@ -31,6 +31,7 @@ func (r *SignWithQrcodeRequest) Validate() error {
 		return errors.New("Qrcode expired")
 	}
 
+	// 无误则返回空
 	return nil
 }
 
@@ -50,5 +51,6 @@ func (r *SignWithFaceRequest) Validate(userID int) error {
 		return errors.New("Face not match")
 	}
 
+	// 无误则返回空
 	return nil
 }

@@ -11,8 +11,8 @@ import (
 // Qrcode 二维码模型
 type Qrcode struct {
 	CommonFields
-	Token     string    `json:"token"`
-	ExpiredAt time.Time `json:"expired_at"`
+	Token     string    `json:"token"`      // 二维码 token
+	ExpiredAt time.Time `json:"expired_at"` // 二维码失效日期
 }
 
 // RandToken 随机生成 Token

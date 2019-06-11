@@ -219,6 +219,13 @@ func ShiftDepartment(c *gin.Context) {
 		return
 	}
 
+	// 排班不能在现在之前
+	if startAt.Before(time.Now()) {
+		response.BadRequest(c, "You cannot arrange shift before now")
+		c.Abort()
+		return
+	}
+
 	// 存入数据库
 	var shiftIDs []uint
 	for _, user := range users {

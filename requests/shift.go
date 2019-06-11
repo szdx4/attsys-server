@@ -143,3 +143,59 @@ func (r *ShiftAllRequest) Validate() error {
 
 	return nil
 }
+
+// ShiftUpdateRequest 添加排班
+type ShiftUpdateRequest struct {
+	StartAt string `binding:"required" json:"start_at"`
+	EndAt   string `binding:"required" json:"end_at"`
+	Effect  string `binding:"required"`
+}
+
+// Validate 验证 ShiftUpdateRequest 请求中的有效性
+func (r *ShiftUpdateRequest) Validate(c *gin.Context) error {
+	// 将接收的 string 格式转换成 Time
+	startAt, err := common.ParseTime(r.StartAt)
+	if err != nil {
+		return errors.New("start_at not valid")
+	}
+	endAt, err := common.ParseTime(r.EndAt)
+	if err != nil {
+		return errors.New("end_at not valid")
+	}
+
+	// 验证作用域的有效性
+	if r.Effect != "all" && r.Effect != "temp" {
+		return errors.New("effect not valid")
+	}
+
+	// 验证给出排班的先后有效性
+	if startAt.After(endAt) {
+		return errors.New("Time not valid")
+	}
+
+	// 验证排班 ID 的合法性和排班是否存在
+	shiftID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return errors.New("Shift ID not valid")
+	}
+	shift := models.Shift{}
+	database.Connector.First(&shift, shiftID)
+	if shift.ID == 0 {
+		return errors.New("Shift not found")
+	}
+
+	// 判断排班时间是否有冲突
+	otherShift := models.Shift{}
+	db := database.Connector
+	db = db.Where("id <> ?", shift.ID)
+	db = db.Where("user_id = ?", shift.UserID)
+	db = db.Where("start_at < ?", endAt)
+	db = db.Where("end_at > ?", startAt)
+	db.First(&otherShift)
+	if otherShift.ID > 0 {
+		return errors.New("Time is conflicting")
+	}
+
+	// 无误则返回空
+	return nil
+}

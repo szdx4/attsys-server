@@ -49,3 +49,10 @@ func ShiftAll(c *gin.Context, shiftIDs []uint) {
 		"shift_ids": shiftIDs,
 	})
 }
+
+// ShiftUpdate 修改排班响应
+func ShiftUpdate(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"status": http.StatusOK,
+	})
+}

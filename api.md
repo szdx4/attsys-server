@@ -908,3 +908,53 @@ GET `/message/{message_id}`
             "status": "unread/read"
         }
     }
+
+## 系统状态相关
+
+### 获取用户相关数据
+
+GET `/status/user`
+
+#### 说明
+
+部门主管和经理可以获取到用户总数。
+
+注：部门主管返回的数据仅包含本部门用户。
+
+#### Header
+
+ - Authorization: Bearer {Token}
+
+#### 响应
+
+    {
+        "status": 200,
+        "data": {
+            "users": 100
+        }
+    }
+
+### 获取签到相关数据
+
+GET `/status/sign`
+
+#### 说明
+
+部门主管和经理可以获取到当天已签到人数、迟到人数、请假人数。
+
+注：部门主管返回的数据仅包含本部门用户。
+
+#### Header
+
+ - Authorization: Bearer {Token}
+
+#### 响应
+
+    {
+        "status": 200,
+        "data": {
+            "signed": 10,
+            "lated": 3,
+            "leaved": 2
+        }
+    }

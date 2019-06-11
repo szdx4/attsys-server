@@ -120,5 +120,11 @@ func Router() *gin.Engine {
 	// 获取信息列表
 	r.GET("/message", middleware.Token, controllers.MessageList)
 
+	// Status
+	// 获取用户相关数据
+	r.GET("/status/user", middleware.Token, middleware.Manager, controllers.StatusUser)
+	// 获取签到相关数据
+	r.GET("/status/sign", middleware.Token, middleware.Manager, controllers.StatusSign)
+
 	return r
 }

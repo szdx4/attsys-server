@@ -74,3 +74,8 @@ func StatusSign(c *gin.Context) {
 	// 发送响应
 	response.StatusSign(c, signedCount, latedCount, leavedCount)
 }
+
+// StatusHour 获取用户工作时间和加班时间
+func StatusHour(c *gin.Context) {
+
+}

@@ -229,9 +229,19 @@ func ShiftDepartment(c *gin.Context) {
 	// 存入数据库
 	var shiftIDs []uint
 	for _, user := range users {
+		// 处理请假冲突
+		leaveCheck := models.Shift{}
+		db := database.Connector.Where("user_id = ?", user.ID)
+		db = db.Where("start_at <= ? AND end_at >= ?", endAt, startAt)
+		db = db.Where("status = 'leave'")
+		db.First(&leaveCheck)
+		if leaveCheck.ID != 0 {
+			continue
+		}
+
 		// 处理排班时间冲突
 		shiftChecks := []models.Shift{}
-		db := database.Connector.Where("user_id = ?", user.ID)
+		db = database.Connector.Where("user_id = ?", user.ID)
 		db = db.Where("start_at <= ? AND end_at >= ?", endAt, startAt)
 		db.Find(&shiftChecks)
 		startEarly := startAt

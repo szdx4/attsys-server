@@ -863,12 +863,17 @@ POST `/sign/qrcode/{user_id}`
 
     {
         "status": 200,
-        "sign_id: 3
+        "sign_id: 3,
+        "user": {
+            "id": 1,
+            "name": "xxx",
+            ...
+        }
     }
 
 ### 人脸签到 ok
 
-POST `/sign/face/{user_id}`
+POST `/sign/face`
 
 #### Header
 
@@ -882,7 +887,12 @@ POST `/sign/face/{user_id}`
 
     {
         "status": 200,
-        "sign_id: 3
+        "sign_id: 3,
+        "user": {
+            "id": 1,
+            "name": "xxx",
+            ...
+        }
     }
 
 ### 签退 ok

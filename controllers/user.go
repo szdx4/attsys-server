@@ -235,6 +235,23 @@ func UserUpdate(c *gin.Context) {
 		return
 	}
 
+	// 判断工时是否改变，改变需添加工时记录
+	if user.Hours != uint(req.Hours) {
+		if uint(req.Hours) < user.Hours {
+			response.BadRequest(c, "You cannot reduce hours")
+			c.Abort()
+			return
+		}
+
+		diff := uint(req.Hours) - user.Hours
+		hours := models.Hours{
+			UserID: user.ID,
+			Date:   time.Now(),
+			Hours:  diff,
+		}
+		database.Connector.Create(&hours)
+	}
+
 	// 修改用户的相应信息
 	user.Name = req.Name
 	user.DepartmentID = uint(req.Department)

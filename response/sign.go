@@ -20,10 +20,11 @@ func SignGetQrcode(c *gin.Context, image string, expiredAt time.Time) {
 }
 
 // Sign 签到响应
-func Sign(c *gin.Context, signID uint) {
+func Sign(c *gin.Context, signID uint, user models.User) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
 		"sign_id": signID,
+		"user":    user,
 	})
 }
 

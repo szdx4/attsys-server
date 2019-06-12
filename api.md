@@ -1041,3 +1041,24 @@ GET `/status/sign`
             "leaved": 2
         }
     }
+
+### 获取用户的工作时间和加班时间
+
+GET '/status/hours/{user_id}'
+
+#### Header
+
+- Authorization: Bearer {Token}
+ 
+#### URL Query
+ 
+- start_at: 获取开始时间，必选
+- end_at: 获取结束时间，必选
+ 
+ #### 响应
+ 
+     {
+         "status": 200,
+         "shift_hour": 300,
+         "overtime_hour": 100
+     }

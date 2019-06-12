@@ -41,16 +41,17 @@ type SignWithFaceRequest struct {
 }
 
 // Validate 验证人脸签到请求的合法性
-func (r *SignWithFaceRequest) Validate(userID int) error {
+func (r *SignWithFaceRequest) Validate() (int, error) {
 	// 验证人脸是否匹配
 	resID, err := qcloud.SearchFaces(config.Qcloud.GroupName, r.Face)
 	if err != nil {
-		return errors.New("Face not match")
+		return 0, errors.New("Face not found")
 	}
-	if resID != strconv.Itoa(userID) {
-		return errors.New("Face not match")
+	userID, err := strconv.Atoi(resID)
+	if err != nil {
+		return 0, errors.New("Face response parse error")
 	}
 
 	// 无误则返回空
-	return nil
+	return userID, nil
 }

@@ -106,20 +106,16 @@ func SignWithQrcode(c *gin.Context) {
 		return
 	}
 
+	// 获取用户信息
+	user := models.User{}
+	database.Connector.First(&user, userID)
+
 	// 发送响应
-	response.Sign(c, sign.ID)
+	response.Sign(c, sign.ID, user)
 }
 
 // SignWithFace 通过人脸签到
 func SignWithFace(c *gin.Context) {
-	// 获取 URL 中的用户 ID
-	userID, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		response.BadRequest(c, "User ID invalid")
-		c.Abort()
-		return
-	}
-
 	var req requests.SignWithFaceRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.BadRequest(c, err.Error())
@@ -128,11 +124,16 @@ func SignWithFace(c *gin.Context) {
 	}
 
 	// 验证提交数据的合法性
-	if err := req.Validate(userID); err != nil {
+	userID, err := req.Validate()
+	if err != nil {
 		response.BadRequest(c, err.Error())
 		c.Abort()
 		return
 	}
+
+	// 获取用户信息
+	user := models.User{}
+	database.Connector.First(&user, userID)
 
 	// 验证是否重复签到
 	shift := models.Shift{}
@@ -169,7 +170,7 @@ func SignWithFace(c *gin.Context) {
 	}
 
 	// 发送响应
-	response.Sign(c, sign.ID)
+	response.Sign(c, sign.ID, user)
 }
 
 // SignOff 签退

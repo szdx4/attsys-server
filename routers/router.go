@@ -110,7 +110,7 @@ func Router() *gin.Engine {
 	// 二维码签到
 	r.POST("/sign/qrcode/:id", middleware.Token, controllers.SignWithQrcode)
 	// 人脸签到
-	r.POST("/sign/face/:id", middleware.Token, middleware.Manager, controllers.SignWithFace)
+	r.POST("/sign/face", middleware.Token, middleware.Manager, controllers.SignWithFace)
 	// 签退
 	r.POST("/sign/off/:id", middleware.Token, controllers.SignOff)
 	// 获取用户当前签到状态

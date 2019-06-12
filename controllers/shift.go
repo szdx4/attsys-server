@@ -478,6 +478,7 @@ func ShiftUpdate(c *gin.Context) {
 	// 修改排班数据
 	shift.StartAt = startAt
 	shift.EndAt = endAt
+	database.Connector.Save(&shift)
 
 	// 如果是永久修改
 	if req.Effect == "all" {

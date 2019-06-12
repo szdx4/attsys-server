@@ -77,6 +77,8 @@ func SignWithQrcode(c *gin.Context) {
 	database.Connector.Where("status = 'on' AND user_id = ?", userID).First(&shift)
 	if shift.ID == 0 {
 		response.BadRequest(c, "Shift had signed on")
+		c.Abort()
+		return
 	}
 
 	// 找到下一个未签到的排班
@@ -137,6 +139,8 @@ func SignWithFace(c *gin.Context) {
 	database.Connector.Where("status = 'on' AND user_id = ?", userID).First(&shift)
 	if shift.ID == 0 {
 		response.BadRequest(c, "Shift had signed on")
+		c.Abort()
+		return
 	}
 
 	// 找到下一个未签到的排班

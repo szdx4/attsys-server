@@ -138,7 +138,7 @@ func SignWithFace(c *gin.Context) {
 	// 验证是否重复签到
 	shift := models.Shift{}
 	database.Connector.Where("status = 'on' AND user_id = ?", userID).First(&shift)
-	if shift.ID == 0 {
+	if shift.ID != 0 {
 		response.BadRequest(c, "Shift had signed on")
 		c.Abort()
 		return

@@ -128,7 +128,7 @@ func Router() *gin.Engine {
 	// 获取签到相关数据
 	r.GET("/status/sign", middleware.Token, middleware.Manager, controllers.StatusSign)
 	// 获取用户工作时间和加班时间
-	r.GET("/status/hours/:id", middleware.Token, controllers.StatusHour)
+	r.GET("/status/hours/:user_id", middleware.Token, controllers.StatusHour)
 
 	return r
 }

@@ -53,7 +53,7 @@ func HoursShow(c *gin.Context) {
 	if endAt, isExist := c.GetQuery("end_at"); isExist {
 		endAt, err := common.ParseTime(endAt)
 		if err != nil {
-			response.BadRequest(c, "Invalid start_at format")
+			response.BadRequest(c, "Invalid end_at format")
 			c.Abort()
 			return
 		}

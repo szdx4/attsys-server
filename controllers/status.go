@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"github.com/szdx4/attsys-server/utils/common"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -77,5 +79,105 @@ func StatusSign(c *gin.Context) {
 
 // StatusHour 获取用户工作时间和加班时间
 func StatusHour(c *gin.Context) {
+	// 初始化条件查询模型
+	shifts := []models.Shift{}
+	overtimes := []models.Overtime{}
+
+	dbShift := database.Connector
+	dbOvertime := database.Connector
+
+	// 从URL中获取用户ID
+	userID, err := strconv.Atoi(c.Param("user_id"))
+	if err != nil {
+		response.BadRequest(c, "user ID not valid")
+		c.Abort()
+		return
+	}
+
+	// 获取认证用户信息
+	role, _ := c.Get("user_role")
+	authID, _ := c.Get("user_id")
+
+	// 验证用户
+	if role == "user" && userID != authID {
+		response.Unauthorized(c, "You cannot get other information")
+		c.Abort()
+		return
+	}
+
+	// 验证部门主管
+	if role == "manager" && userID != authID {
+		manager := models.User{}
+		database.Connector.First(&manager, authID)
+		aim := models.User{}
+		database.Connector.First(&aim, userID)
+		if manager.DepartmentID != aim.DepartmentID {
+			response.Unauthorized(c, "You cannot get other department information")
+			c.Abort()
+			return
+		}
+	}
+
+	// 查找对应 user
+	dbShift = dbShift.Where("user_id = ?", userID)
+	dbOvertime = dbOvertime.Where("user_id = ?", userID)
+
+	// 检测 start_at
+	if startAt, isExist := c.GetQuery("start_at"); isExist {
+		startAt, err := common.ParseTime(startAt)
+		if err != nil {
+			response.BadRequest(c, "Invalid start_at format")
+			c.Abort()
+			return
+		}
+		dbShift = dbShift.Where("start_at >= ?", startAt)
+		dbOvertime = dbOvertime.Where("start_at >= ?", startAt)
+	} else {
+		response.BadRequest(c, "start_at absents")
+		c.Abort()
+		return
+	}
+
+	// 检测 end_at 格式
+	if endAt, isExist := c.GetQuery("end_at"); isExist {
+		endAt, err := common.ParseTime(endAt)
+		if err != nil {
+			response.BadRequest(c, "Invalid end_at format")
+			c.Abort()
+			return
+		}
+		dbShift = dbShift.Where("end_at <= ?", endAt)
+		dbOvertime = dbOvertime.Where("end_at <= ?", endAt)
+	} else {
+		response.BadRequest(c, "end_at absents")
+		c.Abort()
+		return
+	}
+
+	// 获得查询模型列表
+	dbShift = dbShift.Where("status = ?", "off")
+	dbOvertime = dbOvertime.Where("status = ?", "pass")
+	dbShift.Find(&shifts)
+	dbOvertime.Find(&overtimes)
+
+	var shiftHour int
+	var overtimeHour int
+
+	// 统计 shift 中排班和加班
+	for _, shift := range shifts {
+		if shift.Type == "normal" {
+			shiftHour += int(shift.EndAt.Sub(shift.StartAt).Hours())
+		} else {
+			overtimeHour += int(shift.EndAt.Sub(shift.StartAt).Hours())
+		}
+	}
+
+	// 统计 overtime 中加班
+	for _, overtime := range overtimes {
+		overtimeHour += int(overtime.EndAt.Sub(overtime.StartAt).Hours())
+	}
+
+	// 发送响应
+	response.StatusHour(c, shiftHour, overtimeHour)
 
 }

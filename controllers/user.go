@@ -332,6 +332,12 @@ func UserBatch(c *gin.Context) {
 	res := []response.UserBatchResponse{}
 
 	for _, row := range rows {
+		if len(row) != 3 {
+			response.BadRequest(c, "csv file format invalid")
+			c.Abort()
+			return
+		}
+
 		resp := response.UserBatchResponse{}
 		name := row[0]
 		password := row[1]
